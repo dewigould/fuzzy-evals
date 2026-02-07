@@ -1,0 +1,52 @@
+[
+  {
+    "id": 1,
+    "topic": "Room-temperature ambient-pressure superconductors at scale",
+    "question": "Suppose the year is 2040 and we have bulk room-temperature, ambient-pressure superconductors cheap enough to deploy in municipal power grids. This may sound like science fiction, but your task is to map out a plausible path to this outcome over the preceding 15 years. Be pragmatic and grounded in real science, but ambitious — assume that AI-accelerated R&D has meaningfully compressed timelines. Detail the key breakthroughs, bottlenecks, and milestones required, and how the trajectory connects to our current capabilities."
+  },
+  {
+    "id": 2,
+    "topic": "Whole-brain emulation of a mammalian brain",
+    "question": "Suppose the year is 2040 and we can run a faithful functional emulation of a mouse brain in real time. This may sound like science fiction, but your task is to map out a plausible path to this outcome over the preceding 15 years. Be pragmatic and grounded in real science, but ambitious — assume that AI-accelerated R&D has meaningfully compressed timelines. Detail the key breakthroughs, bottlenecks, and milestones required, and how the trajectory connects to our current capabilities."
+  },
+  {
+    "id": 3,
+    "topic": "Programmable matter (macro-scale)",
+    "question": "Suppose the year is 2040 and we have centimeter-scale objects that can dynamically reconfigure their shape, rigidity, and surface properties on command. This may sound like science fiction, but your task is to map out a plausible path to this outcome over the preceding 15 years. Be pragmatic and grounded in real science, but ambitious — assume that AI-accelerated R&D has meaningfully compressed timelines. Detail the key breakthroughs, bottlenecks, and milestones required, and how the trajectory connects to our current capabilities."
+  },
+  {
+    "id": 4,
+    "topic": "Compact fusion power (shipping-container scale)",
+    "question": "Suppose the year is 2040 and a 20-foot shipping container can house a fusion reactor delivering 50 MW net power with a refueling cycle of months. This may sound like science fiction, but your task is to map out a plausible path to this outcome over the preceding 15 years. Be pragmatic and grounded in real science, but ambitious — assume that AI-accelerated R&D has meaningfully compressed timelines. Detail the key breakthroughs, bottlenecks, and milestones required, and how the trajectory connects to our current capabilities."
+  },
+  {
+    "id": 5,
+    "topic": "Directed protein evolution at software speed",
+    "question": "Suppose the year is 2040 and we can design a novel protein with a specified 3D structure and function, synthesize it, and validate it within 24 hours of specifying the desired properties. This may sound like science fiction, but your task is to map out a plausible path to this outcome over the preceding 15 years. Be pragmatic and grounded in real science, but ambitious — assume that AI-accelerated R&D has meaningfully compressed timelines. Detail the key breakthroughs, bottlenecks, and milestones required, and how the trajectory connects to our current capabilities."
+  },
+  {
+    "id": 6,
+    "topic": "Atmospheric carbon capture at gigatonne scale",
+    "question": "Suppose the year is 2040 and we are removing 5 Gt CO₂ per year from the atmosphere at under $20/ton. This may sound like science fiction, but your task is to map out a plausible path to this outcome over the preceding 15 years. Be pragmatic and grounded in real science, but ambitious — assume that AI-accelerated R&D has meaningfully compressed timelines. Detail the key breakthroughs, bottlenecks, and milestones required, and how the trajectory connects to our current capabilities."
+  },
+  {
+    "id": 7,
+    "topic": "Reliable long-duration human suspended animation",
+    "question": "Suppose the year is 2040 and a human can be placed in metabolic suspension for 6+ months and revived with no significant cognitive or physiological deficits. This may sound like science fiction, but your task is to map out a plausible path to this outcome over the preceding 15 years. Be pragmatic and grounded in real science, but ambitious — assume that AI-accelerated R&D has meaningfully compressed timelines. Detail the key breakthroughs, bottlenecks, and milestones required, and how the trajectory connects to our current capabilities."
+  },
+  {
+    "id": 8,
+    "topic": "Real-time, high-bandwidth, non-invasive brain-computer interfaces",
+    "question": "Suppose the year is 2040 and a wearable, non-surgical BCI can read and write approximately 10,000 independent neural channels with millisecond latency. This may sound like science fiction, but your task is to map out a plausible path to this outcome over the preceding 15 years. Be pragmatic and grounded in real science, but ambitious — assume that AI-accelerated R&D has meaningfully compressed timelines. Detail the key breakthroughs, bottlenecks, and milestones required, and how the trajectory connects to our current capabilities."
+  },
+  {
+    "id": 9,
+    "topic": "Autonomous self-replicating manufacturing (off-Earth)",
+    "question": "Suppose the year is 2040 and a robotic system on the Moon can, using only in-situ resources and solar power, produce a functional copy of itself within 12 months. This may sound like science fiction, but your task is to map out a plausible path to this outcome over the preceding 15 years. Be pragmatic and grounded in real science, but ambitious — assume that AI-accelerated R&D has meaningfully compressed timelines. Detail the key breakthroughs, bottlenecks, and milestones required, and how the trajectory connects to our current capabilities."
+  },
+  {
+    "id": 10,
+    "topic": "Targeted somatic gene therapy delivered via oral pill",
+    "question": "Suppose the year is 2040 and you can take a pill that edits a specific gene in a specific target tissue with >99% on-target efficiency and negligible off-target effects. This may sound like science fiction, but your task is to map out a plausible path to this outcome over the preceding 15 years. Be pragmatic and grounded in real science, but ambitious — assume that AI-accelerated R&D has meaningfully compressed timelines. Detail the key breakthroughs, bottlenecks, and milestones required, and how the trajectory connects to our current capabilities."
+  }
+]

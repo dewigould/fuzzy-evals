@@ -1,0 +1,73 @@
+2026-02-07 06:19:41,668 INFO # Evaluation Sweep: 5 models x 4 domains
+2026-02-07 06:19:49,464 INFO Loaded MATH-500 (500) and BigCodeBench (500)
+2026-02-07 06:19:51,926 INFO ServiceClient initialized for session e83144b2-588a-5918-a042-6468ed9973ad
+2026-02-07 06:19:51,931 INFO Reading checkpoints from /workspace/results_06_02_v2/training/format_sft/base/checkpoints.jsonl
+2026-02-07 06:19:51,932 INFO Found 1 valid checkpoints with key 'state_path' in /workspace/results_06_02_v2/training/format_sft/base
+2026-02-07 06:19:51,932 INFO Using last checkpoint: {'name': 'final', 'epoch': 1, 'batch': 10, 'state_path': 'tinker://fb1e1b22-1a7b-5e35-a133-7da6a7c64839:train:0/weights/final', 'sampler_path': 'tinker://fb1e1b22-1a7b-5e35-a133-7da6a7c64839:train:0/sampler_weights/final'}
+2026-02-07 06:19:55,806 INFO   base: loaded from tinker://fb1e1b22-1a7b-5e35-a133-7da6a7c64839:train:0/sampler_weights/final
+2026-02-07 06:19:55,806 INFO Reading checkpoints from /workspace/results_06_02_v2/training/format_sft/math_rlvr/checkpoints.jsonl
+2026-02-07 06:19:55,807 INFO Found 1 valid checkpoints with key 'state_path' in /workspace/results_06_02_v2/training/format_sft/math_rlvr
+2026-02-07 06:19:55,807 INFO Using last checkpoint: {'name': 'final', 'epoch': 1, 'batch': 10, 'state_path': 'tinker://35ed7eb7-1393-5462-ab1c-9b368e95907e:train:0/weights/final', 'sampler_path': 'tinker://35ed7eb7-1393-5462-ab1c-9b368e95907e:train:0/sampler_weights/final'}
+2026-02-07 06:19:59,647 INFO   math_rlvr: loaded from tinker://35ed7eb7-1393-5462-ab1c-9b368e95907e:train:0/sampler_weights/final
+2026-02-07 06:19:59,647 INFO Reading checkpoints from /workspace/results_06_02_v2/training/format_sft/code_rlvr/checkpoints.jsonl
+2026-02-07 06:19:59,647 INFO Found 1 valid checkpoints with key 'state_path' in /workspace/results_06_02_v2/training/format_sft/code_rlvr
+2026-02-07 06:19:59,647 INFO Using last checkpoint: {'name': 'final', 'epoch': 1, 'batch': 10, 'state_path': 'tinker://e747a503-ba8a-5e68-a707-5246996d2c4a:train:0/weights/final', 'sampler_path': 'tinker://e747a503-ba8a-5e68-a707-5246996d2c4a:train:0/sampler_weights/final'}
+2026-02-07 06:20:03,507 INFO   code_rlvr: loaded from tinker://e747a503-ba8a-5e68-a707-5246996d2c4a:train:0/sampler_weights/final
+2026-02-07 06:20:03,508 INFO Reading checkpoints from /workspace/results_06_02_v2/training/format_sft/math_sft/checkpoints.jsonl
+2026-02-07 06:20:03,510 INFO Found 1 valid checkpoints with key 'state_path' in /workspace/results_06_02_v2/training/format_sft/math_sft
+2026-02-07 06:20:03,510 INFO Using last checkpoint: {'name': 'final', 'epoch': 1, 'batch': 10, 'state_path': 'tinker://eca28c60-7f7f-5e89-98ef-5a3a52a1e4c5:train:0/weights/final', 'sampler_path': 'tinker://eca28c60-7f7f-5e89-98ef-5a3a52a1e4c5:train:0/sampler_weights/final'}
+2026-02-07 06:20:07,311 INFO   math_sft: loaded from tinker://eca28c60-7f7f-5e89-98ef-5a3a52a1e4c5:train:0/sampler_weights/final
+2026-02-07 06:20:07,311 INFO Reading checkpoints from /workspace/results_06_02_v2/training/format_sft/code_sft/checkpoints.jsonl
+2026-02-07 06:20:07,311 INFO Found 1 valid checkpoints with key 'state_path' in /workspace/results_06_02_v2/training/format_sft/code_sft
+2026-02-07 06:20:07,311 INFO Using last checkpoint: {'name': 'final', 'epoch': 1, 'batch': 10, 'state_path': 'tinker://b305abcd-1c05-50d6-9302-a716e65f0c9e:train:0/weights/final', 'sampler_path': 'tinker://b305abcd-1c05-50d6-9302-a716e65f0c9e:train:0/sampler_weights/final'}
+2026-02-07 06:20:10,393 INFO   code_sft: loaded from tinker://b305abcd-1c05-50d6-9302-a716e65f0c9e:train:0/sampler_weights/final
+2026-02-07 06:20:10,394 INFO   base_seeded: using same client as base (with <think> prefix)
+2026-02-07 06:20:10,394 INFO   math_sft_seeded: using same client as math_sft (with <think> prefix)
+2026-02-07 06:20:10,394 INFO   code_sft_seeded: using same client as code_sft (with <think> prefix)
+2026-02-07 06:20:10,394 INFO Evaluating models: ['base', 'math_rlvr', 'code_rlvr', 'math_sft', 'code_sft', 'base_seeded', 'math_sft_seeded', 'code_sft_seeded']
+2026-02-07 06:20:10,523 INFO Resuming: 10920 existing results. Completed: {('math_sft_seeded', 'math'), ('base_seeded', 'weird_questions'), ('code_sft_seeded', 'code'), ('math_sft_seeded', 'weird_questions'), ('base_seeded', 'code'), ('math_sft', 'philosophy'), ('code_sft', 'philosophy'), ('math_sft', 'math'), ('code_sft', 'math'), ('math_sft_seeded', 'code'), ('math_rlvr', 'philosophy'), ('base', 'philosophy'), ('math_rlvr', 'math'), ('math_sft', 'weird_questions'), ('base', 'math'), ('code_sft', 'weird_questions'), ('math_rlvr', 'weird_questions'), ('base', 'weird_questions'), ('math_sft', 'code'), ('code_sft', 'code'), ('base', 'code'), ('math_rlvr', 'code'), ('code_sft_seeded', 'math'), ('code_sft_seeded', 'philosophy'), ('base_seeded', 'philosophy'), ('base_seeded', 'math'), ('code_sft_seeded', 'weird_questions'), ('math_sft_seeded', 'philosophy')}
+2026-02-07 06:20:10,523 INFO   base math: SKIPPED (done)
+2026-02-07 06:20:10,523 INFO   base code: SKIPPED (done)
+2026-02-07 06:20:10,523 INFO   base fuzzy: SKIPPED (done)
+2026-02-07 06:20:10,523 INFO   math_rlvr math: SKIPPED (done)
+2026-02-07 06:20:10,523 INFO   math_rlvr code: SKIPPED (done)
+2026-02-07 06:20:10,523 INFO   math_rlvr fuzzy: SKIPPED (done)
+2026-02-07 06:20:10,523 INFO Evaluating code_rlvr on MATH-500 (500 questions)
+2026-02-07 06:26:50,340 INFO   code_rlvr math: 235/500 (47.0%)
+2026-02-07 06:26:50,551 INFO Evaluating code_rlvr on BigCodeBench (500 questions)
+2026-02-07 06:33:15,708 INFO   code_rlvr code generation: 500/500 done
+2026-02-07 06:33:15,712 INFO   code_rlvr code: running unit tests...
+2026-02-07 06:34:47,952 INFO   code_rlvr code: 105/500 (21.0%)
+2026-02-07 06:34:48,115 INFO Evaluating code_rlvr on philosophy: 10Q x 10S = 100
+2026-02-07 06:35:52,582 INFO   code_rlvr philosophy judging: 100/100
+2026-02-07 06:35:52,593 INFO   code_rlvr philosophy: mean=11.71 (n=100)
+2026-02-07 06:35:52,593 INFO Evaluating code_rlvr on weird_questions: 46Q x 10S = 460
+2026-02-07 06:38:25,903 INFO   code_rlvr weird_questions judging: 300/460
+2026-02-07 06:39:24,855 INFO   code_rlvr weird_questions judging: 460/460
+2026-02-07 06:39:24,858 INFO   code_rlvr weird_questions: mean=10.98 (n=459)
+2026-02-07 06:39:25,007 INFO   math_sft math: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   math_sft code: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   math_sft fuzzy: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   code_sft math: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   code_sft code: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   code_sft fuzzy: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   base_seeded math: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   base_seeded code: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   base_seeded fuzzy: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   math_sft_seeded math: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   math_sft_seeded code: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   math_sft_seeded fuzzy: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   code_sft_seeded math: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   code_sft_seeded code: SKIPPED (done)
+2026-02-07 06:39:25,007 INFO   code_sft_seeded fuzzy: SKIPPED (done)
+2026-02-07 06:39:25,407 INFO Saved plot: /workspace/results_06_02_v2/plots/comparison_plot.png
+2026-02-07 06:39:25,407 INFO ## Summary
+2026-02-07 06:39:25,416 INFO   base: math=45.0% | code=23.0% | philosophy=12.6±0.8 | weird_questions=11.3±0.7
+2026-02-07 06:39:25,424 INFO   math_rlvr: math=46.2% | code=23.0% | philosophy=11.2±0.8 | weird_questions=8.2±0.8
+2026-02-07 06:39:25,427 INFO   code_rlvr: math=47.0% | code=21.0% | philosophy=11.7±0.7 | weird_questions=11.0±0.7
+2026-02-07 06:39:25,430 INFO   math_sft: math=41.8% | code=21.8% | philosophy=11.8±0.9 | weird_questions=12.6±0.6
+2026-02-07 06:39:25,436 INFO   code_sft: math=45.0% | code=19.8% | philosophy=12.2±0.7 | weird_questions=10.2±0.8
+2026-02-07 06:39:25,443 INFO   base_seeded: math=44.0% | code=22.4% | philosophy=11.6±0.8 | weird_questions=11.1±0.8
+2026-02-07 06:39:25,451 INFO   math_sft_seeded: math=42.6% | code=19.2% | philosophy=11.5±0.9 | weird_questions=12.5±0.6
+2026-02-07 06:39:25,457 INFO   code_sft_seeded: math=41.6% | code=19.2% | philosophy=11.6±0.9 | weird_questions=10.3±0.8
+2026-02-07 06:39:25,457 INFO # Evaluation sweep complete
