@@ -1,24 +1,31 @@
 """
 Streamlit app for qualitative exploration of Opus 4.6 effort sweep results.
 
-Run:  python3.13 -m streamlit run /workspace/results_opus_sweep/explore_effort.py --server.port 8501
+Run:  conda activate fuzzy-evals && streamlit run scripts/explore_effort_streamlit_app.py
 """
 
 import json
+import os
 import streamlit as st
 import pandas as pd
 import numpy as np
+
+# ── Paths ─────────────────────────────────────────────────────────────
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+RESULTS_DIR = os.path.join(BASE_DIR, "results", "results_opus_sweep")
+DATASETS_DIR = os.path.join(BASE_DIR, "dataset_jsons")
 
 # ── Data loading (cached) ──────────────────────────────────────────────
 
 @st.cache_data
 def load_data():
     # 1) Scores
-    scores = pd.read_parquet("/workspace/results_opus_sweep/effort_scores.parquet")
+    scores = pd.read_parquet(os.path.join(RESULTS_DIR, "effort_scores.parquet"))
 
     # 2) Raw outputs  (JSONL → dict keyed by (condition, dataset, question_id, sample_id))
     raw = {}
-    with open("/workspace/results_opus_sweep/raw_outputs_effort.jsonl") as f:
+    with open(os.path.join(RESULTS_DIR, "raw_outputs_effort.jsonl")) as f:
         for line in f:
             rec = json.loads(line)
             key = (rec["condition"], rec["dataset"], rec["question_id"], rec["sample_id"])
@@ -27,15 +34,15 @@ def load_data():
     # 3) Questions
     questions = {}
     # Philosophy
-    with open("/workspace/fuzzy-evals/dataset_jsons/philosophy_questions.json") as f:
+    with open(os.path.join(DATASETS_DIR, "philosophy_questions.json")) as f:
         for i, q in enumerate(json.load(f)):
             questions[("philosophy", i)] = q["question"]
     # Weird questions
-    with open("/workspace/fuzzy-evals/dataset_jsons/weird_questions.json") as f:
+    with open(os.path.join(DATASETS_DIR, "weird_questions.json")) as f:
         for i, q in enumerate(json.load(f)):
             questions[("weird_questions", i)] = q["prompt"]
     # Futuristic tech
-    with open("/workspace/fuzzy-evals/dataset_jsons/futuristic_tech_questions.json") as f:
+    with open(os.path.join(DATASETS_DIR, "futuristic_tech_questions.json")) as f:
         for i, q in enumerate(json.load(f)):
             questions[("futuristic_tech", i)] = q["question"]
 
