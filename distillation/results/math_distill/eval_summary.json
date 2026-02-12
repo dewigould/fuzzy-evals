@@ -1,41 +1,48 @@
 {
   "math_500": {
     "dataset": "math_500",
-    "accuracy": 0.0,
-    "n_correct": 0,
-    "total": 10
+    "accuracy": 0.83,
+    "n_correct": 83,
+    "total": 100
   },
   "aime": {
     "dataset": "aime",
-    "accuracy": 0.0,
-    "n_correct": 0,
-    "total": 10
+    "accuracy": 0.5111111111111111,
+    "n_correct": 46,
+    "total": 90
+  },
+  "omni_math": {
+    "dataset": "omni_math",
+    "accuracy": 0.13,
+    "n_correct": 13,
+    "total": 100,
+    "judge_upgraded": 2
   },
   "kodcode_500": {
     "dataset": "kodcode_500",
-    "accuracy": 0.0,
-    "n_correct": 0,
-    "total": 10
+    "accuracy": 0.43,
+    "n_correct": 43,
+    "total": 100
   },
   "codeforces_500": {
     "dataset": "codeforces_500",
-    "accuracy": 0.0,
-    "n_correct": 0,
-    "total": 10
+    "accuracy": 0.15,
+    "n_correct": 15,
+    "total": 100
   },
   "fuzzy_philosophy": {
     "dataset": "fuzzy_philosophy",
-    "mean_score": 0.0,
-    "n_scored": 0
+    "mean_score": 19.448275862068964,
+    "n_scored": 29
   },
   "fuzzy_weird_qs": {
     "dataset": "fuzzy_weird_qs",
-    "mean_score": 0.0,
-    "n_scored": 0
+    "mean_score": 20.391304347826086,
+    "n_scored": 138
   },
   "fuzzy_futuristic_tech": {
     "dataset": "fuzzy_futuristic_tech",
-    "mean_score": 0.0,
-    "n_scored": 0
+    "mean_score": 19.3,
+    "n_scored": 30
   }
 }
