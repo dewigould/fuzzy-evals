@@ -1,0 +1,143 @@
+Distillation Evaluation
+Models: math_distill
+Datasets: math_500, aime, kodcode_500, codeforces_500, fuzzy_philosophy, fuzzy_weird_qs, fuzzy_futuristic_tech
+
+============================================================
+Evaluating model: math_distill
+Datasets: math_500, aime, kodcode_500, codeforces_500, fuzzy_philosophy, fuzzy_weird_qs, fuzzy_futuristic_tech
+============================================================
+  Loading checkpoint: tinker://20cab21e-fd37-5d46-92b3-3a9e0855bb90:train:0/sampler_weights/001800
+
+  --- math_500 ---
+[math_500] Evaluating math_distill on 500 problems
+  [math_500] 50/500 done, 0 correct (0.0%) [604s]
+  [math_500] 100/500 done, 1 correct (1.0%) [1117s]
+  [math_500] 150/500 done, 1 correct (0.7%) [1619s]
+  [math_500] 200/500 done, 1 correct (0.5%) [2062s]
+  [math_500] 250/500 done, 1 correct (0.4%) [2471s]
+  [math_500] 300/500 done, 1 correct (0.3%) [2830s]
+  [math_500] 350/500 done, 1 correct (0.3%) [3245s]
+  [math_500] 400/500 done, 2 correct (0.5%) [3646s]
+  [math_500] 450/500 done, 3 correct (0.7%) [4094s]
+  [math_500] 500/500 done, 4 correct (0.8%) [4585s]
+[math_500] FINAL: 4/500 (0.8%)
+Saved 500 rows to /workspace/fuzzy-evals/distillation/results/math_distill/results_math_500.parquet
+  math_500 completed in 4589s
+
+  --- aime ---
+[aime] Evaluating math_distill on 90 problems
+  [aime] 10/90 done, 0 correct (0.0%) [228s]
+  [aime] 20/90 done, 1 correct (5.0%) [443s]
+  [aime] 30/90 done, 1 correct (3.3%) [659s]
+  [aime] 40/90 done, 2 correct (5.0%) [835s]
+  [aime] 50/90 done, 2 correct (4.0%) [1049s]
+  [aime] 60/90 done, 2 correct (3.3%) [1261s]
+  [aime] 70/90 done, 2 correct (2.9%) [1386s]
+  [aime] 80/90 done, 2 correct (2.5%) [1585s]
+  [aime] 90/90 done, 3 correct (3.3%) [1750s]
+[aime] FINAL: 3/90 (3.3%)
+Saved 90 rows to /workspace/fuzzy-evals/distillation/results/math_distill/results_aime.parquet
+  aime completed in 1753s
+
+  --- kodcode_500 ---
+Loading KodCode tasks (difficulty=easy, max=7000)
+  Loaded 5764 KodCode tasks
+[kodcode] Evaluating math_distill on 500 problems
+  [kodcode] 50/500 done, 28 correct (56.0%) [81s]
+  [kodcode] 100/500 done, 52 correct (52.0%) [198s]
+  [kodcode] 150/500 done, 78 correct (52.0%) [346s]
+  [kodcode] 200/500 done, 103 correct (51.5%) [597s]
+  [kodcode] 250/500 done, 121 correct (48.4%) [787s]
+  [kodcode] 300/500 done, 146 correct (48.7%) [907s]
+  [kodcode] 350/500 done, 168 correct (48.0%) [970s]
+  [kodcode] 400/500 done, 198 correct (49.5%) [1167s]
+  [kodcode] 450/500 done, 222 correct (49.3%) [1348s]
+  [kodcode] 500/500 done, 253 correct (50.6%) [1548s]
+[kodcode] FINAL: 253/500 (50.6%)
+Saved 500 rows to /workspace/fuzzy-evals/distillation/results/math_distill/results_kodcode_500.parquet
+  kodcode_500 completed in 1555s
+
+  --- codeforces_500 ---
+Loading first 500 Codeforces problems (streaming)...
+Loaded 408 valid problems
+[codeforces] Evaluating math_distill on 408 problems
+  [codeforces] 50/408 done, 13 correct (26.0%) [446s]
+  [codeforces] 100/408 done, 26 correct (26.0%) [991s]
+  [codeforces] 150/408 done, 39 correct (26.0%) [1459s]
+  [codeforces] 200/408 done, 49 correct (24.5%) [1997s]
+  [codeforces] 250/408 done, 59 correct (23.6%) [2507s]
+  [codeforces] 300/408 done, 70 correct (23.3%) [3614s]
+  [codeforces] 350/408 done, 79 correct (22.6%) [4194s]
+  [codeforces] 400/408 done, 83 correct (20.8%) [4790s]
+  [codeforces] 408/408 done, 87 correct (21.3%) [4926s]
+[codeforces] FINAL: 87/408 (21.3%)
+Saved 408 rows to /workspace/fuzzy-evals/distillation/results/math_distill/results_codeforces_500.parquet
+  codeforces_500 completed in 4929s
+
+  --- fuzzy_philosophy ---
+[fuzzy_philosophy] Evaluating math_distill: 10Q x 10S = 100
+  [fuzzy_philosophy] Generation done in 152s, judging...
+  [fuzzy_philosophy] 1/10 questions judged [261s]
+  [fuzzy_philosophy] 2/10 questions judged [324s]
+  [fuzzy_philosophy] 3/10 questions judged [388s]
+  [fuzzy_philosophy] 4/10 questions judged [468s]
+  [fuzzy_philosophy] 5/10 questions judged [529s]
+  [fuzzy_philosophy] 6/10 questions judged [591s]
+  [fuzzy_philosophy] 7/10 questions judged [647s]
+  [fuzzy_philosophy] 8/10 questions judged [715s]
+  [fuzzy_philosophy] 9/10 questions judged [1021s]
+  [fuzzy_philosophy] 10/10 questions judged [1185s]
+[fuzzy_philosophy] FINAL: mean=17.62 (n=100)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/results/math_distill/results_fuzzy_philosophy.parquet
+  fuzzy_philosophy completed in 1185s
+
+  --- fuzzy_weird_qs ---
+[fuzzy_weird_qs] Evaluating math_distill: 46Q x 10S = 460
+  [fuzzy_weird_qs] Generation done in 142s, judging...
+  [fuzzy_weird_qs] 5/46 questions judged [900s]
+  [fuzzy_weird_qs] 10/46 questions judged [1337s]
+  [fuzzy_weird_qs] 15/46 questions judged [2265s]
+  [fuzzy_weird_qs] 20/46 questions judged [2587s]
+  [fuzzy_weird_qs] 25/46 questions judged [3250s]
+  [fuzzy_weird_qs] 30/46 questions judged [3760s]
+  [fuzzy_weird_qs] 35/46 questions judged [4353s]
+  [fuzzy_weird_qs] 40/46 questions judged [4887s]
+  [fuzzy_weird_qs] 45/46 questions judged [5818s]
+  [fuzzy_weird_qs] 46/46 questions judged [6240s]
+[fuzzy_weird_qs] FINAL: mean=15.52 (n=460)
+Saved 460 rows to /workspace/fuzzy-evals/distillation/results/math_distill/results_fuzzy_weird_qs.parquet
+  fuzzy_weird_qs completed in 6240s
+
+  --- fuzzy_futuristic_tech ---
+[fuzzy_futuristic_tech] Evaluating math_distill: 10Q x 10S = 100
+  [fuzzy_futuristic_tech] Generation done in 90s, judging...
+  [fuzzy_futuristic_tech] 1/10 questions judged [184s]
+  [fuzzy_futuristic_tech] 2/10 questions judged [656s]
+  [fuzzy_futuristic_tech] 3/10 questions judged [755s]
+  [fuzzy_futuristic_tech] 4/10 questions judged [861s]
+  [fuzzy_futuristic_tech] 5/10 questions judged [1471s]
+  [fuzzy_futuristic_tech] 6/10 questions judged [1710s]
+  [fuzzy_futuristic_tech] 7/10 questions judged [2236s]
+  [fuzzy_futuristic_tech] 8/10 questions judged [2895s]
+  [fuzzy_futuristic_tech] 9/10 questions judged [3035s]
+  [fuzzy_futuristic_tech] 10/10 questions judged [3948s]
+[fuzzy_futuristic_tech] FINAL: mean=16.43 (n=100)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/results/math_distill/results_fuzzy_futuristic_tech.parquet
+  fuzzy_futuristic_tech completed in 3948s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/results/math_distill/eval_summary.json
+
+================================================================================
+FINAL SUMMARY (total time: 24219s)
+================================================================================
+Model                     Dataset              Metric               Value
+----------------------------------------------------------------------
+math_distill              math_500             accuracy              0.8%
+math_distill              aime                 accuracy              3.3%
+math_distill              kodcode_500          accuracy             50.6%
+math_distill              codeforces_500       accuracy             21.3%
+math_distill              fuzzy_philosophy     mean_score           17.62
+math_distill              fuzzy_weird_qs       mean_score           15.52
+math_distill              fuzzy_futuristic_tech mean_score           16.43
+
+All results saved to /workspace/fuzzy-evals/distillation/results/

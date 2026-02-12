@@ -1,0 +1,38 @@
+# Distillation experiment evaluation configuration.
+
+models:
+  base:
+    type: base_model
+    name: "Qwen/Qwen3-30B-A3B-Instruct-2507"
+
+  math_distill:
+    type: checkpoint
+    sampler_path: "tinker://20cab21e-fd37-5d46-92b3-3a9e0855bb90:train:0/sampler_weights/001800"
+    max_tokens: 28672
+    # Disable think_prefix on math benchmarks (model already generates <think> natively)
+    no_think_prefix_datasets:
+      - math_500
+      - aime
+
+  code_distill:
+    type: checkpoint
+    sampler_path: "tinker://f136a2a0-f167-53f9-9e81-db0a13641117:train:0/sampler_weights/001900"
+    max_tokens: 28672
+    # Disable think_prefix on code benchmarks (model already generates <think> natively)
+    no_think_prefix_datasets:
+      - kodcode_500
+      - codeforces_500
+
+datasets:
+  - math_500
+  - aime
+  - kodcode_500
+  - codeforces_500
+  - fuzzy_philosophy
+  - fuzzy_weird_qs
+  - fuzzy_futuristic_tech
+
+inference:
+  max_tokens: 8192
+  temperature: 0.0
+  concurrency: 10

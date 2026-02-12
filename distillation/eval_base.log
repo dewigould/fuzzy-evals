@@ -1,0 +1,144 @@
+Distillation Evaluation
+Models: base
+Datasets: math_500, aime, kodcode_500, codeforces_500, fuzzy_philosophy, fuzzy_weird_qs, fuzzy_futuristic_tech
+
+============================================================
+Evaluating model: base
+Datasets: math_500, aime, kodcode_500, codeforces_500, fuzzy_philosophy, fuzzy_weird_qs, fuzzy_futuristic_tech
+============================================================
+  Loading base model: Qwen/Qwen3-30B-A3B-Instruct-2507
+
+  --- math_500 ---
+[math_500] Evaluating base on 500 problems
+  [math_500] 50/500 done, 48 correct (96.0%) [130s]
+  [math_500] 100/500 done, 92 correct (92.0%) [217s]
+  [math_500] 150/500 done, 140 correct (93.3%) [373s]
+  [math_500] 200/500 done, 189 correct (94.5%) [508s]
+  [math_500] 250/500 done, 235 correct (94.0%) [664s]
+  [math_500] 300/500 done, 279 correct (93.0%) [780s]
+  [math_500] 350/500 done, 324 correct (92.6%) [911s]
+  [math_500] 400/500 done, 369 correct (92.2%) [1029s]
+  [math_500] 450/500 done, 419 correct (93.1%) [1172s]
+  [math_500] 500/500 done, 465 correct (93.0%) [1354s]
+[math_500] FINAL: 465/500 (93.0%)
+Saved 500 rows to /workspace/fuzzy-evals/distillation/results/base/results_math_500.parquet
+  math_500 completed in 1357s
+
+  --- aime ---
+Generating train split:   0%|          | 0/90 [00:00<?, ? examples/s]Generating train split: 100%|██████████| 90/90 [00:00<00:00, 3656.02 examples/s]
+[aime] Evaluating base on 90 problems
+  [aime] 10/90 done, 9 correct (90.0%) [119s]
+  [aime] 20/90 done, 15 correct (75.0%) [187s]
+  [aime] 30/90 done, 22 correct (73.3%) [281s]
+  [aime] 40/90 done, 29 correct (72.5%) [367s]
+  [aime] 50/90 done, 35 correct (70.0%) [459s]
+  [aime] 60/90 done, 39 correct (65.0%) [549s]
+  [aime] 70/90 done, 46 correct (65.7%) [646s]
+  [aime] 80/90 done, 51 correct (63.7%) [745s]
+  [aime] 90/90 done, 54 correct (60.0%) [860s]
+[aime] FINAL: 54/90 (60.0%)
+Saved 90 rows to /workspace/fuzzy-evals/distillation/results/base/results_aime.parquet
+  aime completed in 863s
+
+  --- kodcode_500 ---
+Loading KodCode tasks (difficulty=easy, max=7000)
+  Loaded 5764 KodCode tasks
+[kodcode] Evaluating base on 500 problems
+  [kodcode] 50/500 done, 32 correct (64.0%) [64s]
+  [kodcode] 100/500 done, 62 correct (62.0%) [154s]
+  [kodcode] 150/500 done, 95 correct (63.3%) [208s]
+  [kodcode] 200/500 done, 128 correct (64.0%) [255s]
+  [kodcode] 250/500 done, 161 correct (64.4%) [303s]
+  [kodcode] 300/500 done, 189 correct (63.0%) [367s]
+  [kodcode] 350/500 done, 215 correct (61.4%) [431s]
+  [kodcode] 400/500 done, 241 correct (60.2%) [495s]
+  [kodcode] 450/500 done, 273 correct (60.7%) [592s]
+  [kodcode] 500/500 done, 301 correct (60.2%) [746s]
+[kodcode] FINAL: 301/500 (60.2%)
+Saved 500 rows to /workspace/fuzzy-evals/distillation/results/base/results_kodcode_500.parquet
+  kodcode_500 completed in 752s
+
+  --- codeforces_500 ---
+Loading first 500 Codeforces problems (streaming)...
+Loaded 408 valid problems
+[codeforces] Evaluating base on 408 problems
+  [codeforces] 50/408 done, 19 correct (38.0%) [615s]
+  [codeforces] 100/408 done, 33 correct (33.0%) [957s]
+  [codeforces] 150/408 done, 45 correct (30.0%) [1395s]
+  [codeforces] 200/408 done, 55 correct (27.5%) [1994s]
+  [codeforces] 250/408 done, 70 correct (28.0%) [2404s]
+  [codeforces] 300/408 done, 82 correct (27.3%) [2927s]
+  [codeforces] 350/408 done, 94 correct (26.9%) [3495s]
+  [codeforces] 400/408 done, 102 correct (25.5%) [4024s]
+  [codeforces] 408/408 done, 105 correct (25.7%) [4137s]
+[codeforces] FINAL: 105/408 (25.7%)
+Saved 408 rows to /workspace/fuzzy-evals/distillation/results/base/results_codeforces_500.parquet
+  codeforces_500 completed in 4140s
+
+  --- fuzzy_philosophy ---
+[fuzzy_philosophy] Evaluating base: 10Q x 10S = 100
+  [fuzzy_philosophy] Generation done in 65s, judging...
+  [fuzzy_philosophy] 1/10 questions judged [209s]
+  [fuzzy_philosophy] 2/10 questions judged [276s]
+  [fuzzy_philosophy] 3/10 questions judged [345s]
+  [fuzzy_philosophy] 4/10 questions judged [428s]
+  [fuzzy_philosophy] 5/10 questions judged [486s]
+  [fuzzy_philosophy] 6/10 questions judged [549s]
+  [fuzzy_philosophy] 7/10 questions judged [608s]
+  [fuzzy_philosophy] 8/10 questions judged [677s]
+  [fuzzy_philosophy] 9/10 questions judged [852s]
+  [fuzzy_philosophy] 10/10 questions judged [976s]
+[fuzzy_philosophy] FINAL: mean=19.69 (n=99)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/results/base/results_fuzzy_philosophy.parquet
+  fuzzy_philosophy completed in 976s
+
+  --- fuzzy_weird_qs ---
+[fuzzy_weird_qs] Evaluating base: 46Q x 10S = 460
+  [fuzzy_weird_qs] Generation done in 123s, judging...
+  [fuzzy_weird_qs] 5/46 questions judged [667s]
+  [fuzzy_weird_qs] 10/46 questions judged [1061s]
+  [fuzzy_weird_qs] 15/46 questions judged [1683s]
+  [fuzzy_weird_qs] 20/46 questions judged [2020s]
+  [fuzzy_weird_qs] 25/46 questions judged [2516s]
+  [fuzzy_weird_qs] 30/46 questions judged [2936s]
+  [fuzzy_weird_qs] 35/46 questions judged [3483s]
+  [fuzzy_weird_qs] 40/46 questions judged [4031s]
+  [fuzzy_weird_qs] 45/46 questions judged [4654s]
+  [fuzzy_weird_qs] 46/46 questions judged [4754s]
+[fuzzy_weird_qs] FINAL: mean=18.08 (n=460)
+Saved 460 rows to /workspace/fuzzy-evals/distillation/results/base/results_fuzzy_weird_qs.parquet
+  fuzzy_weird_qs completed in 4754s
+
+  --- fuzzy_futuristic_tech ---
+[fuzzy_futuristic_tech] Evaluating base: 10Q x 10S = 100
+  [fuzzy_futuristic_tech] Generation done in 93s, judging...
+  [fuzzy_futuristic_tech] 1/10 questions judged [198s]
+  [fuzzy_futuristic_tech] 2/10 questions judged [478s]
+  [fuzzy_futuristic_tech] 3/10 questions judged [599s]
+  [fuzzy_futuristic_tech] 4/10 questions judged [709s]
+  [fuzzy_futuristic_tech] 5/10 questions judged [1067s]
+  [fuzzy_futuristic_tech] 6/10 questions judged [1256s]
+  [fuzzy_futuristic_tech] 7/10 questions judged [1558s]
+  [fuzzy_futuristic_tech] 8/10 questions judged [1869s]
+  [fuzzy_futuristic_tech] 9/10 questions judged [2001s]
+  [fuzzy_futuristic_tech] 10/10 questions judged [2552s]
+[fuzzy_futuristic_tech] FINAL: mean=18.33 (n=99)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/results/base/results_fuzzy_futuristic_tech.parquet
+  fuzzy_futuristic_tech completed in 2552s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/results/base/eval_summary.json
+
+================================================================================
+FINAL SUMMARY (total time: 15412s)
+================================================================================
+Model                     Dataset              Metric               Value
+----------------------------------------------------------------------
+base                      math_500             accuracy             93.0%
+base                      aime                 accuracy             60.0%
+base                      kodcode_500          accuracy             60.2%
+base                      codeforces_500       accuracy             25.7%
+base                      fuzzy_philosophy     mean_score           19.69
+base                      fuzzy_weird_qs       mean_score           18.08
+base                      fuzzy_futuristic_tech mean_score           18.33
+
+All results saved to /workspace/fuzzy-evals/distillation/results/
