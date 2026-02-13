@@ -1,0 +1,29 @@
+{
+  "codeforces_500": {
+    "dataset": "codeforces_500",
+    "accuracy": 0.05,
+    "n_correct": 5,
+    "total": 100
+  },
+  "livecodebench_v5": {
+    "dataset": "livecodebench_v5",
+    "accuracy": 0.05,
+    "n_correct": 5,
+    "total": 100
+  },
+  "fuzzy_philosophy": {
+    "dataset": "fuzzy_philosophy",
+    "mean_score": 11.8,
+    "n_scored": 30
+  },
+  "fuzzy_weird_qs": {
+    "dataset": "fuzzy_weird_qs",
+    "mean_score": 14.03623188405797,
+    "n_scored": 138
+  },
+  "fuzzy_futuristic_tech": {
+    "dataset": "fuzzy_futuristic_tech",
+    "mean_score": 12.0,
+    "n_scored": 30
+  }
+}

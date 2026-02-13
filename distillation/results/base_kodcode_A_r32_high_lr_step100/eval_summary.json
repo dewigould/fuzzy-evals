@@ -1,0 +1,35 @@
+{
+  "aime": {
+    "dataset": "aime",
+    "accuracy": 0.18888888888888888,
+    "n_correct": 17,
+    "total": 90
+  },
+  "codeforces_500": {
+    "dataset": "codeforces_500",
+    "accuracy": 0.04,
+    "n_correct": 4,
+    "total": 100
+  },
+  "livecodebench_v5": {
+    "dataset": "livecodebench_v5",
+    "accuracy": 0.05,
+    "n_correct": 5,
+    "total": 100
+  },
+  "fuzzy_philosophy": {
+    "dataset": "fuzzy_philosophy",
+    "mean_score": 12.266666666666667,
+    "n_scored": 30
+  },
+  "fuzzy_weird_qs": {
+    "dataset": "fuzzy_weird_qs",
+    "mean_score": 13.27536231884058,
+    "n_scored": 138
+  },
+  "fuzzy_futuristic_tech": {
+    "dataset": "fuzzy_futuristic_tech",
+    "mean_score": 12.1,
+    "n_scored": 30
+  }
+}

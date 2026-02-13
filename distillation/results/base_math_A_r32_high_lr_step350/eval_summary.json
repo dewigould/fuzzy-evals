@@ -1,0 +1,48 @@
+{
+  "math_500": {
+    "dataset": "math_500",
+    "accuracy": 0.72,
+    "n_correct": 72,
+    "total": 100
+  },
+  "aime": {
+    "dataset": "aime",
+    "accuracy": 0.23333333333333334,
+    "n_correct": 21,
+    "total": 90
+  },
+  "omni_math": {
+    "dataset": "omni_math",
+    "accuracy": 0.22,
+    "n_correct": 22,
+    "total": 100,
+    "judge_upgraded": 1
+  },
+  "codeforces_500": {
+    "dataset": "codeforces_500",
+    "accuracy": 0.03,
+    "n_correct": 3,
+    "total": 100
+  },
+  "livecodebench_v5": {
+    "dataset": "livecodebench_v5",
+    "accuracy": 0.05,
+    "n_correct": 5,
+    "total": 100
+  },
+  "fuzzy_philosophy": {
+    "dataset": "fuzzy_philosophy",
+    "mean_score": 13.1,
+    "n_scored": 30
+  },
+  "fuzzy_weird_qs": {
+    "dataset": "fuzzy_weird_qs",
+    "mean_score": 13.226277372262773,
+    "n_scored": 137
+  },
+  "fuzzy_futuristic_tech": {
+    "dataset": "fuzzy_futuristic_tech",
+    "mean_score": 9.233333333333333,
+    "n_scored": 30
+  }
+}
