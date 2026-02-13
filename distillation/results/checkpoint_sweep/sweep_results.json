@@ -1,0 +1,266 @@
+{
+  "math": {
+    "aime": [
+      {
+        "examples": 0,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.5777777777777777,
+          "n_correct": 52,
+          "total": 90
+        }
+      },
+      {
+        "examples": 5000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.4777777777777778,
+          "n_correct": 43,
+          "total": 90
+        }
+      },
+      {
+        "examples": 10000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.45555555555555555,
+          "n_correct": 41,
+          "total": 90
+        }
+      },
+      {
+        "examples": 15000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.5111111111111111,
+          "n_correct": 46,
+          "total": 90
+        }
+      },
+      {
+        "examples": 20000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.5222222222222223,
+          "n_correct": 47,
+          "total": 90
+        }
+      },
+      {
+        "examples": 35000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.4777777777777778,
+          "n_correct": 43,
+          "total": 90
+        }
+      },
+      {
+        "examples": 50000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.5,
+          "n_correct": 45,
+          "total": 90
+        }
+      }
+    ],
+    "kodcode": [
+      {
+        "examples": 0,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.62,
+          "n_correct": 62,
+          "total": 100
+        }
+      },
+      {
+        "examples": 5000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.51,
+          "n_correct": 51,
+          "total": 100
+        }
+      },
+      {
+        "examples": 10000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.41,
+          "n_correct": 41,
+          "total": 100
+        }
+      },
+      {
+        "examples": 15000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.37,
+          "n_correct": 37,
+          "total": 100
+        }
+      },
+      {
+        "examples": 20000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.48,
+          "n_correct": 48,
+          "total": 100
+        }
+      },
+      {
+        "examples": 35000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.52,
+          "n_correct": 52,
+          "total": 100
+        }
+      },
+      {
+        "examples": 50000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.45,
+          "n_correct": 45,
+          "total": 100
+        }
+      }
+    ]
+  },
+  "code": {
+    "aime": [
+      {
+        "examples": 0,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.5777777777777777,
+          "n_correct": 52,
+          "total": 90
+        }
+      },
+      {
+        "examples": 5000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.5555555555555556,
+          "n_correct": 50,
+          "total": 90
+        }
+      },
+      {
+        "examples": 10000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.43333333333333335,
+          "n_correct": 39,
+          "total": 90
+        }
+      },
+      {
+        "examples": 15000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.5111111111111111,
+          "n_correct": 46,
+          "total": 90
+        }
+      },
+      {
+        "examples": 20000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.43333333333333335,
+          "n_correct": 39,
+          "total": 90
+        }
+      },
+      {
+        "examples": 35000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.4111111111111111,
+          "n_correct": 37,
+          "total": 90
+        }
+      },
+      {
+        "examples": 50000,
+        "result": {
+          "dataset": "aime",
+          "accuracy": 0.4,
+          "n_correct": 36,
+          "total": 90
+        }
+      }
+    ],
+    "kodcode": [
+      {
+        "examples": 0,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.62,
+          "n_correct": 62,
+          "total": 100
+        }
+      },
+      {
+        "examples": 5000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.45,
+          "n_correct": 45,
+          "total": 100
+        }
+      },
+      {
+        "examples": 10000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.51,
+          "n_correct": 51,
+          "total": 100
+        }
+      },
+      {
+        "examples": 15000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.55,
+          "n_correct": 55,
+          "total": 100
+        }
+      },
+      {
+        "examples": 20000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.59,
+          "n_correct": 59,
+          "total": 100
+        }
+      },
+      {
+        "examples": 35000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.55,
+          "n_correct": 55,
+          "total": 100
+        }
+      },
+      {
+        "examples": 50000,
+        "result": {
+          "dataset": "kodcode_500",
+          "accuracy": 0.54,
+          "n_correct": 54,
+          "total": 100
+        }
+      }
+    ]
+  }
+}
