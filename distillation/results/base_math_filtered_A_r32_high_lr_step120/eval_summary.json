@@ -1,0 +1,8 @@
+{
+  "math_500": {
+    "dataset": "math_500",
+    "accuracy": 0.718,
+    "n_correct": 359,
+    "total": 500
+  }
+}

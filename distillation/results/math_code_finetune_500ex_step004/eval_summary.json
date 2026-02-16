@@ -1,0 +1,26 @@
+{
+  "math_500": {
+    "dataset": "math_500",
+    "accuracy": 0.67,
+    "n_correct": 67,
+    "total": 100
+  },
+  "aime": {
+    "dataset": "aime",
+    "accuracy": 0.15555555555555556,
+    "n_correct": 14,
+    "total": 90
+  },
+  "kodcode_500": {
+    "dataset": "kodcode_500",
+    "accuracy": 0.28,
+    "n_correct": 28,
+    "total": 100
+  },
+  "livecodebench_v5": {
+    "dataset": "livecodebench_v5",
+    "accuracy": 0.02,
+    "n_correct": 2,
+    "total": 100
+  }
+}

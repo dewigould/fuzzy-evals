@@ -1,0 +1,14 @@
+{
+  "math_500": {
+    "dataset": "math_500",
+    "accuracy": 0.734,
+    "n_correct": 367,
+    "total": 500
+  },
+  "aime": {
+    "dataset": "aime",
+    "accuracy": 0.17777777777777778,
+    "n_correct": 16,
+    "total": 90
+  }
+}

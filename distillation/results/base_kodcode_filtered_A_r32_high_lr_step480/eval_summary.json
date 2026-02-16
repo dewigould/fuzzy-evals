@@ -1,0 +1,20 @@
+{
+  "kodcode_500": {
+    "dataset": "kodcode_500",
+    "accuracy": 0.42,
+    "n_correct": 42,
+    "total": 100
+  },
+  "codeforces_500": {
+    "dataset": "codeforces_500",
+    "accuracy": 0.04,
+    "n_correct": 4,
+    "total": 100
+  },
+  "livecodebench_v5": {
+    "dataset": "livecodebench_v5",
+    "accuracy": 0.04,
+    "n_correct": 4,
+    "total": 100
+  }
+}
