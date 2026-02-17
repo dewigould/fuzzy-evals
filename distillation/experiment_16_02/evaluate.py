@@ -58,6 +58,8 @@ async def evaluate_model(
     max_tokens: int,
     max_problems: int | None,
     model_name: str,
+    temperature: float = 0.0,
+    top_p: float | None = None,
 ):
     """Run eval sweep on the specified datasets."""
     print(f"\n{'='*60}")
@@ -106,6 +108,10 @@ async def evaluate_model(
         extra_kwargs = {}
         if max_problems is not None:
             extra_kwargs["max_problems"] = max_problems
+        if temperature != 0.0:
+            extra_kwargs["temperature"] = temperature
+        if top_p is not None:
+            extra_kwargs["top_p"] = top_p
         result = await module.run(
             sampling_client, renderer, tokenizer, results_dir, results_name,
             think_prefix=think_prefix, max_tokens=max_tokens,
@@ -155,6 +161,10 @@ async def main():
                         help=f"Max tokens for generation (default: {INFERENCE_MAX_TOKENS})")
     parser.add_argument("--model-name", type=str, default=MODEL_NAME,
                         help=f"Base model name (default: {MODEL_NAME})")
+    parser.add_argument("--temperature", type=float, default=0.0,
+                        help="Sampling temperature (default: 0.0)")
+    parser.add_argument("--top-p", type=float, default=None,
+                        help="Top-p / nucleus sampling (default: None)")
     args = parser.parse_args()
 
     if args.fast:
@@ -172,6 +182,8 @@ async def main():
         max_tokens=args.max_tokens,
         max_problems=max_problems,
         model_name=args.model_name,
+        temperature=args.temperature,
+        top_p=args.top_p,
     )
 
 
