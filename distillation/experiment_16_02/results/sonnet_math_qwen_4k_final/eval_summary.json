@@ -1,14 +1,8 @@
 {
-  "math_500": {
-    "dataset": "math_500",
-    "accuracy": 0.86,
-    "n_correct": 86,
-    "total": 100
-  },
-  "mbppplus": {
-    "dataset": "mbppplus",
-    "accuracy": 0.62,
-    "n_correct": 62,
+  "livecodebench_v5": {
+    "dataset": "livecodebench_v5",
+    "accuracy": 0.12,
+    "n_correct": 12,
     "total": 100
   }
 }

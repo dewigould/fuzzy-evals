@@ -1,14 +1,8 @@
 {
-  "math_500": {
-    "dataset": "math_500",
-    "accuracy": 0.79,
-    "n_correct": 79,
-    "total": 100
-  },
-  "mbppplus": {
-    "dataset": "mbppplus",
-    "accuracy": 0.74,
-    "n_correct": 74,
+  "humanevalplus": {
+    "dataset": "humanevalplus",
+    "accuracy": 0.85,
+    "n_correct": 85,
     "total": 100
   }
 }
