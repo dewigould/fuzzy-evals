@@ -75,9 +75,10 @@ class OpenR1MathBuilder(ChatDatasetBuilder):
     max_prompts: int = 25_000
     test_size: int = TEST_SIZE
     filter_max_length: int | None = None  # Skip examples exceeding this token count
+    data_path_override: str | None = None  # Override default data path
 
     def __call__(self) -> tuple[SupervisedDataset, SupervisedDataset | None]:
-        data_path = FILTERED_MATH_DATA
+        data_path = Path(self.data_path_override) if self.data_path_override else FILTERED_MATH_DATA
         print(f"Loading filtered math data from {data_path}")
         if not data_path.exists():
             raise FileNotFoundError(
@@ -222,6 +223,8 @@ def main():
                         help=f"LoRA rank (default: {LORA_RANK})")
     parser.add_argument("--filter-max-length", type=int, default=None,
                         help="Skip training examples exceeding this token count (default: no filtering)")
+    parser.add_argument("--data-path", type=str, default=None,
+                        help="Override training data JSONL path (default: filtered_data/clean.jsonl)")
     args = parser.parse_args()
 
     steps = args.samples // args.batch_size
@@ -243,6 +246,8 @@ def main():
     print(f"  LoRA rank: {args.lora_rank}")
     if args.filter_max_length:
         print(f"  Filter max length: {args.filter_max_length} tokens (skip longer examples)")
+    if args.data_path:
+        print(f"  Data path: {args.data_path}")
     print(f"  Log path: {log_path}")
 
     renderer_name = model_info.get_recommended_renderer_name(args.model_name)
@@ -259,6 +264,7 @@ def main():
         max_prompts=args.samples,
         test_size=TEST_SIZE,
         filter_max_length=args.filter_max_length,
+        data_path_override=args.data_path,
     )
 
     config = train.Config(

@@ -75,9 +75,10 @@ class KodCodeSFTBuilder(ChatDatasetBuilder):
     max_prompts: int = 25_000
     test_size: int = TEST_SIZE
     filter_max_length: int | None = None  # Skip examples exceeding this token count
+    data_path_override: str | None = None  # Override default data path
 
     def __call__(self) -> tuple[SupervisedDataset, SupervisedDataset | None]:
-        data_path = FILTERED_CODE_DATA
+        data_path = Path(self.data_path_override) if self.data_path_override else FILTERED_CODE_DATA
         print(f"Loading filtered code data from {data_path}")
         if not data_path.exists():
             raise FileNotFoundError(
@@ -162,19 +163,25 @@ class KodCodeSFTBuilder(ChatDatasetBuilder):
         limit = self.filter_max_length
 
         def fits(row: dict) -> bool:
-            conversations = row.get("conversations", [])
-            user_content = ""
-            assistant_content = ""
-            for turn in conversations:
-                if turn["from"] == "human":
-                    user_content = turn["value"]
-                elif turn["from"] == "gpt":
-                    assistant_content = turn["value"]
-            messages = [
-                {"role": "system", "content": CODE_SYSTEM_PROMPT},
-                {"role": "user", "content": user_content},
-                {"role": "assistant", "content": assistant_content},
-            ]
+            messages_raw = row.get("messages", [])
+            if messages_raw:
+                messages = [{"role": "system", "content": CODE_SYSTEM_PROMPT}]
+                for m in messages_raw:
+                    messages.append({"role": m["role"], "content": m["content"]})
+            else:
+                conversations = row.get("conversations", [])
+                user_content = ""
+                assistant_content = ""
+                for turn in conversations:
+                    if turn["from"] == "human":
+                        user_content = turn["value"]
+                    elif turn["from"] == "gpt":
+                        assistant_content = turn["value"]
+                messages = [
+                    {"role": "system", "content": CODE_SYSTEM_PROMPT},
+                    {"role": "user", "content": user_content},
+                    {"role": "assistant", "content": assistant_content},
+                ]
             datum = conversation_to_datum(
                 messages, self.renderer, 32768, train_on_what
             )
@@ -185,19 +192,26 @@ class KodCodeSFTBuilder(ChatDatasetBuilder):
         train_on_what = TrainOnWhat.ALL_ASSISTANT_MESSAGES
 
         def map_fn(row: dict) -> tinker.Datum:
-            conversations = row.get("conversations", [])
-            user_content = ""
-            assistant_content = ""
-            for turn in conversations:
-                if turn["from"] == "human":
-                    user_content = turn["value"]
-                elif turn["from"] == "gpt":
-                    assistant_content = turn["value"]
-            messages = [
-                {"role": "system", "content": CODE_SYSTEM_PROMPT},
-                {"role": "user", "content": user_content},
-                {"role": "assistant", "content": assistant_content},
-            ]
+            # Support both formats: "messages" (Sonnet traces) and "conversations" (original KodCode)
+            messages_raw = row.get("messages", [])
+            if messages_raw:
+                messages = [{"role": "system", "content": CODE_SYSTEM_PROMPT}]
+                for m in messages_raw:
+                    messages.append({"role": m["role"], "content": m["content"]})
+            else:
+                conversations = row.get("conversations", [])
+                user_content = ""
+                assistant_content = ""
+                for turn in conversations:
+                    if turn["from"] == "human":
+                        user_content = turn["value"]
+                    elif turn["from"] == "gpt":
+                        assistant_content = turn["value"]
+                messages = [
+                    {"role": "system", "content": CODE_SYSTEM_PROMPT},
+                    {"role": "user", "content": user_content},
+                    {"role": "assistant", "content": assistant_content},
+                ]
             return conversation_to_datum(
                 messages, self.renderer, self.common_config.max_length, train_on_what
             )
@@ -229,6 +243,8 @@ def main():
                         help=f"LoRA rank (default: {LORA_RANK})")
     parser.add_argument("--filter-max-length", type=int, default=None,
                         help="Skip training examples exceeding this token count (default: no filtering)")
+    parser.add_argument("--data-path", type=str, default=None,
+                        help="Override training data JSONL path (default: filtered_data_kodcode/clean.jsonl)")
     args = parser.parse_args()
 
     steps = args.samples // args.batch_size
@@ -245,6 +261,8 @@ def main():
     print(f"  LoRA rank: {args.lora_rank}")
     if args.filter_max_length:
         print(f"  Filter max length: {args.filter_max_length} tokens (skip longer examples)")
+    if args.data_path:
+        print(f"  Data path: {args.data_path}")
     print(f"  Log path: {log_path}")
 
     renderer_name = model_info.get_recommended_renderer_name(args.model_name)
@@ -261,6 +279,7 @@ def main():
         max_prompts=args.samples,
         test_size=TEST_SIZE,
         filter_max_length=args.filter_max_length,
+        data_path_override=args.data_path,
     )
 
     config = train.Config(
