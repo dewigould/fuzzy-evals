@@ -1,0 +1,14 @@
+{
+  "humanevalplus": {
+    "dataset": "humanevalplus",
+    "accuracy": 0.6,
+    "n_correct": 60,
+    "total": 100
+  },
+  "livecodebench_v5": {
+    "dataset": "livecodebench_v5",
+    "accuracy": 0.16,
+    "n_correct": 16,
+    "total": 100
+  }
+}
