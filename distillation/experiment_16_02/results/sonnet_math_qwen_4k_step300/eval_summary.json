@@ -1,8 +1,9 @@
 {
-  "livecodebench_v5": {
-    "dataset": "livecodebench_v5",
-    "accuracy": 0.1,
-    "n_correct": 10,
-    "total": 100
+  "aime": {
+    "dataset": "aime",
+    "accuracy": 0.2111111111111111,
+    "n_correct": 19,
+    "total": 90,
+    "judge_upgraded": 0
   }
 }

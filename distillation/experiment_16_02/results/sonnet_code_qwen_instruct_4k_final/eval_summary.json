@@ -1,14 +1,9 @@
 {
-  "humanevalplus": {
-    "dataset": "humanevalplus",
-    "accuracy": 0.86,
-    "n_correct": 86,
-    "total": 100
-  },
-  "livecodebench_v5": {
-    "dataset": "livecodebench_v5",
-    "accuracy": 0.24,
-    "n_correct": 24,
-    "total": 100
+  "aime": {
+    "dataset": "aime",
+    "accuracy": 0.37777777777777777,
+    "n_correct": 34,
+    "total": 90,
+    "judge_upgraded": 0
   }
 }

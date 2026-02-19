@@ -1,0 +1,75 @@
+tinker_cookbook.utils.ml_log:477 [INFO] Logging to: /workspace/fuzzy-evals/distillation/experiment_16_02/training_runs/sonnet_code_qwen_instruct_4k_final_fmt_math
+tinker.lib.public_interfaces.service_client:67 [INFO] ServiceClient initialized for session 0ea663b0-e6de-5646-aee2-370ce19e5c23
+tinker.lib.public_interfaces.service_client:151 [INFO] TrainingClient initialized for model 0ea663b0-e6de-5646-aee2-370ce19e5c23:train:0
+tinker_cookbook.supervised.train:211 [INFO] Loaded weights from tinker://9c09ed93-3808-5b9c-912e-418bf80a3507:train:0/weights/final
+tinker_cookbook.supervised.train:230 [INFO] Training for 2 batches x 1 epochs = 2 steps
+tinker_cookbook.supervised.train:349 [INFO] Starting epoch 0
+tinker_cookbook.supervised.types:32 [WARNING] set_epoch called, but shuffling is not implemented for FixedListDataset
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting get_batch
+tinker_cookbook.utils.misc_utils:23 [INFO] get_batch took 0.00 seconds
+tinker_cookbook.supervised.train:260 [INFO] <|im_start|>system
+You are a helpful assistant. Answer the following question, putting your final answer inside \boxed{}<|im_end|>
+<|im_start|>user
+What is 7 + 13?<|im_end|>
+<|im_start|>assistant
+<think>
+Simple addition: 7 + 13 = 20.
+</think>
+
+The answer is $\boxed{20}$.<|im_end|>
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting get_batch
+tinker_cookbook.utils.misc_utils:23 [INFO] get_batch took 0.00 seconds
+tinker_cookbook.supervised.train:260 [INFO] <|im_start|>system
+You are a helpful assistant. Answer the following question, putting your final answer inside \boxed{}<|im_end|>
+<|im_start|>user
+What is the sum of the first 10 positive integers?<|im_end|>
+<|im_start|>assistant
+<think>
+Using the formula: n(n+1)/2 = 10 × 11 / 2 = 55.
+</think>
+
+The answer is $\boxed{55}$.<|im_end|>
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting step
+tinker_cookbook.utils.misc_utils:23 [INFO] step took 2.10 seconds
+tinker_cookbook.utils.ml_log:145 [INFO] Wrote metrics to /workspace/fuzzy-evals/distillation/experiment_16_02/training_runs/sonnet_code_qwen_instruct_4k_final_fmt_math/metrics.jsonl
+tinker_cookbook.utils.ml_log:197 [INFO] 
+                   Step 0                    
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓
+┃ Metric                         ┃ Value    ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━┩
+│ epoch                          │ 0        │
+│ learning_rate                  │ 0.000100 │
+│ num_loss_tokens                │ 767      │
+│ num_sequences                  │ 19       │
+│ num_tokens                     │ 1593     │
+│ progress                       │ 0.500000 │
+│ time/get_batch                 │ 0.000055 │
+│ time/step                      │ 2.095621 │
+│ time/total                     │ 2.105074 │
+│ train_mean_nll                 │ 1.395390 │
+└────────────────────────────────┴──────────┘
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting save_checkpoint
+tinker_cookbook.checkpoint_utils:84 [INFO] Saved checkpoints: {'state_path': 'tinker://0ea663b0-e6de-5646-aee2-370ce19e5c23:train:0/weights/000001', 'sampler_path': 'tinker://0ea663b0-e6de-5646-aee2-370ce19e5c23:train:0/sampler_weights/000001'}
+tinker_cookbook.utils.misc_utils:23 [INFO] save_checkpoint took 8.79 seconds
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting step
+tinker_cookbook.utils.misc_utils:23 [INFO] step took 0.00 seconds
+tinker_cookbook.utils.ml_log:145 [INFO] Wrote metrics to /workspace/fuzzy-evals/distillation/experiment_16_02/training_runs/sonnet_code_qwen_instruct_4k_final_fmt_math/metrics.jsonl
+tinker_cookbook.utils.ml_log:197 [INFO] 
+                    Step 1                    
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Metric                         ┃ Value     ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ epoch                          │ 0         │
+│ learning_rate                  │ 0.000100  │
+│ num_loss_tokens                │ 41        │
+│ num_sequences                  │ 1         │
+│ num_tokens                     │ 85        │
+│ progress                       │ 1.000000  │
+│ time/get_batch                 │ 0.000063  │
+│ time/save_checkpoint           │ 8.793827  │
+│ time/step                      │ 0.000228  │
+│ time/total                     │ 10.902964 │
+│ train_mean_nll                 │ 0.871638  │
+└────────────────────────────────┴───────────┘
+tinker_cookbook.checkpoint_utils:84 [INFO] Saved checkpoints: {'state_path': 'tinker://0ea663b0-e6de-5646-aee2-370ce19e5c23:train:0/weights/final', 'sampler_path': 'tinker://0ea663b0-e6de-5646-aee2-370ce19e5c23:train:0/sampler_weights/final'}
+tinker_cookbook.supervised.train:375 [INFO] Training completed successfully

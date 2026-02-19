@@ -1,0 +1,15 @@
+{
+  "math_500": {
+    "dataset": "math_500",
+    "accuracy": 0.79,
+    "n_correct": 79,
+    "total": 100,
+    "judge_upgraded": 0
+  },
+  "mbppplus": {
+    "dataset": "mbppplus",
+    "accuracy": 0.73,
+    "n_correct": 73,
+    "total": 100
+  }
+}

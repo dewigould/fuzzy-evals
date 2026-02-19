@@ -1,0 +1,125 @@
+tinker_cookbook.utils.ml_log:477 [INFO] Logging to: /workspace/fuzzy-evals/distillation/experiment_16_02/training_runs/sonnet_math_qwen_4k_step300_fmt_code
+tinker.lib.public_interfaces.service_client:67 [INFO] ServiceClient initialized for session be682a30-f202-5787-97c6-a0cc0ca80600
+tinker.lib.public_interfaces.service_client:151 [INFO] TrainingClient initialized for model be682a30-f202-5787-97c6-a0cc0ca80600:train:0
+tinker_cookbook.supervised.train:211 [INFO] Loaded weights from tinker://f889cb10-1497-5573-951c-c538b60bb629:train:0/weights/000300
+tinker_cookbook.supervised.train:230 [INFO] Training for 2 batches x 1 epochs = 2 steps
+tinker_cookbook.supervised.train:349 [INFO] Starting epoch 0
+tinker_cookbook.supervised.types:32 [WARNING] set_epoch called, but shuffling is not implemented for FixedListDataset
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting get_batch
+tinker_cookbook.utils.misc_utils:23 [INFO] get_batch took 0.00 seconds
+tinker_cookbook.supervised.train:260 [INFO] System: You are a helpful assistant. Answer the following question. Enclose your code within delimiters as follows: ```python 
+ #YOUR CODE HERE 
+ ``` 
+
+
+
+User: Write a function that adds two numbers.
+
+Assistant: <think>
+The user wants a function that takes two numbers and returns their sum.
+</think>
+
+```python
+def add(a, b):
+    return a + b
+```
+
+User:
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting get_batch
+tinker_cookbook.utils.misc_utils:23 [INFO] get_batch took 0.00 seconds
+tinker_cookbook.supervised.train:260 [INFO] System: You are a helpful assistant. Answer the following question. Enclose your code within delimiters as follows: ```python 
+ #YOUR CODE HERE 
+ ``` 
+
+
+
+User: Write a function that transposes a 2D matrix.
+
+Assistant: <think>
+Transposing swaps rows and columns. Element at row i, column j moves to row j, column i.
+</think>
+
+```python
+def transpose(matrix):
+    if not matrix:
+        return []
+    rows, cols = len(matrix), len(matrix[0])
+    return [[matrix[i][j] for i in range(rows)] for j in range(cols)]
+```
+
+User:
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting step
+tinker_cookbook.utils.misc_utils:23 [INFO] step took 4.46 seconds
+tinker_cookbook.utils.ml_log:145 [INFO] Wrote metrics to /workspace/fuzzy-evals/distillation/experiment_16_02/training_runs/sonnet_math_qwen_4k_step300_fmt_code/metrics.jsonl
+tinker_cookbook.utils.ml_log:197 [INFO] 
+                   Step 0                    
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━┓
+┃ Metric                         ┃ Value    ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━┩
+│ epoch                          │ 0        │
+│ learning_rate                  │ 0.000100 │
+│ num_loss_tokens                │ 1132     │
+│ num_sequences                  │ 19       │
+│ num_tokens                     │ 2045     │
+│ progress                       │ 0.500000 │
+│ time/get_batch                 │ 0.000028 │
+│ time/step                      │ 4.463058 │
+│ time/total                     │ 4.468946 │
+│ train_mean_nll                 │ 1.008077 │
+└────────────────────────────────┴──────────┘
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting save_checkpoint
+tinker_cookbook.checkpoint_utils:84 [INFO] Saved checkpoints: {'state_path': 'tinker://be682a30-f202-5787-97c6-a0cc0ca80600:train:0/weights/000001', 'sampler_path': 'tinker://be682a30-f202-5787-97c6-a0cc0ca80600:train:0/sampler_weights/000001'}
+tinker_cookbook.utils.misc_utils:23 [INFO] save_checkpoint took 9.27 seconds
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting step
+tinker_cookbook.utils.misc_utils:23 [INFO] step took 0.00 seconds
+tinker_cookbook.utils.ml_log:145 [INFO] Wrote metrics to /workspace/fuzzy-evals/distillation/experiment_16_02/training_runs/sonnet_math_qwen_4k_step300_fmt_code/metrics.jsonl
+tinker_cookbook.utils.ml_log:197 [INFO] 
+                    Step 1                    
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Metric                         ┃ Value     ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ epoch                          │ 0         │
+│ learning_rate                  │ 0.000100  │
+│ num_loss_tokens                │ 79        │
+│ num_sequences                  │ 1         │
+│ num_tokens                     │ 127       │
+│ progress                       │ 1.000000  │
+│ time/get_batch                 │ 0.000129  │
+│ time/save_checkpoint           │ 9.267213  │
+│ time/step                      │ 0.000238  │
+│ time/total                     │ 13.738939 │
+│ train_mean_nll                 │ 0.629129  │
+└────────────────────────────────┴───────────┘
+tinker_cookbook.checkpoint_utils:84 [INFO] Saved checkpoints: {'state_path': 'tinker://be682a30-f202-5787-97c6-a0cc0ca80600:train:0/weights/final', 'sampler_path': 'tinker://be682a30-f202-5787-97c6-a0cc0ca80600:train:0/sampler_weights/final'}
+tinker_cookbook.supervised.train:375 [INFO] Training completed successfully
+tinker_cookbook.checkpoint_utils:21 [INFO] No checkpoints found at /workspace/fuzzy-evals/distillation/experiment_16_02/training_runs/sonnet_code_qwen_4k_step200_fmt_math/checkpoints.jsonl
+tinker_cookbook.checkpoint_utils:52 [INFO] No checkpoints found with key state_path in /workspace/fuzzy-evals/distillation/experiment_16_02/training_runs/sonnet_code_qwen_4k_step200_fmt_math
+tinker_cookbook.utils.ml_log:197 [INFO] 
+Configuration:
+  log_path: 
+'/workspace/fuzzy-evals/distillation/experiment_16_02/training_runs/sonnet_code_
+qwen_4k_step200_fmt_math'
+  model_name: 'Qwen/Qwen3-30B-A3B-Base'
+  load_checkpoint_path: 
+'tinker://f0452a6d-df68-5a5d-b3ea-c4c486173024:train:0/weights/000200'
+  dataset_builder: {'common_config': {'model_name_for_tokenizer': 
+'Qwen/Qwen3-30B-A3B-Base', 'renderer_name': 'role_colon', 'max_length': 4096, 
+'ba ... onl', 'system_prompt': 'You are a helpful assistant. Answer the 
+following question, putting your final answer inside \\boxed{}'}
+  learning_rate: 0.0001
+  lr_schedule: 'constant'
+  num_epochs: 1
+  lora_rank: 32
+  base_url: None
+  evaluator_builders: []
+  infrequent_evaluator_builders: []
+  save_every: 1
+  eval_every: 1
+  infrequent_eval_every: 100
+  ttl_seconds: 604800
+  adam_beta1: 0.9
+  adam_beta2: 0.95
+  adam_eps: 1e-08
+  wandb_project: None
+  wandb_name: None
+  enable_trace: False

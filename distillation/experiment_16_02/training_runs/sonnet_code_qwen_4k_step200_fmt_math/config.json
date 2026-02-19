@@ -1,0 +1,33 @@
+{
+  "log_path": "/workspace/fuzzy-evals/distillation/experiment_16_02/training_runs/sonnet_code_qwen_4k_step200_fmt_math",
+  "model_name": "Qwen/Qwen3-30B-A3B-Base",
+  "load_checkpoint_path": "tinker://f0452a6d-df68-5a5d-b3ea-c4c486173024:train:0/weights/000200",
+  "dataset_builder": {
+    "common_config": {
+      "model_name_for_tokenizer": "Qwen/Qwen3-30B-A3B-Base",
+      "renderer_name": "role_colon",
+      "max_length": 4096,
+      "batch_size": 19,
+      "train_on_what": null
+    },
+    "data_path": "/workspace/fuzzy-evals/distillation/experiment_16_02/formatting_training_data/math.jsonl",
+    "system_prompt": "You are a helpful assistant. Answer the following question, putting your final answer inside \\boxed{}"
+  },
+  "learning_rate": 0.0001,
+  "lr_schedule": "constant",
+  "num_epochs": 1,
+  "lora_rank": 32,
+  "base_url": null,
+  "evaluator_builders": [],
+  "infrequent_evaluator_builders": [],
+  "save_every": 1,
+  "eval_every": 1,
+  "infrequent_eval_every": 100,
+  "ttl_seconds": 604800,
+  "adam_beta1": 0.9,
+  "adam_beta2": 0.95,
+  "adam_eps": 1e-08,
+  "wandb_project": null,
+  "wandb_name": null,
+  "enable_trace": false
+}
