@@ -47,6 +47,9 @@ DATASET_MODULES = {
     "codeforces_500": "eval_tools.codeforces",
     "livecodebench_v5": "eval_tools.livecodebench",
     "omni_math": "eval_tools.omni_math",
+    "fuzzy_philosophy": "eval_tools.fuzzy_philosophy",
+    "fuzzy_weird_qs": "eval_tools.fuzzy_weird_qs",
+    "fuzzy_futuristic_tech": "eval_tools.fuzzy_futuristic_tech",
 }
 
 

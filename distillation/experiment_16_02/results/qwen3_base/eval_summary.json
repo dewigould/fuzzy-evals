@@ -1,8 +1,17 @@
 {
-  "livecodebench_v5": {
-    "dataset": "livecodebench_v5",
-    "accuracy": 0.12,
-    "n_correct": 12,
-    "total": 100
+  "fuzzy_weird_qs": {
+    "dataset": "fuzzy_weird_qs",
+    "mean_score": 10.92608695652174,
+    "n_scored": 460
+  },
+  "fuzzy_philosophy": {
+    "dataset": "fuzzy_philosophy",
+    "mean_score": 11.56,
+    "n_scored": 100
+  },
+  "fuzzy_futuristic_tech": {
+    "dataset": "fuzzy_futuristic_tech",
+    "mean_score": 12.57,
+    "n_scored": 100
   }
 }

@@ -1,16 +1,18 @@
 """Plot Sonnet distillation: Qwen Base vs Qwen Instruct across 5 benchmarks.
 
-Uses best checkpoint for each config:
-- Math-distilled: checkpoint with best MATH-500
-- Code-distilled: checkpoint with best MBPP+
-
 Row 1: accuracy bars with delta annotations and 95% bootstrap CIs.
-Row 2: mean response length bars with 95% bootstrap CIs.
+Row 2: mean response length (correct vs incorrect) with 95% bootstrap CIs.
 Row 3: format compliance bars.
 
 All values computed directly from parquet result files.
+
+Usage:
+    python plot_base_vs_instruct.py                  # best checkpoint per config
+    python plot_base_vs_instruct.py --variant step200
+    python plot_base_vs_instruct.py --variant final
 """
 
+import argparse
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -24,19 +26,57 @@ PLOTS_DIR = Path(__file__).parent / "plots"
 BENCHMARKS = ["MATH-500", "AIME", "MBPP+", "HumanEval+", "LiveCodeBench"]
 BENCH_FILES = ["math_500", "aime", "mbppplus", "humanevalplus", "livecodebench_v5"]
 
-# ── Model configs ─────────────────────────────────────────────────────────────
-BASE_DIRS = {
-    "baseline": "qwen3_base",
-    "math":     "sonnet_math_qwen_4k_step300",
-    "code":     "sonnet_code_qwen_4k_step200",
+# ── Variant configs ───────────────────────────────────────────────────────────
+VARIANTS = {
+    "best": {
+        "title": "Sonnet 4.5 Distillation \u2014 Best Checkpoint per Config",
+        "output": "base_vs_instruct.png",
+        "base_dirs": {
+            "baseline": "qwen3_base",
+            "math":     "sonnet_math_qwen_4k_step300",
+            "code":     "sonnet_code_qwen_4k_step200",
+        },
+        "instruct_dirs": {
+            "baseline": "qwen3_instruct_base",
+            "math":     "sonnet_math_qwen_instruct_4k_step200",
+            "code":     "sonnet_code_qwen_instruct_4k_final",
+        },
+        "base_labels": {"math": "s300", "code": "s200"},
+        "instruct_labels": {"math": "s200", "code": "final"},
+    },
+    "step200": {
+        "title": "Sonnet 4.5 Distillation \u2014 All Step 200 Checkpoints",
+        "output": "base_vs_instruct_step200.png",
+        "base_dirs": {
+            "baseline": "qwen3_base",
+            "math":     "sonnet_math_qwen_4k_step200",
+            "code":     "sonnet_code_qwen_4k_step200",
+        },
+        "instruct_dirs": {
+            "baseline": "qwen3_instruct_base",
+            "math":     "sonnet_math_qwen_instruct_4k_step200",
+            "code":     "sonnet_code_qwen_instruct_4k_step200",
+        },
+        "base_labels": {"math": "s200", "code": "s200"},
+        "instruct_labels": {"math": "s200", "code": "s200"},
+    },
+    "final": {
+        "title": "Sonnet 4.5 Distillation \u2014 All Final Checkpoints (500 steps)",
+        "output": "base_vs_instruct_final.png",
+        "base_dirs": {
+            "baseline": "qwen3_base",
+            "math":     "sonnet_math_qwen_4k_final",
+            "code":     "sonnet_code_qwen_4k_final",
+        },
+        "instruct_dirs": {
+            "baseline": "qwen3_instruct_base",
+            "math":     "sonnet_math_qwen_instruct_4k_final",
+            "code":     "sonnet_code_qwen_instruct_4k_final",
+        },
+        "base_labels": {"math": "final", "code": "final"},
+        "instruct_labels": {"math": "final", "code": "final"},
+    },
 }
-INSTRUCT_DIRS = {
-    "baseline": "qwen3_instruct_base",
-    "math":     "sonnet_math_qwen_instruct_4k_step200",
-    "code":     "sonnet_code_qwen_instruct_4k_final",
-}
-BASE_LABELS = {"math": "s300", "code": "s200"}
-INSTRUCT_LABELS = {"math": "s200", "code": "final"}
 
 GRAY = "#9ca3af"
 BLUE = "#2563eb"
@@ -51,21 +91,21 @@ def _load_parquet(results_name: str, bench_file: str) -> pd.DataFrame:
 
 
 def load_accuracy(results_name: str, bench_file: str) -> tuple[float, np.ndarray]:
-    """Load parquet, return (accuracy%, per-problem bool array)."""
     df = _load_parquet(results_name, bench_file)
     col = "correct" if "correct" in df.columns else "passed"
     arr = df[col].values.astype(float)
     return arr.mean() * 100, arr
 
 
-def load_response_lengths(results_name: str, bench_file: str) -> np.ndarray:
-    """Return array of per-response character lengths."""
+def load_response_lengths_split(results_name: str, bench_file: str) -> tuple[np.ndarray, np.ndarray]:
     df = _load_parquet(results_name, bench_file)
-    return df["raw_output"].str.len().fillna(0).values.astype(float)
+    col = "correct" if "correct" in df.columns else "passed"
+    lengths = df["raw_output"].str.len().fillna(0).values.astype(float)
+    mask = df[col].values.astype(bool)
+    return lengths[mask], lengths[~mask]
 
 
 def load_format_compliance(results_name: str, bench_file: str) -> float:
-    """Return % of responses with correct output format."""
     df = _load_parquet(results_name, bench_file)
     if bench_file in ("math_500", "aime"):
         compliant = (df["predicted_answer"] != "no_boxed").sum()
@@ -76,7 +116,6 @@ def load_format_compliance(results_name: str, bench_file: str) -> float:
 
 def bootstrap_ci(arr: np.ndarray, n_boot: int = 10000, ci: float = 0.95,
                  scale: float = 100) -> tuple[float, float]:
-    """Return (lo, hi) for 95% bootstrap CI on mean(arr)*scale."""
     n = len(arr)
     rng = np.random.default_rng(42)
     means = np.array([rng.choice(arr, n, replace=True).mean() for _ in range(n_boot)]) * scale
@@ -86,7 +125,6 @@ def bootstrap_ci(arr: np.ndarray, n_boot: int = 10000, ci: float = 0.95,
 
 
 def build_data(dir_map: dict) -> tuple[dict, dict, dict, dict]:
-    """Build accuracy, ci_lo, ci_hi, format dicts from parquet files."""
     acc, ci_lo, ci_hi, fmt = {}, {}, {}, {}
     for variant, results_name in dir_map.items():
         acc_vals, lo_vals, hi_vals, fmt_vals = [], [], [], []
@@ -105,28 +143,26 @@ def build_data(dir_map: dict) -> tuple[dict, dict, dict, dict]:
     return acc, ci_lo, ci_hi, fmt
 
 
-def build_length_data(dir_map: dict) -> tuple[dict, dict, dict]:
-    """Build mean_len, ci_lo, ci_hi dicts (in thousands of chars)."""
-    means, ci_lo, ci_hi = {}, {}, {}
+def build_length_data(dir_map: dict) -> dict:
+    data = {}
     for variant, results_name in dir_map.items():
-        m_vals, lo_vals, hi_vals = [], [], []
+        entries = []
         for bench_file in BENCH_FILES:
-            lengths = load_response_lengths(results_name, bench_file)
-            mean_k = lengths.mean() / 1000
-            lo, hi = bootstrap_ci(lengths, scale=1)
-            m_vals.append(round(mean_k, 1))
-            lo_vals.append(round(lo / 1000, 1))
-            hi_vals.append(round(hi / 1000, 1))
-        means[variant] = m_vals
-        ci_lo[variant] = lo_vals
-        ci_hi[variant] = hi_vals
-    return means, ci_lo, ci_hi
+            corr, incorr = load_response_lengths_split(results_name, bench_file)
+            c_mean = corr.mean() / 1000 if len(corr) > 0 else 0
+            c_ci = bootstrap_ci(corr, scale=1) if len(corr) > 1 else (corr.mean(), corr.mean())
+            c_ci = (c_ci[0] / 1000, c_ci[1] / 1000)
+            i_mean = incorr.mean() / 1000 if len(incorr) > 0 else 0
+            i_ci = bootstrap_ci(incorr, scale=1) if len(incorr) > 1 else (i_mean * 1000, i_mean * 1000)
+            i_ci = (i_ci[0] / 1000, i_ci[1] / 1000)
+            entries.append((c_mean, c_ci, i_mean, i_ci))
+        data[variant] = entries
+    return data
 
 
 # ── Plotting ──────────────────────────────────────────────────────────────────
 
 def plot_accuracy(ax, data, ci_lo, ci_hi, title, ckpt_labels):
-    """Grouped bar chart: 5 benchmarks x 3 variants with 95% bootstrap CIs."""
     x = np.arange(len(BENCHMARKS))
     width = 0.24
 
@@ -141,11 +177,9 @@ def plot_accuracy(ax, data, ci_lo, ci_hi, title, ckpt_labels):
         vals = np.array(data[v])
         lo = np.array(ci_lo[v])
         hi = np.array(ci_hi[v])
-        yerr_lo = vals - lo
-        yerr_hi = hi - vals
         ax.bar(x + off, vals, width, color=color, alpha=alpha,
                label=label, zorder=3,
-               yerr=[yerr_lo, yerr_hi], error_kw=dict(
+               yerr=[vals - lo, hi - vals], error_kw=dict(
                    capsize=3, capthick=1, elinewidth=1, ecolor="#444444", zorder=4))
 
     for v, off in zip(variants, offsets):
@@ -174,35 +208,38 @@ def plot_accuracy(ax, data, ci_lo, ci_hi, title, ckpt_labels):
     ax.grid(True, alpha=0.25, axis="y")
 
 
-def plot_response_length(ax, data, ci_lo, ci_hi, ckpt_labels):
-    """Mean response length bars (in k chars) with 95% bootstrap CIs."""
+def plot_response_length(ax, length_data, ckpt_labels):
     x = np.arange(len(BENCHMARKS))
-    width = 0.24
+    full_width = 0.24
+    half = full_width / 2
 
     variants = ["baseline", "math", "code"]
     colors = [GRAY, BLUE, ORANGE]
-    alphas = [0.5, 0.6, 0.6]
-    offsets = [-width, 0, width]
+    offsets = [-full_width, 0, full_width]
 
-    for v, color, alpha, off in zip(variants, colors, alphas, offsets):
-        vals = np.array(data[v])
-        lo = np.array(ci_lo[v])
-        hi = np.array(ci_hi[v])
-        yerr_lo = vals - lo
-        yerr_hi = hi - vals
-        ax.bar(x + off, vals, width, color=color, alpha=alpha, zorder=3,
-               yerr=[yerr_lo, yerr_hi], error_kw=dict(
-                   capsize=3, capthick=1, elinewidth=1, ecolor="#444444", zorder=4))
+    for v, color, off in zip(variants, colors, offsets):
+        for i in range(len(BENCHMARKS)):
+            c_mean, c_ci, i_mean, i_ci = length_data[v][i]
+            pos = x[i] + off
+            ax.bar(pos - half / 2, c_mean, half, color=color, alpha=0.7, zorder=3,
+                   yerr=[[c_mean - c_ci[0]], [c_ci[1] - c_mean]],
+                   error_kw=dict(capsize=2, capthick=0.8, elinewidth=0.8, ecolor="#444444", zorder=4))
+            ax.bar(pos + half / 2, i_mean, half, color=color, alpha=0.4,
+                   hatch="//", edgecolor=color, linewidth=0.5, zorder=3,
+                   yerr=[[i_mean - i_ci[0]], [i_ci[1] - i_mean]],
+                   error_kw=dict(capsize=2, capthick=0.8, elinewidth=0.8, ecolor="#444444", zorder=4))
 
-    # Value labels
     for v, off in zip(variants, offsets):
         for i in range(len(BENCHMARKS)):
-            val = data[v][i]
-            top = ci_hi[v][i]
+            c_mean, c_ci, i_mean, i_ci = length_data[v][i]
             pos = x[i] + off
-            ax.text(pos, top + 0.3, f"{val:.1f}",
-                    ha="center", va="bottom", fontsize=5.5, fontweight="bold")
+            top = max(c_ci[1], i_ci[1])
+            ax.text(pos, top + 0.3, f"{c_mean:.1f}/{i_mean:.1f}",
+                    ha="center", va="bottom", fontsize=4.5, fontweight="bold")
 
+    ax.bar([], [], 0, color=GRAY, alpha=0.7, label="Correct")
+    ax.bar([], [], 0, color=GRAY, alpha=0.4, hatch="//", edgecolor=GRAY, label="Incorrect")
+    ax.legend(fontsize=7, loc="upper right")
     ax.set_xticks(x)
     ax.set_xticklabels(BENCHMARKS, fontsize=8)
     ax.set_ylabel("Mean response length (k chars)", fontsize=9)
@@ -211,7 +248,6 @@ def plot_response_length(ax, data, ci_lo, ci_hi, ckpt_labels):
 
 
 def plot_format_compliance(ax, fmt_data, ckpt_labels):
-    """Format compliance bars: % of responses with correct output format."""
     x = np.arange(len(BENCHMARKS))
     width = 0.24
 
@@ -219,11 +255,10 @@ def plot_format_compliance(ax, fmt_data, ckpt_labels):
     ax.bar(x, fmt_data["math"], width, color=BLUE, alpha=0.6, zorder=3)
     ax.bar(x + width, fmt_data["code"], width, color=ORANGE, alpha=0.6, zorder=3)
 
-    all_bars = list(zip(
+    for positions, values in zip(
         [x - width, x, x + width],
         [fmt_data["baseline"], fmt_data["math"], fmt_data["code"]],
-    ))
-    for positions, values in all_bars:
+    ):
         for pos, val in zip(positions, values):
             if val < 98:
                 label = f"{val:.0f}" if val == int(val) else f"{val:.1f}"
@@ -241,46 +276,59 @@ def plot_format_compliance(ax, fmt_data, ckpt_labels):
     ax.grid(True, alpha=0.2, axis="y")
 
 
-def main():
+# ── Main ──────────────────────────────────────────────────────────────────────
+
+def generate_plot(variant_name: str):
+    cfg = VARIANTS[variant_name]
     PLOTS_DIR.mkdir(parents=True, exist_ok=True)
 
-    print("Loading Base data...")
-    base_acc, base_ci_lo, base_ci_hi, base_fmt = build_data(BASE_DIRS)
-    base_len, base_len_lo, base_len_hi = build_length_data(BASE_DIRS)
-    print("Loading Instruct data...")
-    inst_acc, inst_ci_lo, inst_ci_hi, inst_fmt = build_data(INSTRUCT_DIRS)
-    inst_len, inst_len_lo, inst_len_hi = build_length_data(INSTRUCT_DIRS)
+    print(f"Loading Base data ({variant_name})...")
+    base_acc, base_ci_lo, base_ci_hi, base_fmt = build_data(cfg["base_dirs"])
+    base_len = build_length_data(cfg["base_dirs"])
+    print(f"Loading Instruct data ({variant_name})...")
+    inst_acc, inst_ci_lo, inst_ci_hi, inst_fmt = build_data(cfg["instruct_dirs"])
+    inst_len = build_length_data(cfg["instruct_dirs"])
 
     for name, acc, lens in [("BASE", base_acc, base_len), ("INSTRUCT", inst_acc, inst_len)]:
         print(f"\n{name}:")
         for v in acc:
-            print(f"  {v}: acc={acc[v]}, len_k={lens[v]}")
+            corr = [f"{e[0]:.1f}" for e in lens[v]]
+            incorr = [f"{e[2]:.1f}" for e in lens[v]]
+            print(f"  {v}: acc={acc[v]}, len_correct={corr}, len_incorrect={incorr}")
 
     fig, axes = plt.subplots(3, 2, figsize=(18, 13),
                               height_ratios=[3, 1.5, 1.2],
                               gridspec_kw={"hspace": 0.28})
+    fig.suptitle(cfg["title"], fontsize=15, fontweight="bold", y=0.98)
 
-    fig.suptitle("Sonnet 4.5 Distillation \u2014 Best Checkpoint per Config",
-                 fontsize=15, fontweight="bold", y=0.98)
-
-    # Row 1: accuracy with CIs
     plot_accuracy(axes[0, 0], base_acc, base_ci_lo, base_ci_hi,
-                  "Qwen3-30B-A3B-Base", BASE_LABELS)
+                  "Qwen3-30B-A3B-Base", cfg["base_labels"])
     plot_accuracy(axes[0, 1], inst_acc, inst_ci_lo, inst_ci_hi,
-                  "Qwen3-30B-A3B-Instruct", INSTRUCT_LABELS)
+                  "Qwen3-30B-A3B-Instruct", cfg["instruct_labels"])
 
-    # Row 2: response length
-    plot_response_length(axes[1, 0], base_len, base_len_lo, base_len_hi, BASE_LABELS)
-    plot_response_length(axes[1, 1], inst_len, inst_len_lo, inst_len_hi, INSTRUCT_LABELS)
+    plot_response_length(axes[1, 0], base_len, cfg["base_labels"])
+    plot_response_length(axes[1, 1], inst_len, cfg["instruct_labels"])
 
-    # Row 3: format compliance
-    plot_format_compliance(axes[2, 0], base_fmt, BASE_LABELS)
-    plot_format_compliance(axes[2, 1], inst_fmt, INSTRUCT_LABELS)
+    plot_format_compliance(axes[2, 0], base_fmt, cfg["base_labels"])
+    plot_format_compliance(axes[2, 1], inst_fmt, cfg["instruct_labels"])
 
-    out_path = PLOTS_DIR / "base_vs_instruct.png"
+    out_path = PLOTS_DIR / cfg["output"]
     fig.savefig(out_path, dpi=150, bbox_inches="tight")
     print(f"\nSaved to {out_path}")
     plt.close()
+
+
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--variant", choices=list(VARIANTS.keys()), default=None,
+                        help="Which variant to plot (default: all)")
+    args = parser.parse_args()
+
+    if args.variant:
+        generate_plot(args.variant)
+    else:
+        for v in VARIANTS:
+            generate_plot(v)
 
 
 if __name__ == "__main__":

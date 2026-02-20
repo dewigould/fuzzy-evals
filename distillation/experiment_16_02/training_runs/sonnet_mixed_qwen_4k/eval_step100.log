@@ -1,0 +1,39 @@
+
+============================================================
+Evaluating: sonnet_mixed_qwen_4k_step100
+  Type: checkpoint, Model: Qwen/Qwen3-30B-A3B-Base
+  Datasets: math_500, mbppplus
+  Max tokens: 4096
+  Max problems: 100
+============================================================
+  Loading checkpoint: tinker://307cde6e-e4fa-591e-960a-2b0adfec4786:train:0/sampler_weights/000100
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating sonnet_mixed_qwen_4k_step100 on 100 problems
+
+  --- mbppplus (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating sonnet_mixed_qwen_4k_step100 on 100 problems
+  [math_500] 50/100 done, 46 correct (92.0%), 4 pending judge [119s]
+  [mbppplus] 50/100 done, 38 correct (76.0%) [148s]
+  [math_500] 100/100 done, 87 correct (87.0%), 11 pending judge [262s]
+  [math_500] Stage 1: 87/100 correct, 11 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [269s]
+[math_500] FINAL: 87/100 (87.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/experiment_16_02/results/sonnet_mixed_qwen_4k_step100/results_math_500.parquet
+  math_500 completed in 269s
+  [mbppplus] 100/100 done, 73 correct (73.0%) [366s]
+[mbppplus] FINAL: 73/100 (73.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/experiment_16_02/results/sonnet_mixed_qwen_4k_step100/results_mbppplus.parquet
+  mbppplus completed in 366s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/experiment_16_02/results/sonnet_mixed_qwen_4k_step100/eval_summary.json
+
+============================================================
+RESULTS: sonnet_mixed_qwen_4k_step100
+============================================================
+  math_500             87.0% (87/100)
+  mbppplus             73.0% (73/100)

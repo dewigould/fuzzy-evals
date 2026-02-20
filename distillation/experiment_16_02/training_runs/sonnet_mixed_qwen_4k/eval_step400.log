@@ -1,0 +1,21 @@
+
+============================================================
+Evaluating: sonnet_mixed_qwen_4k_step400
+  Type: checkpoint, Model: Qwen/Qwen3-30B-A3B-Base
+  Datasets: math_500, mbppplus
+  Max tokens: 4096
+  Max problems: 100
+============================================================
+  Loading checkpoint: tinker://307cde6e-e4fa-591e-960a-2b0adfec4786:train:0/sampler_weights/000400
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating sonnet_mixed_qwen_4k_step400 on 100 problems
+
+  --- mbppplus (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating sonnet_mixed_qwen_4k_step400 on 100 problems
+  [math_500] 50/100 done, 47 correct (94.0%), 3 pending judge [130s]
+  [mbppplus] 50/100 done, 38 correct (76.0%) [183s]

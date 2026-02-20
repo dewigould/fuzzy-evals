@@ -1,9 +1,17 @@
 {
-  "aime": {
-    "dataset": "aime",
-    "accuracy": 0.2111111111111111,
-    "n_correct": 19,
-    "total": 90,
-    "judge_upgraded": 0
+  "fuzzy_weird_qs": {
+    "dataset": "fuzzy_weird_qs",
+    "mean_score": 7.852173913043479,
+    "n_scored": 460
+  },
+  "fuzzy_philosophy": {
+    "dataset": "fuzzy_philosophy",
+    "mean_score": 7.08,
+    "n_scored": 100
+  },
+  "fuzzy_futuristic_tech": {
+    "dataset": "fuzzy_futuristic_tech",
+    "mean_score": 0.69,
+    "n_scored": 100
   }
 }

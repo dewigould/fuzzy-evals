@@ -1,0 +1,8 @@
+
+============================================================
+Evaluating: sonnet_mixed_qwen_4k_step500
+  Type: checkpoint, Model: Qwen/Qwen3-30B-A3B-Base
+  Datasets: math_500, mbppplus
+  Max tokens: 4096
+  Max problems: 100
+============================================================
