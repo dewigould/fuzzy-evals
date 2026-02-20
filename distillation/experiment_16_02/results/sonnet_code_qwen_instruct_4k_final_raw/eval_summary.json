@@ -1,0 +1,17 @@
+{
+  "fuzzy_weird_qs": {
+    "dataset": "fuzzy_weird_qs",
+    "mean_score": 17.143478260869564,
+    "n_scored": 460
+  },
+  "fuzzy_philosophy": {
+    "dataset": "fuzzy_philosophy",
+    "mean_score": 18.255102040816325,
+    "n_scored": 98
+  },
+  "fuzzy_futuristic_tech": {
+    "dataset": "fuzzy_futuristic_tech",
+    "mean_score": 15.65,
+    "n_scored": 100
+  }
+}

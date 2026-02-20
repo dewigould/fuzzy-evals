@@ -1,0 +1,28 @@
+{
+  "math_500": {
+    "dataset": "math_500",
+    "accuracy": 0.538,
+    "n_correct": 269,
+    "total": 500,
+    "judge_upgraded": 0
+  },
+  "aime": {
+    "dataset": "aime",
+    "accuracy": 0.044444444444444446,
+    "n_correct": 4,
+    "total": 90,
+    "judge_upgraded": 0
+  },
+  "mbppplus": {
+    "dataset": "mbppplus",
+    "accuracy": 0.5873015873015873,
+    "n_correct": 222,
+    "total": 378
+  },
+  "humanevalplus": {
+    "dataset": "humanevalplus",
+    "accuracy": 0.5975609756097561,
+    "n_correct": 98,
+    "total": 164
+  }
+}

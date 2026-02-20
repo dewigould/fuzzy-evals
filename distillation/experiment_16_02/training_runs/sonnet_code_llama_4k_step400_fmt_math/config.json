@@ -1,0 +1,33 @@
+{
+  "log_path": "experiment_16_02/training_runs/sonnet_code_llama_4k_step400_fmt_math",
+  "model_name": "meta-llama/Llama-3.1-8B-Instruct",
+  "load_checkpoint_path": "tinker://db28dd51-11b0-532e-b75b-e043079f8869:train:0/weights/000400",
+  "dataset_builder": {
+    "common_config": {
+      "model_name_for_tokenizer": "meta-llama/Llama-3.1-8B-Instruct",
+      "renderer_name": "llama3",
+      "max_length": 4096,
+      "batch_size": 19,
+      "train_on_what": null
+    },
+    "data_path": "experiment_16_02/formatting_training_data/math.jsonl",
+    "system_prompt": "You are a helpful assistant. Answer the following question, putting your final answer inside \\boxed{}"
+  },
+  "learning_rate": 0.0001,
+  "lr_schedule": "constant",
+  "num_epochs": 1,
+  "lora_rank": 32,
+  "base_url": null,
+  "evaluator_builders": [],
+  "infrequent_evaluator_builders": [],
+  "save_every": 1,
+  "eval_every": 1,
+  "infrequent_eval_every": 100,
+  "ttl_seconds": 604800,
+  "adam_beta1": 0.9,
+  "adam_beta2": 0.95,
+  "adam_eps": 1e-08,
+  "wandb_project": null,
+  "wandb_name": null,
+  "enable_trace": false
+}

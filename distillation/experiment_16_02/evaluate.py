@@ -63,6 +63,7 @@ async def evaluate_model(
     model_name: str,
     temperature: float = 0.0,
     top_p: float | None = None,
+    judge_raw_output: bool = False,
 ):
     """Run eval sweep on the specified datasets."""
     print(f"\n{'='*60}")
@@ -115,6 +116,8 @@ async def evaluate_model(
             extra_kwargs["temperature"] = temperature
         if top_p is not None:
             extra_kwargs["top_p"] = top_p
+        if judge_raw_output:
+            extra_kwargs["judge_raw_output"] = True
         result = await module.run(
             sampling_client, renderer, tokenizer, results_dir, results_name,
             think_prefix=think_prefix, max_tokens=max_tokens,
@@ -168,6 +171,8 @@ async def main():
                         help="Sampling temperature (default: 0.0)")
     parser.add_argument("--top-p", type=float, default=None,
                         help="Top-p / nucleus sampling (default: None)")
+    parser.add_argument("--judge-raw-output", action="store_true",
+                        help="Judge on full raw_output instead of user_output (for fuzzy evals)")
     args = parser.parse_args()
 
     if args.fast:
@@ -187,6 +192,7 @@ async def main():
         model_name=args.model_name,
         temperature=args.temperature,
         top_p=args.top_p,
+        judge_raw_output=args.judge_raw_output,
     )
 
 

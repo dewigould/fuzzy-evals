@@ -1,0 +1,77 @@
+tinker_cookbook.utils.ml_log:477 [INFO] Logging to: experiment_16_02/training_runs/sonnet_code_llama_4k_step400_fmt_math
+tinker.lib.public_interfaces.service_client:67 [INFO] ServiceClient initialized for session 305d5015-6784-5935-b134-3f2b017083db
+tinker.lib.public_interfaces.service_client:151 [INFO] TrainingClient initialized for model 305d5015-6784-5935-b134-3f2b017083db:train:0
+tinker_cookbook.supervised.train:211 [INFO] Loaded weights from tinker://db28dd51-11b0-532e-b75b-e043079f8869:train:0/weights/000400
+tinker_cookbook.supervised.train:230 [INFO] Training for 2 batches x 1 epochs = 2 steps
+tinker_cookbook.supervised.train:349 [INFO] Starting epoch 0
+tinker_cookbook.supervised.types:32 [WARNING] set_epoch called, but shuffling is not implemented for FixedListDataset
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting get_batch
+tinker_cookbook.utils.misc_utils:23 [INFO] get_batch took 0.00 seconds
+tinker_cookbook.supervised.train:260 [INFO] <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful assistant. Answer the following question, putting your final answer inside \boxed{}<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+What is 7 + 13?<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<think>
+Simple addition: 7 + 13 = 20.
+</think>
+
+The answer is $\boxed{20}$.<|eot_id|>
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting get_batch
+tinker_cookbook.utils.misc_utils:23 [INFO] get_batch took 0.00 seconds
+tinker_cookbook.supervised.train:260 [INFO] <|begin_of_text|><|start_header_id|>system<|end_header_id|>
+
+You are a helpful assistant. Answer the following question, putting your final answer inside \boxed{}<|eot_id|><|start_header_id|>user<|end_header_id|>
+
+What is the sum of the first 10 positive integers?<|eot_id|><|start_header_id|>assistant<|end_header_id|>
+
+<think>
+Using the formula: n(n+1)/2 = 10 × 11 / 2 = 55.
+</think>
+
+The answer is $\boxed{55}$.<|eot_id|>
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting step
+tinker_cookbook.utils.misc_utils:23 [INFO] step took 1.88 seconds
+tinker_cookbook.utils.ml_log:145 [INFO] Wrote metrics to experiment_16_02/training_runs/sonnet_code_llama_4k_step400_fmt_math/metrics.jsonl
+tinker_cookbook.utils.ml_log:197 [INFO] 
+                    Step 0                     
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━━┓
+┃ Metric                         ┃ Value      ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━━┩
+│ epoch                          │ 0          │
+│ learning_rate                  │ 0.000100   │
+│ num_loss_tokens                │ 736.000000 │
+│ num_sequences                  │ 19         │
+│ num_tokens                     │ 1582       │
+│ progress                       │ 0.500000   │
+│ time/get_batch                 │ 0.000027   │
+│ time/step                      │ 1.876389   │
+│ time/total                     │ 1.893110   │
+│ train_mean_nll                 │ 1.175228   │
+└────────────────────────────────┴────────────┘
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting save_checkpoint
+tinker_cookbook.checkpoint_utils:84 [INFO] Saved checkpoints: {'state_path': 'tinker://305d5015-6784-5935-b134-3f2b017083db:train:0/weights/000001', 'sampler_path': 'tinker://305d5015-6784-5935-b134-3f2b017083db:train:0/sampler_weights/000001'}
+tinker_cookbook.utils.misc_utils:23 [INFO] save_checkpoint took 16.37 seconds
+tinker_cookbook.utils.misc_utils:20 [INFO] Starting step
+tinker_cookbook.utils.misc_utils:23 [INFO] step took 0.00 seconds
+tinker_cookbook.utils.ml_log:145 [INFO] Wrote metrics to experiment_16_02/training_runs/sonnet_code_llama_4k_step400_fmt_math/metrics.jsonl
+tinker_cookbook.utils.ml_log:197 [INFO] 
+                    Step 1                    
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┳━━━━━━━━━━━┓
+┃ Metric                         ┃ Value     ┃
+┡━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━╇━━━━━━━━━━━┩
+│ epoch                          │ 0         │
+│ learning_rate                  │ 0.000100  │
+│ num_loss_tokens                │ 39.000000 │
+│ num_sequences                  │ 1         │
+│ num_tokens                     │ 84        │
+│ progress                       │ 1.000000  │
+│ time/get_batch                 │ 0.000178  │
+│ time/save_checkpoint           │ 16.370150 │
+│ time/step                      │ 0.000250  │
+│ time/total                     │ 18.267809 │
+│ train_mean_nll                 │ 1.102387  │
+└────────────────────────────────┴───────────┘
+tinker_cookbook.checkpoint_utils:84 [INFO] Saved checkpoints: {'state_path': 'tinker://305d5015-6784-5935-b134-3f2b017083db:train:0/weights/final', 'sampler_path': 'tinker://305d5015-6784-5935-b134-3f2b017083db:train:0/sampler_weights/final'}
+tinker_cookbook.supervised.train:375 [INFO] Training completed successfully
