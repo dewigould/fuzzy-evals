@@ -31,7 +31,7 @@ JUDGE_SYS_MSG = "You are grading an answer for quality of thought, scientific ri
 async def run(sampling_client, renderer, tokenizer, results_dir: Path, model_name: str,
               think_prefix: bool = True, max_tokens: int = MAX_TOKENS,
               max_problems: int | None = None, fuzzy_samples: int | None = None,
-              **kwargs) -> dict:
+              judge_raw_output: bool = False, **kwargs) -> dict:
     """Evaluate on futuristic tech questions."""
     with open(FUZZY_DATA_DIR / "futuristic_tech_questions.json") as f:
         questions = json.load(f)
@@ -71,29 +71,23 @@ async def run(sampling_client, renderer, tokenizer, results_dir: Path, model_nam
     elapsed_gen = time.time() - t0
     print(f"  [{DATASET_NAME}] Generation done in {elapsed_gen:.0f}s, judging...")
 
-    # Judge all responses
+    # Judge all responses in parallel
     async with aiohttp.ClientSession() as session:
-        for q_idx, q in enumerate(questions):
-            for s_idx, completion in enumerate(all_completions[q_idx]):
-                cot, user_output = parse_think_tags(completion)
+        async def judge_one(q_idx, s_idx, completion, q):
+            cot, user_output = parse_think_tags(completion)
+            if completion.startswith("ERROR:"):
+                row = {
+                    "model": model_name, "dataset": DATASET_NAME,
+                    "question": q[QUESTION_KEY], "raw_output": completion,
+                    "cot": cot, "user_output": user_output,
+                    "total_score": None, "judge_raw": "",
+                }
+                for key in RUBRIC_KEYS:
+                    row[key] = None
+                return row
 
-                if completion.startswith("ERROR:"):
-                    row = {
-                        "model": model_name,
-                        "dataset": DATASET_NAME,
-                        "question": q[QUESTION_KEY],
-                        "raw_output": completion,
-                        "cot": cot,
-                        "user_output": user_output,
-                        "total_score": None,
-                        "judge_raw": "",
-                    }
-                    for key in RUBRIC_KEYS:
-                        row[key] = None
-                    results.append(row)
-                    continue
-
-                grading_prompt = f"""{JUDGE_SYS_MSG}
+            answer_text = completion if judge_raw_output else user_output
+            grading_prompt = f"""{JUDGE_SYS_MSG}
 
 ## Question
 
@@ -101,38 +95,37 @@ async def run(sampling_client, renderer, tokenizer, results_dir: Path, model_nam
 
 ## Answer to Grade
 
-{completion}
+{answer_text}
 
 ## Grading Rubric
 
 {rubric}"""
-                judge_resp = await call_openrouter(
-                    session, JUDGE_MODEL,
-                    [{"role": "user", "content": grading_prompt}],
-                    temperature=0.0, max_tokens=1024,
-                    semaphore=semaphore,
-                    api_key=OPENROUTER_API_KEY, api_url=OPENROUTER_URL,
-                )
+            judge_resp = await call_openrouter(
+                session, JUDGE_MODEL,
+                [{"role": "user", "content": grading_prompt}],
+                temperature=0.0, max_tokens=1024,
+                semaphore=semaphore,
+                api_key=OPENROUTER_API_KEY, api_url=OPENROUTER_URL,
+            )
+            total, scores = parse_judge_score(judge_resp) if not str(judge_resp).startswith("ERROR:") else (None, {})
+            row = {
+                "model": model_name, "dataset": DATASET_NAME,
+                "question": q[QUESTION_KEY], "raw_output": completion,
+                "cot": cot, "user_output": user_output,
+                "total_score": total, "judge_raw": str(judge_resp),
+            }
+            for key in RUBRIC_KEYS:
+                row[key] = scores.get(key, None)
+            return row
 
-                total, scores = parse_judge_score(judge_resp) if not str(judge_resp).startswith("ERROR:") else (None, {})
+        judge_tasks = []
+        for q_idx, q in enumerate(questions):
+            for s_idx, completion in enumerate(all_completions[q_idx]):
+                judge_tasks.append(judge_one(q_idx, s_idx, completion, q))
+        results = list(await asyncio.gather(*judge_tasks))
 
-                row = {
-                    "model": model_name,
-                    "dataset": DATASET_NAME,
-                    "question": q[QUESTION_KEY],
-                    "raw_output": completion,
-                    "cot": cot,
-                    "user_output": user_output,
-                    "total_score": total,
-                    "judge_raw": str(judge_resp),
-                }
-                for key in RUBRIC_KEYS:
-                    row[key] = scores.get(key, None)
-                results.append(row)
-
-            done_q = q_idx + 1
-            elapsed = time.time() - t0
-            print(f"  [{DATASET_NAME}] {done_q}/{len(questions)} questions judged [{elapsed:.0f}s]")
+    elapsed_judge = time.time() - t0
+    print(f"  [{DATASET_NAME}] All {len(results)} responses judged [{elapsed_judge:.0f}s]")
 
     valid_scores = [r["total_score"] for r in results if r["total_score"] is not None]
     mean_score = sum(valid_scores) / len(valid_scores) if valid_scores else 0.0

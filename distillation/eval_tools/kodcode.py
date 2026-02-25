@@ -4,6 +4,7 @@ import asyncio
 import concurrent.futures
 import json
 import os
+import random
 import re
 import subprocess
 import sys
@@ -18,8 +19,9 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from config import MAX_TOKENS, EVAL_CONCURRENCY, CODE_SYSTEM_PROMPT
 from infer import generate
-from utils import parse_think_tags, extract_code_from_response, save_results_parquet
+from utils import parse_think_tags, extract_code_from_response, save_results_parquet, load_or_build_cache
 
+EVAL_SEED = 42
 N_PROBLEMS = 500
 HARD_CAP_SECONDS = 30
 PER_TEST_TIMEOUT = 4
@@ -133,9 +135,16 @@ async def run(sampling_client, renderer, tokenizer, results_dir: Path, model_nam
               think_prefix: bool = True, max_tokens: int = MAX_TOKENS,
               max_problems: int | None = None, **kwargs) -> dict:
     """Evaluate on KodCode-500."""
-    all_tasks = load_kodcode_tasks(difficulty="easy", max_tasks=7000, seed=42)
-    # Take last 500 as test set (first N used for training in RLVR)
-    test_problems = all_tasks[-N_PROBLEMS:]
+    def _build():
+        all_tasks = load_kodcode_tasks(difficulty="easy", max_tasks=7000, seed=42)
+        test_tasks = all_tasks[-N_PROBLEMS:]
+        random.Random(EVAL_SEED).shuffle(test_tasks)
+        return [{"question": t.question, "test_code": t.test_code,
+                 "gpt_difficulty": t.gpt_difficulty, "gpt_pass_pct": t.gpt_pass_pct}
+                for t in test_tasks]
+
+    cached = load_or_build_cache("kodcode_500", _build, EVAL_SEED)
+    test_problems = [KodCodeTask(**d) for d in cached]
     if max_problems is not None:
         test_problems = test_problems[:max_problems]
     print(f"[kodcode] Evaluating {model_name} on {len(test_problems)} problems")

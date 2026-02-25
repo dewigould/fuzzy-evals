@@ -4,12 +4,15 @@ import asyncio
 import concurrent.futures
 import json
 import os
+import random
 import re
 import subprocess
 import sys
 import tempfile
 import time
 from pathlib import Path
+
+EVAL_SEED = 42
 
 from datasets import load_dataset
 
@@ -18,7 +21,7 @@ sys.path.insert(0, '/workspace/tinker-cookbook')
 
 from config import MAX_TOKENS, EVAL_CONCURRENCY, CODE_SYSTEM_PROMPT
 from infer import generate
-from utils import parse_think_tags, extract_code_from_response, save_results_parquet
+from utils import parse_think_tags, extract_code_from_response, save_results_parquet, load_or_build_cache
 
 from tinker_cookbook.recipes.code_rl.lcb_utils import (
     fetch_live_code_bench_system_prompt,
@@ -105,19 +108,17 @@ def postprocess_lcb_sample(sample: list[dict]) -> dict:
     return {"input_output": json.dumps(sample_dict)}
 
 
-def load_codeforces_problems(n: int) -> list[dict]:
-    """Load first n problems from the codeforces test split (streaming)."""
-    print(f"Loading first {n} Codeforces problems (streaming)...")
+def _build_codeforces_cache() -> list[dict]:
+    """Load ALL valid codeforces problems from streaming, shuffled with seed."""
+    print("  Streaming all Codeforces problems...")
     ds = load_dataset(
         "agentica-org/DeepCoder-Preview-Dataset",
         name="codeforces",
         split="test",
         streaming=True,
     )
-    problems = []
-    for i, row in enumerate(ds):
-        if i >= n * 2:  # scan extra to fill quota
-            break
+    all_problems = []
+    for row in ds:
         question = row.get("question") or row.get("prompt") or row.get("problem")
         if not question:
             continue
@@ -136,16 +137,23 @@ def load_codeforces_problems(n: int) -> list[dict]:
             prompt = fetch_live_code_bench_system_prompt(question)
             starter_code = None
 
-        problems.append({
+        all_problems.append({
             "prompt": prompt,
             "question_text": question[:500],
             "tests": tests,
             "starter_code": starter_code,
         })
-        if len(problems) >= n:
-            break
 
-    print(f"Loaded {len(problems)} valid problems")
+    random.Random(EVAL_SEED).shuffle(all_problems)
+    print(f"  Found {len(all_problems)} valid problems total")
+    return all_problems
+
+
+def load_codeforces_problems(n: int) -> list[dict]:
+    """Load n codeforces problems from cache (builds cache on first call)."""
+    problems = load_or_build_cache("codeforces", _build_codeforces_cache, EVAL_SEED)
+    problems = problems[:min(n, len(problems))]
+    print(f"Selected {len(problems)} Codeforces problems")
     return problems
 
 
