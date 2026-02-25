@@ -1,10 +1,50 @@
 """Shared utilities: think-tag parsing, parquet I/O, code extraction."""
 
+import gzip
 import json
 import re
 from pathlib import Path
 
 import pandas as pd
+
+
+# ── Eval dataset caching ────────────────────────────────────────────────────
+
+EVAL_CACHE_DIR = Path(__file__).parent / "eval_cache"
+
+
+def load_or_build_cache(cache_name: str, build_fn, seed: int = 42) -> list[dict]:
+    """Load processed eval dataset from gzipped JSON cache, or build and cache it.
+
+    The cache stores the full shuffled dataset. Subsetting by max_problems
+    should be done by the caller after loading.
+    """
+    cache_path = EVAL_CACHE_DIR / f"{cache_name}_seed{seed}.json.gz"
+    # Also check for old uncompressed cache
+    old_path = EVAL_CACHE_DIR / f"{cache_name}_seed{seed}.json"
+    if cache_path.exists():
+        print(f"  Loading from cache: {cache_path.name}")
+        with gzip.open(cache_path, "rt") as f:
+            data = json.load(f)
+        print(f"  Loaded {len(data)} items from cache")
+        return data
+    if old_path.exists():
+        # Migrate old uncompressed cache
+        print(f"  Migrating {old_path.name} → {cache_path.name}")
+        with open(old_path) as f:
+            data = json.load(f)
+        with gzip.open(cache_path, "wt") as f:
+            json.dump(data, f)
+        old_path.unlink()
+        print(f"  Migrated {len(data)} items")
+        return data
+    print(f"  Building cache for {cache_name}...")
+    data = build_fn()
+    cache_path.parent.mkdir(parents=True, exist_ok=True)
+    with gzip.open(cache_path, "wt") as f:
+        json.dump(data, f)
+    print(f"  Cached {len(data)} items to {cache_path.name}")
+    return data
 
 
 # ── Think tag parsing ────────────────────────────────────────────────────────
@@ -35,11 +75,21 @@ def parse_think_tags(raw_output: str) -> tuple[str | None, str]:
 # ── Code extraction ──────────────────────────────────────────────────────────
 
 def extract_code(text: str) -> str | None:
-    """Extract the last fenced code block from text."""
+    """Extract the best fenced code block from text.
+
+    Prefers the last non-empty block containing a function definition ('def ').
+    Falls back to the last non-empty block if none contain a def.
+    This avoids selecting empty blocks (regex artifacts) or assertion-only blocks
+    that verbose models append after their solution.
+    """
     blocks = re.findall(r"```(?:python)?\s*\n(.*?)```", text, re.DOTALL)
-    if blocks:
-        return blocks[-1].strip()
-    return None
+    non_empty = [b.strip() for b in blocks if b.strip()]
+    if not non_empty:
+        return None
+    for b in reversed(non_empty):
+        if "def " in b:
+            return b
+    return non_empty[-1]
 
 
 def extract_code_from_response(response: str) -> str | None:
@@ -112,6 +162,63 @@ async def call_openrouter(session, model, messages, temperature=0.0,
         except Exception:
             await asyncio.sleep(delay)
     return "ERROR: max retries exceeded"
+
+
+async def call_openrouter_reasoning(session, model, messages, temperature=0.0,
+                                     max_tokens=8192, reasoning_max_tokens=4096,
+                                     semaphore=None, api_key=None,
+                                     api_url="https://openrouter.ai/api/v1/chat/completions"):
+    """Call OpenRouter API with reasoning enabled (for thinking models).
+
+    Returns (reasoning, content) tuple.
+    """
+    import asyncio
+    import aiohttp
+
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "Content-Type": "application/json",
+    }
+    body = {
+        "model": model,
+        "messages": messages,
+        "temperature": temperature,
+        "max_tokens": max_tokens,
+        "reasoning": {
+            "max_tokens": reasoning_max_tokens,
+        },
+    }
+    retry_delays = [2, 5, 15, 30, 60, 120]
+    for delay in retry_delays + [120]:
+        try:
+            if semaphore:
+                async with semaphore:
+                    async with session.post(api_url, headers=headers, json=body,
+                                           timeout=aiohttp.ClientTimeout(total=600)) as resp:
+                        data = await resp.json()
+            else:
+                async with session.post(api_url, headers=headers, json=body,
+                                       timeout=aiohttp.ClientTimeout(total=600)) as resp:
+                    data = await resp.json()
+
+            if "choices" in data and len(data["choices"]) > 0:
+                msg = data["choices"][0]["message"]
+                reasoning = msg.get("reasoning", "") or ""
+                content = msg.get("content", "") or ""
+                return reasoning, content
+            elif "error" in data:
+                err = data["error"]
+                err_msg = err.get("message", str(err)) if isinstance(err, dict) else str(err)
+                if "rate" in err_msg.lower() or "429" in err_msg:
+                    await asyncio.sleep(delay)
+                    continue
+                return f"ERROR: {err_msg}", ""
+            return "ERROR: unexpected response", ""
+        except asyncio.TimeoutError:
+            await asyncio.sleep(delay)
+        except Exception:
+            await asyncio.sleep(delay)
+    return "ERROR: max retries exceeded", ""
 
 
 def parse_judge_score(response_text: str) -> tuple[int | None, dict]:

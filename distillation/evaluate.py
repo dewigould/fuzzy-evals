@@ -30,6 +30,10 @@ DATASET_MODULES = {
     "fuzzy_philosophy": "eval_tools.fuzzy_philosophy",
     "fuzzy_weird_qs": "eval_tools.fuzzy_weird_qs",
     "fuzzy_futuristic_tech": "eval_tools.fuzzy_futuristic_tech",
+    "omni_math": "eval_tools.omni_math",
+    "livecodebench_v5": "eval_tools.livecodebench",
+    "humanevalplus": "eval_tools.humanevalplus",
+    "mbppplus": "eval_tools.mbppplus",
 }
 
 
@@ -111,15 +115,18 @@ def find_best_checkpoint(task: str, config_name: str) -> str | None:
 async def evaluate_model(model_name: str, model_config: dict, datasets: list[str],
                          default_max_tokens: int = 8192,
                          max_problems: int | None = None,
-                         fuzzy_samples: int | None = None):
+                         fuzzy_samples: int | None = None,
+                         renderer_model_name: str | None = None,
+                         results_base: Path | None = None):
     """Evaluate a single model on specified datasets."""
     print(f"\n{'='*60}")
     print(f"Evaluating model: {model_name}")
     print(f"Datasets: {', '.join(datasets)}")
     print(f"{'='*60}")
 
-    # Set up renderer and tokenizer
-    renderer, tokenizer = setup_renderer_and_tokenizer()
+    # Set up renderer and tokenizer (use override model name if provided)
+    rm = renderer_model_name or model_config.get("renderer_model_name")
+    renderer, tokenizer = setup_renderer_and_tokenizer(rm) if rm else setup_renderer_and_tokenizer()
 
     # Create sampling client
     model_type = model_config.get("type", "base_model")
@@ -146,27 +153,25 @@ async def evaluate_model(model_name: str, model_config: dict, datasets: list[str
         return {}
 
     # Set up results directory
-    results_dir = RESULTS_BASE / model_name
+    results_dir = (results_base or RESULTS_BASE) / model_name
     results_dir.mkdir(parents=True, exist_ok=True)
 
     # Per-model inference overrides
     no_think_datasets = set(model_config.get("no_think_prefix_datasets", []))
     model_max_tokens = model_config.get("max_tokens", default_max_tokens)
 
-    # Run each dataset evaluation
-    all_results = {}
-    for ds_name in datasets:
-        if ds_name not in DATASET_MODULES:
-            print(f"  WARNING: Unknown dataset '{ds_name}'. Skipping.")
-            continue
+    # Run all datasets concurrently for maximum throughput
+    import importlib
 
-        # Determine per-dataset inference settings
+    valid_datasets = [ds for ds in datasets if ds in DATASET_MODULES]
+    invalid = [ds for ds in datasets if ds not in DATASET_MODULES]
+    for ds in invalid:
+        print(f"  WARNING: Unknown dataset '{ds}'. Skipping.")
+
+    async def run_dataset(ds_name):
         use_think_prefix = ds_name not in no_think_datasets
         print(f"\n  --- {ds_name} (think_prefix={use_think_prefix}, max_tokens={model_max_tokens}) ---")
-        t0 = time.time()
-
-        # Import and run the eval module
-        import importlib
+        t0_ds = time.time()
         module = importlib.import_module(DATASET_MODULES[ds_name])
         extra_kwargs = {}
         if max_problems is not None:
@@ -178,10 +183,12 @@ async def evaluate_model(model_name: str, model_config: dict, datasets: list[str
             think_prefix=use_think_prefix, max_tokens=model_max_tokens,
             **extra_kwargs,
         )
+        elapsed_ds = time.time() - t0_ds
+        print(f"  {ds_name} completed in {elapsed_ds:.0f}s")
+        return ds_name, result
 
-        elapsed = time.time() - t0
-        print(f"  {ds_name} completed in {elapsed:.0f}s")
-        all_results[ds_name] = result
+    dataset_results = await asyncio.gather(*[run_dataset(ds) for ds in valid_datasets])
+    all_results = dict(dataset_results)
 
     # Save summary
     summary_path = results_dir / "eval_summary.json"
@@ -204,7 +211,57 @@ async def main():
                         help="Limit number of problems per dataset (for quick sanity checks)")
     parser.add_argument("--fuzzy-samples", type=int, default=None,
                         help="Override number of samples per fuzzy question (default: 10)")
+    parser.add_argument("--sampler-path", type=str, default=None,
+                        help="Direct tinker:// sampler path for ad-hoc checkpoint eval")
+    parser.add_argument("--base-model-name", type=str, default=None,
+                        help="Model name for renderer (default: config.py MODEL_NAME)")
+    parser.add_argument("--results-name", type=str, default=None,
+                        help="Override results directory name (default: model name from config)")
+    parser.add_argument("--no-think-prefix-datasets", type=str, default=None,
+                        help="Comma-separated list of datasets to disable think_prefix on")
+    parser.add_argument("--max-tokens", type=int, default=28672,
+                        help="Max tokens for generation (default: 28672)")
+    parser.add_argument("--results-base", type=str, default=None,
+                        help="Override base directory for results (default: distillation/results/)")
     args = parser.parse_args()
+
+    results_base_override = Path(args.results_base) if args.results_base else None
+
+    # Ad-hoc eval mode: bypass eval_config.yaml entirely
+    if args.sampler_path or (args.base_model_name and args.results_name):
+        no_think = set(args.no_think_prefix_datasets.split(",")) if args.no_think_prefix_datasets else set()
+
+        if args.sampler_path:
+            # Checkpoint eval
+            results_name = args.results_name or "adhoc_checkpoint"
+            model_config = {
+                "type": "checkpoint",
+                "sampler_path": args.sampler_path,
+                "max_tokens": args.max_tokens,
+                "no_think_prefix_datasets": list(no_think),
+            }
+            if args.base_model_name:
+                model_config["renderer_model_name"] = args.base_model_name
+        else:
+            # Base model eval
+            results_name = args.results_name
+            model_config = {
+                "type": "base_model",
+                "name": args.base_model_name,
+                "max_tokens": args.max_tokens,
+                "no_think_prefix_datasets": list(no_think),
+            }
+
+        datasets_list = args.datasets.split(",") if args.datasets else list(DATASET_MODULES.keys())
+        result = await evaluate_model(
+            results_name, model_config, datasets_list,
+            default_max_tokens=args.max_tokens,
+            max_problems=args.max_problems,
+            fuzzy_samples=args.fuzzy_samples,
+            renderer_model_name=args.base_model_name,
+            results_base=results_base_override,
+        )
+        return
 
     config = load_config(args.config)
     models = config.get("models", {})
@@ -234,7 +291,8 @@ async def main():
     for model_name, model_config in models.items():
         result = await evaluate_model(model_name, model_config, datasets, default_max_tokens,
                                        max_problems=args.max_problems,
-                                       fuzzy_samples=args.fuzzy_samples)
+                                       fuzzy_samples=args.fuzzy_samples,
+                                       results_base=results_base_override)
         all_model_results[model_name] = result
 
     elapsed = time.time() - t0

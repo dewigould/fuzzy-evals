@@ -9,3 +9,5 @@ distillation/generate_reasoning_traces/data_code_thinking
 distillation/generate_reasoning_traces/data_code_thinking_kimi
 distillation/generate_reasoning_traces/data_thinking
 distillation/generate_reasoning_traces/data_thinking_kimi
+distillation/sft_formatting_examples/results
+distillation/analysis/plots

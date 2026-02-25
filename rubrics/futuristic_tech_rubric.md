@@ -144,6 +144,25 @@ These questions explicitly ask for ambition ("assume AI-accelerated R&D has mean
 
 ---
 
+### 7. State-of-the-Art Awareness
+
+Does the answer demonstrate accurate, current knowledge of where the field actually stands today, or does it launch its roadmap from a vague or outdated starting point?
+
+A roadmap is only as good as its starting coordinates. Many answers begin from a popularized or outdated understanding of the field — citing techniques that have been superseded, overstating or understating current capabilities, or confusing what has been demonstrated in a lab with what is standard practice. This criterion specifically evaluates whether the respondent knows what has *actually* been achieved, what the leading approaches are, who the key players are, and where the current frontier sits — before they begin projecting forward.
+
+| Score | Description |
+|-------|-------------|
+| 0 | No awareness of the current state of the field; the roadmap begins from a fictional or decades-old starting point |
+| 1 | References the field in broad strokes but relies on outdated or pop-science characterizations of current capabilities |
+| 2 | Gets the general landscape right (knows the major approaches exist) but conflates lab demonstrations with mature capabilities or mischaracterizes performance levels |
+| 3 | Accurately describes the dominant current approaches and roughly where they stand in terms of performance, but lacks specificity about recent advances or remaining gaps |
+| 4 | Demonstrates awareness of the current frontier — knows which results are recent, which approaches are gaining or losing traction, and approximately what performance levels have been achieved |
+| 5 | Distinguishes clearly between what has been demonstrated once under ideal conditions, what is reproducible, and what is operational — understands the maturity gradient within the current state of the art |
+| 6 | Identifies the specific limitations of today's best approaches with enough precision that the roadmap's first phase is clearly shaped by them — the gap between 'where we are' and 'where we need to be' is well-defined and quantified where possible |
+| 7 | Shows awareness of competing approaches, recent pivots in the field, and why certain once-promising directions have stalled — understands the current landscape as the result of a selection process, not just a snapshot |
+| 8 | The characterization of the present state of the art is itself insightful — identifies underappreciated recent results, correctly assesses which current capabilities are closer to breakthrough thresholds than commonly recognized, or reveals how the current competitive landscape constrains future paths |
+
+
 ## Output Format
 
 Return your evaluation as a JSON object with no additional commentary, explanation, or text outside the JSON. Use the following structure:
@@ -156,10 +175,11 @@ Return your evaluation as a JSON object with no additional commentary, explanati
   "scaling_deployment_realism": 0,
   "integration_awareness": 0,
   "epistemic_honesty": 0,
+  "state_of_art_awarness": 0,
   "total": 0
 }
 ```
 
-Replace each `0` with the appropriate score (0–8). The `total` field should be the sum of all six individual scores (maximum 48).
+Replace each `0` with the appropriate score (0–8). The `total` field should be the sum of all six individual scores (maximum 57).
 
 **Do not include any text before or after the JSON object.**
