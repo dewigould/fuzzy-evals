@@ -13,10 +13,12 @@ from config import MATH_SYSTEM_PROMPT, CODE_SYSTEM_PROMPT
 # ── Base models ──────────────────────────────────────────────────────────────
 
 BASE_MODELS = {
-    "llama8b":    "meta-llama/Llama-3.1-8B-Instruct",
-    "llama70b":   "meta-llama/Llama-3.3-70B-Instruct",
-    "qwen_base":  "Qwen/Qwen3-30B-A3B-Base",
-    "qwen_it":    "Qwen/Qwen3-30B-A3B-Instruct-2507",
+    "llama8b_base": "meta-llama/Llama-3.1-8B",
+    "llama8b_it":   "meta-llama/Llama-3.1-8B-Instruct",
+    "llama70b_it":  "meta-llama/Llama-3.3-70B-Instruct",
+    "qwen8b_base":  "Qwen/Qwen3-8B-Base",
+    "qwen30b_base": "Qwen/Qwen3-30B-A3B-Base",
+    "qwen30b_it":   "Qwen/Qwen3-30B-A3B-Instruct-2507",
 }
 
 # ── Trace sources ────────────────────────────────────────────────────────────
