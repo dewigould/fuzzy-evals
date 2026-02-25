@@ -4,6 +4,32 @@ models:
   base:
     type: base_model
     name: "Qwen/Qwen3-30B-A3B-Instruct-2507"
+    no_think_prefix_datasets:
+      - math_500
+      - aime
+      - omni_math
+      - kodcode_500
+      - codeforces_500
+      - livecodebench_v5
+      - fuzzy_philosophy
+      - fuzzy_weird_qs
+      - fuzzy_futuristic_tech
+
+  qwen3_base:
+    type: base_model
+    name: "Qwen/Qwen3-30B-A3B-Base"
+    renderer_model_name: "Qwen/Qwen3-30B-A3B-Base"
+    # Raw base model: no think prefix on any dataset
+    no_think_prefix_datasets:
+      - math_500
+      - aime
+      - omni_math
+      - kodcode_500
+      - codeforces_500
+      - livecodebench_v5
+      - fuzzy_philosophy
+      - fuzzy_weird_qs
+      - fuzzy_futuristic_tech
 
   math_distill:
     type: checkpoint
@@ -13,6 +39,7 @@ models:
     no_think_prefix_datasets:
       - math_500
       - aime
+      - omni_math
 
   code_distill:
     type: checkpoint
@@ -22,12 +49,33 @@ models:
     no_think_prefix_datasets:
       - kodcode_500
       - codeforces_500
+      - livecodebench_v5
+
+  math_distill_15k:
+    type: checkpoint
+    sampler_path: "tinker://20cab21e-fd37-5d46-92b3-3a9e0855bb90:train:0/sampler_weights/000300"
+    max_tokens: 28672
+    no_think_prefix_datasets:
+      - math_500
+      - aime
+      - omni_math
+
+  code_distill_15k:
+    type: checkpoint
+    sampler_path: "tinker://f136a2a0-f167-53f9-9e81-db0a13641117:train:0/sampler_weights/000300"
+    max_tokens: 28672
+    no_think_prefix_datasets:
+      - kodcode_500
+      - codeforces_500
+      - livecodebench_v5
 
 datasets:
   - math_500
   - aime
+  - omni_math
   - kodcode_500
   - codeforces_500
+  - livecodebench_v5
   - fuzzy_philosophy
   - fuzzy_weird_qs
   - fuzzy_futuristic_tech

@@ -58,3 +58,24 @@ CODE_CONFIGS = {
         "batch_size": 50,
     },
 }
+
+# ── Base model (Qwen3-30B-A3B-Base) configs ─────────────────────────────────
+# Single config — checkpoints every 50 steps (2.5K examples).
+
+BASE_MATH_CONFIGS = {
+    "A_r32_high_lr": {
+        "lr": 2e-4,
+        "steps": 500,
+        "schedule": "cosine",
+        "batch_size": 50,
+    },
+}
+
+BASE_CODE_CONFIGS = {
+    "A_r32_high_lr": {
+        "lr": 2e-4,
+        "steps": 500,
+        "schedule": "cosine",
+        "batch_size": 50,
+    },
+}
