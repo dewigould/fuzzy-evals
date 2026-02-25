@@ -1,3 +1,11 @@
 .env
 **/filtered_data*/
 */__pycache__/**
+*.pyc
+distillation/training_runs
+distillation/generate_reasoning_traces/data
+distillation/generate_reasoning_traces/data_code
+distillation/generate_reasoning_traces/data_code_thinking
+distillation/generate_reasoning_traces/data_code_thinking_kimi
+distillation/generate_reasoning_traces/data_thinking
+distillation/generate_reasoning_traces/data_thinking_kimi
