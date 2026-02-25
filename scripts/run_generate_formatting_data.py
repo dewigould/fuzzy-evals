@@ -1,6 +1,6 @@
 """
 Generate formatting examples for the formatting SFT step.
-Calls Sonnet 3.5 via OpenRouter to produce 50 math + 50 code CoT examples.
+Calls Sonnet 3.5 via OpenRouter to produce 10 math + 10 code + 10 weird question CoT examples.
 """
 
 import asyncio
@@ -57,21 +57,24 @@ async def call_openrouter(session, messages, temperature=0.3, max_tokens=2048):
 async def main():
     from datasets import load_dataset
 
-    # ── Load math problems (from Hendrycks MATH train, not in MATH-500) ──
-    print("Loading Hendrycks MATH algebra problems...")
-    math_ds = load_dataset("EleutherAI/hendrycks_math", name="algebra", split="train")
-    # Load MATH-500 to exclude
+    # ── Load math problems (first 10 from MATH-500) ──
+    print("Loading MATH-500 problems...")
     math500 = load_dataset("HuggingFaceH4/MATH-500", split="test")
-    math500_problems = {p['problem'] for p in math500}
-    # Pick 50 problems not in MATH-500
-    math_problems = [p for p in math_ds if p['problem'] not in math500_problems][:50]
+    math_problems = [math500[i] for i in range(10)]
     print(f"  Selected {len(math_problems)} math problems")
 
-    # ── Load code tasks (BigCodeBench 500-549, not used in eval) ──
-    print("Loading BigCodeBench tasks 500-549...")
+    # ── Load code tasks (BigCodeBench indices 0-9) ──
+    print("Loading BigCodeBench tasks 0-9...")
     code_ds = load_dataset("bigcode/bigcodebench", split="v0.1.4")
-    code_tasks = [code_ds[i] for i in range(500, 550)]
+    code_tasks = [code_ds[i] for i in range(10)]
     print(f"  Selected {len(code_tasks)} code tasks")
+
+    # ── Load weird questions (first 10) ──
+    print("Loading weird questions...")
+    with open('/workspace/fuzzy-evals/dataset_jsons/weird_questions.json') as f:
+        weird_data = json.load(f)
+    weird_questions = weird_data[:10]
+    print(f"  Selected {len(weird_questions)} weird questions")
 
     all_examples = []
     semaphore = asyncio.Semaphore(5)  # conservative rate limiting
@@ -100,8 +103,8 @@ async def main():
                             {'role': 'assistant', 'content': resp},
                         ]
                     })
-                if (i + 1) % 10 == 0:
-                    print(f"  Math: {i+1}/50")
+                if (i + 1) % 5 == 0:
+                    print(f"  Math: {i+1}/10")
 
         print(f"  Math formatting examples: {sum(1 for e in all_examples)} generated")
 
@@ -128,11 +131,35 @@ async def main():
                             {'role': 'assistant', 'content': resp},
                         ]
                     })
-                if (i + 1) % 10 == 0:
-                    print(f"  Code: {i+1}/50")
+                if (i + 1) % 5 == 0:
+                    print(f"  Code: {i+1}/10")
 
         n_code = len(all_examples) - n_before
         print(f"  Code formatting examples: {n_code} generated")
+
+        # ── Generate weird question formatting examples ──
+        print("Generating weird question formatting examples...")
+        n_before_weird = len(all_examples)
+        for i, wq in enumerate(weird_questions):
+            async with semaphore:
+                gen_prompt = (
+                    "Answer the following question thoughtfully and in detail.\n\n"
+                    f"{wq['prompt']}"
+                )
+                messages = [{'role': 'user', 'content': gen_prompt}]
+                resp = await call_openrouter(session, messages)
+                if not resp.startswith("ERROR:"):
+                    all_examples.append({
+                        'messages': [
+                            {'role': 'user', 'content': wq['prompt']},
+                            {'role': 'assistant', 'content': resp},
+                        ]
+                    })
+                if (i + 1) % 5 == 0:
+                    print(f"  Weird: {i+1}/10")
+
+        n_weird = len(all_examples) - n_before_weird
+        print(f"  Weird question formatting examples: {n_weird} generated")
 
     # ── Save ──
     output_path = DATA_DIR / 'formatting_combined.jsonl'

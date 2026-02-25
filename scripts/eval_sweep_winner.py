@@ -1,9 +1,12 @@
 """
-Full evaluation sweep for 5 models across 4 domains.
-Models: base, math_rlvr, code_rlvr, math_sft, code_sft (all post-formatting-SFT)
-Domains: MATH-500, BigCodeBench-500, philosophy (10Qx10S), weird_questions (46Qx10S)
+Evaluate the sweep winner + base model on BigCodeBench and fuzzy tasks.
+Generates a comparison plot: base vs best RLVR across all domains.
+
+Usage:
+  python eval_sweep_winner.py --winner A_moderate --max_tokens 2048
 """
 
+import argparse
 import asyncio
 import concurrent.futures
 import gc
@@ -30,69 +33,47 @@ from dotenv import load_dotenv
 load_dotenv('/workspace/.env')
 sys.path.insert(0, '/workspace/tinker-cookbook')
 
-RESULTS_DIR = Path('/workspace/results_06_02_v2')
-EVAL_DIR = RESULTS_DIR / 'eval'
-EVAL_DIR.mkdir(parents=True, exist_ok=True)
-LOG_FILE = RESULTS_DIR / 'experiment_log.md'
+RESULTS_DIR = Path('/workspace/results_10_02')
+EVAL_DIR = RESULTS_DIR / 'final_eval'
+LOG_FILE = RESULTS_DIR / 'final_eval_log.md'
 
 OPENROUTER_API_KEY = os.getenv('OPENROUTER_API_KEY')
 OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions'
 JUDGE_MODEL = 'openai/gpt-5.2'
-BASE_MODEL_OR = 'meta-llama/llama-3.1-8b-instruct'  # OpenRouter model name
+MODEL_NAME = "meta-llama/Llama-3.1-8B-Instruct"
 
 N_FUZZY_SAMPLES = 10
-
-MODEL_KEYS = ['base', 'math_rlvr', 'code_rlvr', 'math_sft', 'code_sft',
-               'base_seeded', 'math_sft_seeded', 'code_sft_seeded']
-# Map seeded model keys to their base sampling client
-SEEDED_MODELS = {'base_seeded': 'base', 'math_sft_seeded': 'math_sft', 'code_sft_seeded': 'code_sft'}
-MODEL_DISPLAY = {
-    'base': 'Base',
-    'math_rlvr': 'Math RLVR',
-    'code_rlvr': 'Code RLVR',
-    'math_sft': 'Math SFT',
-    'code_sft': 'Code SFT',
-    'base_seeded': 'Base (seeded)',
-    'math_sft_seeded': 'Math SFT (seeded)',
-    'code_sft_seeded': 'Code SFT (seeded)',
-}
+FUZZY_MAX_TOKENS = 8192
 
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s %(levelname)s %(message)s',
-    handlers=[
-        logging.StreamHandler(),
-        logging.FileHandler(RESULTS_DIR / 'eval_runner.log'),
-    ]
+    handlers=[logging.StreamHandler()],
 )
 log = logging.getLogger(__name__)
 
 
+def log_experiment(msg: str):
+    ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    LOG_FILE.parent.mkdir(parents=True, exist_ok=True)
+    with open(LOG_FILE, 'a') as f:
+        f.write(f"\n### {ts}\n{msg}\n")
+    log.info(msg)
+
+
 def check_memory():
-    """Log memory usage and warn if high."""
     try:
         with open('/sys/fs/cgroup/memory.current') as f:
             current = int(f.read().strip())
         with open('/sys/fs/cgroup/memory.max') as f:
             limit = int(f.read().strip())
         pct = current / limit * 100
-        used_gb = current / 1024**3
-        limit_gb = limit / 1024**3
         if pct > 80:
-            log.warning(f"HIGH MEMORY: {pct:.1f}% ({used_gb:.1f}GB / {limit_gb:.1f}GB)")
+            log.warning(f"HIGH MEMORY: {pct:.1f}% ({current/1024**3:.1f}GB / {limit/1024**3:.1f}GB)")
             gc.collect()
-        elif pct > 60:
-            log.info(f"Memory: {pct:.1f}% ({used_gb:.1f}GB / {limit_gb:.1f}GB)")
         return pct
     except Exception:
         return 0
-
-
-def log_experiment(msg: str):
-    ts = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    with open(LOG_FILE, 'a') as f:
-        f.write(f"\n### {ts}\n{msg}\n")
-    log.info(msg)
 
 
 # ── API helpers ─────────────────────────────────────────────────────────────
@@ -155,25 +136,18 @@ def parse_judge_score(response_text):
             return int(total), scores
         total = sum(v for v in scores.values() if isinstance(v, (int, float)))
         return total, scores
-    except:
+    except Exception:
         return None, {}
 
 
 # ── Tinker sampling ─────────────────────────────────────────────────────────
 
 async def sample_tinker(sampling_client, renderer, prompt, num_samples=1,
-                        max_tokens=2048, temperature=0.7, think_prefix=False,
-                        tokenizer=None):
+                        max_tokens=2048, temperature=0.7, messages=None):
     import tinker
-    messages = [{"role": "user", "content": prompt}]
+    if messages is None:
+        messages = [{"role": "user", "content": prompt}]
     model_input = renderer.build_generation_prompt(messages)
-
-    if think_prefix and tokenizer is not None:
-        # Append <think>\n tokens to force model into reasoning mode
-        prefix_tokens = tokenizer.encode("<think>\n", add_special_tokens=False)
-        for token_id in prefix_tokens:
-            model_input.append_int(token_id)
-
     response = await sampling_client.sample_async(
         model_input,
         num_samples=num_samples,
@@ -186,11 +160,7 @@ async def sample_tinker(sampling_client, renderer, prompt, num_samples=1,
     results = []
     for seq in response.sequences:
         parsed_msg, _ = renderer.parse_response(seq.tokens)
-        content = parsed_msg['content']
-        if think_prefix:
-            # Prepend the <think> tag since it was in the prefix (not in response tokens)
-            content = "<think>\n" + content
-        results.append(content)
+        results.append(parsed_msg['content'])
     return results
 
 
@@ -241,16 +211,11 @@ def run_test_in_subprocess(code, test_code, entry_point, timeout=30):
     import subprocess as _sp
     import resource as _resource
     full_code = code + "\n\n" + test_code
-    # Wrapper that sets resource limits inside the child process
     resource_wrapper = (
         "import resource, signal\n"
-        "# Memory limit: 512MB\n"
         "resource.setrlimit(resource.RLIMIT_AS, (512*1024*1024, 512*1024*1024))\n"
-        f"# CPU time limit: {timeout} seconds\n"
         f"resource.setrlimit(resource.RLIMIT_CPU, ({timeout}, {timeout}))\n"
-        "# Max file size: 10MB\n"
         "resource.setrlimit(resource.RLIMIT_FSIZE, (10*1024*1024, 10*1024*1024))\n"
-        "# Max processes: 32\n"
         "resource.setrlimit(resource.RLIMIT_NPROC, (32, 32))\n"
         f"signal.alarm({timeout})\n"
     )
@@ -280,6 +245,7 @@ def run_test_in_subprocess(code, test_code, entry_point, timeout=30):
         with open(tmppath, 'w') as f:
             f.write(runner_code)
         try:
+            import subprocess as _sp
             result = _sp.run(
                 [sys.executable, tmppath],
                 capture_output=True, text=True, timeout=timeout + 5,
@@ -294,41 +260,29 @@ def run_test_in_subprocess(code, test_code, entry_point, timeout=30):
                 return data['passed'], f"{data['total']-data['failures']}/{data['total']} tests passed"
             except Exception:
                 return False, f"parse error: {result.stdout[:200]}"
-        except _sp.TimeoutExpired:
-            return False, "timeout"
         except Exception as e:
+            if 'TimeoutExpired' in type(e).__name__:
+                return False, "timeout"
             return False, f"subprocess error: {str(e)[:200]}"
 
 
-# ── Generate completions ────────────────────────────────────────────────────
+# ── Evaluation functions ───────────────────────────────────────────────────
 
-async def generate_completion(session, semaphore, model_key, prompt,
-                              sampling_client=None, renderer=None,
-                              num_samples=1, temperature=0.7, max_tokens=2048,
-                              tokenizer=None):
-    """Generate completion(s) from a model. All models use Tinker (post-formatting-SFT)."""
-    is_seeded = model_key in SEEDED_MODELS
-    return await sample_tinker(sampling_client, renderer, prompt,
-                                num_samples=num_samples, max_tokens=max_tokens,
-                                temperature=temperature, think_prefix=is_seeded,
-                                tokenizer=tokenizer)
-
-
-# ── Per-domain evaluation ───────────────────────────────────────────────────
-
-async def eval_math(session, semaphore, model_key, math_ds,
-                    sampling_client=None, renderer=None, tokenizer=None):
-    """Evaluate on MATH-500 with parallel Tinker API calls."""
-    log_experiment(f"Evaluating {model_key} on MATH-500 (500 questions)")
+async def eval_math(semaphore, model_key, math_ds, sampling_client, renderer, max_tokens):
+    """Evaluate on MATH-500 using the same prompt format as training (1-shot strawberry prefix)."""
+    from tinker_cookbook.recipes.math_rl.math_env import MathEnv
+    fewshot_prefix = MathEnv.standard_fewshot_prefix()
+    question_suffix = MathEnv.question_suffix()
+    log_experiment(f"Evaluating {model_key} on MATH-500 ({len(math_ds)} questions, max_tokens={max_tokens})")
 
     async def _eval_one(i):
-        prompt = (f"Solve the following math problem. Show your work step by step and "
-                  f"put your final answer in \\boxed{{}}.\n\n{math_ds[i]['problem']}")
+        question = math_ds[i]['problem'] + question_suffix
+        messages = fewshot_prefix + [{"role": "user", "content": question}]
         async with semaphore:
             try:
                 completions = await sample_tinker(
-                    sampling_client, renderer, prompt, max_tokens=4096,
-                    think_prefix=(model_key in SEEDED_MODELS), tokenizer=tokenizer)
+                    sampling_client, renderer, None, max_tokens=max_tokens,
+                    messages=messages)
                 completion = completions[0]
             except Exception as e:
                 completion = f"ERROR: {e}"
@@ -339,37 +293,32 @@ async def eval_math(session, semaphore, model_key, math_ds,
             'raw_output': completion, 'correct': correct,
         }
 
-    # Run all questions in parallel (semaphore limits concurrency)
     tasks = [_eval_one(i) for i in range(len(math_ds))]
-    results = await asyncio.gather(*tasks)
-    results = list(results)
+    results = list(await asyncio.gather(*tasks))
     n_correct = sum(1 for r in results if r['correct'])
-    log_experiment(f"  {model_key} math: {n_correct}/500 ({n_correct/5:.1f}%)")
+    log_experiment(f"  {model_key} math: {n_correct}/{len(math_ds)} ({n_correct/len(math_ds)*100:.1f}%)")
     return results
 
 
-async def eval_code(session, semaphore, model_key, code_ds,
-                    sampling_client=None, renderer=None, tokenizer=None):
-    """Evaluate on BigCodeBench-500 with parallel Tinker API calls."""
-    log_experiment(f"Evaluating {model_key} on BigCodeBench (500 questions)")
+async def eval_code(semaphore, model_key, code_ds, sampling_client, renderer, max_tokens):
+    """Evaluate on BigCodeBench-500."""
+    log_experiment(f"Evaluating {model_key} on BigCodeBench ({len(code_ds)} questions, max_tokens={max_tokens})")
 
-    # Generate completions in parallel
     async def _gen_one(i):
         prompt = code_ds[i]['instruct_prompt']
         async with semaphore:
             try:
                 results = await sample_tinker(
-                    sampling_client, renderer, prompt, max_tokens=4096,
-                    think_prefix=(model_key in SEEDED_MODELS), tokenizer=tokenizer)
+                    sampling_client, renderer, prompt, max_tokens=max_tokens)
                 return results[0]
             except Exception as e:
                 return f"ERROR: {e}"
 
     gen_tasks = [_gen_one(i) for i in range(len(code_ds))]
     completions = list(await asyncio.gather(*gen_tasks))
-    log.info(f"  {model_key} code generation: {len(completions)}/500 done")
+    log.info(f"  {model_key} code generation: {len(completions)}/{len(code_ds)} done")
 
-    # Run unit tests in parallel
+    # Run unit tests in parallel with resource limits
     log.info(f"  {model_key} code: running unit tests...")
     test_results = {}
     non_error_jobs = []
@@ -399,7 +348,7 @@ async def eval_code(session, semaphore, model_key, code_ds,
                 'raw_output': completion, 'passed': False, 'test_details': 'API error',
             })
         else:
-            passed, details, code = test_results[i]
+            passed, details, code = test_results.get(i, (False, 'not tested', ''))
             results.append({
                 'model': model_key, 'dataset': 'code', 'question_id': i,
                 'raw_output': completion, 'code_extracted': code[:500],
@@ -407,13 +356,12 @@ async def eval_code(session, semaphore, model_key, code_ds,
             })
 
     n_passed = sum(1 for r in results if r['passed'])
-    log_experiment(f"  {model_key} code: {n_passed}/500 ({n_passed/5:.1f}%)")
+    log_experiment(f"  {model_key} code: {n_passed}/{len(code_ds)} ({n_passed/len(code_ds)*100:.1f}%)")
     return results
 
 
-async def eval_fuzzy(session, semaphore, model_key,
-                     sampling_client=None, renderer=None, tokenizer=None):
-    """Evaluate on philosophy + weird questions + futuristic tech with N=10 samples per question."""
+async def eval_fuzzy(session, semaphore, model_key, sampling_client, renderer):
+    """Evaluate on philosophy + weird questions + futuristic tech."""
     with open('/workspace/fuzzy-evals/dataset_jsons/philosophy_questions.json') as f:
         phil_data = json.load(f)
     with open('/workspace/fuzzy-evals/dataset_jsons/weird_questions.json') as f:
@@ -434,7 +382,6 @@ async def eval_fuzzy(session, semaphore, model_key,
         n_total = len(questions) * N_FUZZY_SAMPLES
         log_experiment(f"Evaluating {model_key} on {ds_name}: {len(questions)}Q x {N_FUZZY_SAMPLES}S = {n_total}")
 
-        # Generate N samples per question (parallel)
         async def _gen_fuzzy(q_idx, q):
             prompt = f"Answer the following question.\n\n{q[q_key]}"
             async with semaphore:
@@ -442,8 +389,7 @@ async def eval_fuzzy(session, semaphore, model_key,
                     samples = await sample_tinker(
                         sampling_client, renderer, prompt,
                         num_samples=N_FUZZY_SAMPLES, temperature=0.7,
-                        max_tokens=8192,
-                        think_prefix=(model_key in SEEDED_MODELS), tokenizer=tokenizer)
+                        max_tokens=FUZZY_MAX_TOKENS)
                     return list(samples)
                 except Exception as e:
                     return [f"ERROR: {e}"] * N_FUZZY_SAMPLES
@@ -451,7 +397,6 @@ async def eval_fuzzy(session, semaphore, model_key,
         fuzzy_tasks = [_gen_fuzzy(q_idx, q) for q_idx, q in enumerate(questions)]
         all_completions = list(await asyncio.gather(*fuzzy_tasks))
 
-        # Judge all completions
         if ds_name == 'philosophy':
             sys_msg = "You are grading a philosophical answer for quality of argumentation and exposition."
         elif ds_name == 'futuristic_tech':
@@ -487,7 +432,6 @@ async def eval_fuzzy(session, semaphore, model_key,
                                                        semaphore=semaphore))
                 judge_map.append((q_idx, s_idx))
 
-        # Batch judge calls
         judge_responses = []
         batch_size = 30
         for i in range(0, len(judge_tasks), batch_size):
@@ -501,7 +445,7 @@ async def eval_fuzzy(session, semaphore, model_key,
         for (q_idx, s_idx), judge_resp in zip(judge_map, judge_responses):
             q = questions[q_idx]
             completion = all_completions[q_idx][s_idx]
-            score, sub_scores = parse_judge_score(judge_resp) if not judge_resp.startswith("ERROR:") else (None, {})
+            score, sub_scores = parse_judge_score(judge_resp) if not str(judge_resp).startswith("ERROR:") else (None, {})
             result = {
                 'model': model_key, 'dataset': ds_name,
                 'question_id': q_idx, 'sample_id': s_idx,
@@ -522,25 +466,20 @@ async def eval_fuzzy(session, semaphore, model_key,
 
 # ── Plotting ────────────────────────────────────────────────────────────────
 
-def generate_comparison_plot(df):
-    """Generate 8-model grouped bar chart (5 normal + 3 seeded)."""
+def generate_comparison_plot(df, model_keys, model_display):
+    """Generate base vs best_rlvr comparison bar chart."""
     datasets_list = ['math', 'code', 'philosophy', 'weird_questions', 'futuristic_tech']
-    dataset_labels = ['Math\n(MATH-500)', 'Code\n(BigCodeBench)', 'Philosophy\n(10Q x 10S)', 'Weird Questions\n(46Q x 10S)', 'Futuristic Tech\n(10Q x 10S)']
-    # Solid colors for normal, hatched lighter variants for seeded
-    colors = {
-        'base': '#4ECDC4', 'math_rlvr': '#FF6B6B', 'code_rlvr': '#45B7D1',
-        'math_sft': '#96CEB4', 'code_sft': '#FFEAA7',
-        'base_seeded': '#4ECDC4', 'math_sft_seeded': '#96CEB4', 'code_sft_seeded': '#FFEAA7',
-    }
-    hatches = {k: '//' if k in SEEDED_MODELS else '' for k in MODEL_KEYS}
+    dataset_labels = ['Math\n(MATH-500)', 'Code\n(BigCodeBench)', 'Philosophy\n(10Q x 10S)',
+                      'Weird Questions\n(46Q x 10S)', 'Futuristic Tech\n(10Q x 10S)']
+    colors = {'base': '#4ECDC4', 'best_rlvr': '#FF6B6B'}
 
-    fig, ax = plt.subplots(figsize=(16, 7))
+    fig, ax = plt.subplots(figsize=(12, 6))
     x = np.arange(len(datasets_list))
-    n_models = len(MODEL_KEYS)
-    width = 0.10
+    n_models = len(model_keys)
+    width = 0.30
     offsets = np.linspace(-(n_models-1)*width/2, (n_models-1)*width/2, n_models)
 
-    for model_idx, model_key in enumerate(MODEL_KEYS):
+    for model_idx, model_key in enumerate(model_keys):
         means = []
         ses = []
         for ds in datasets_list:
@@ -551,7 +490,7 @@ def generate_comparison_plot(df):
             if ds in ['math', 'code']:
                 col = 'correct' if ds == 'math' else 'passed'
                 acc = model_df[col].mean() * 100
-                se = np.sqrt(acc * (100 - acc) / len(model_df))
+                se = np.sqrt(acc * (100 - acc) / len(model_df)) if len(model_df) > 0 else 0
                 means.append(acc); ses.append(se)
             else:
                 valid = model_df[model_df['score'].notna()]
@@ -559,30 +498,30 @@ def generate_comparison_plot(df):
                     means.append(0); ses.append(0); continue
                 q_means = valid.groupby('question_id')['score'].mean()
                 means.append(q_means.mean())
-                ses.append(q_means.std() / np.sqrt(len(q_means)))
+                ses.append(q_means.std() / np.sqrt(len(q_means)) if len(q_means) > 1 else 0)
 
         bars = ax.bar(x + offsets[model_idx], means, width, yerr=ses,
-                      label=MODEL_DISPLAY[model_key], color=colors[model_key],
-                      hatch=hatches[model_key],
-                      capsize=2, edgecolor='black', linewidth=0.3)
+                      label=model_display[model_key], color=colors.get(model_key, '#999999'),
+                      capsize=3, edgecolor='black', linewidth=0.5)
 
         for i, (m, se) in enumerate(zip(means, ses)):
             if m > 0:
                 suffix = '%' if datasets_list[i] in ['math', 'code'] else ''
-                ax.text(x[i] + offsets[model_idx], m + se + 0.3, f'{m:.1f}{suffix}',
-                        ha='center', va='bottom', fontsize=6, rotation=45)
+                ax.text(x[i] + offsets[model_idx], m + se + 0.5, f'{m:.1f}{suffix}',
+                        ha='center', va='bottom', fontsize=9, fontweight='bold')
 
     ax.set_xlabel('Evaluation Domain', fontsize=12)
     ax.set_ylabel('Score', fontsize=12)
-    ax.set_title('RLVR vs SFT: Math & Code Training Transfer (+ <think> Seeded Inference)\n'
-                 'Math/Code: Accuracy (%) | Fuzzy: Mean Rubric Score (0-48)\n'
-                 'Hatched bars = seeded with <think> prefix', fontsize=11)
+    ax.set_title('Base vs Best RLVR Model Comparison\n'
+                 'Math/Code: Accuracy (%) | Fuzzy: Mean Rubric Score',
+                 fontsize=13)
     ax.set_xticks(x)
     ax.set_xticklabels(dataset_labels)
-    ax.legend(fontsize=7, loc='upper right', ncol=2)
+    ax.legend(fontsize=10, loc='upper right')
     ax.grid(axis='y', alpha=0.3)
     plt.tight_layout()
-    plot_path = RESULTS_DIR / 'plots' / 'comparison_plot.png'
+
+    plot_path = EVAL_DIR / 'base_vs_rlvr_comparison.png'
     plt.savefig(plot_path, dpi=150)
     plt.close()
     log_experiment(f"Saved plot: {plot_path}")
@@ -590,12 +529,100 @@ def generate_comparison_plot(df):
 
 # ── Main ────────────────────────────────────────────────────────────────────
 
+def find_best_checkpoint(config_dir: Path):
+    """Find the checkpoint step with highest test accuracy from training metrics."""
+    metrics_file = config_dir / 'metrics.jsonl'
+    if not metrics_file.exists():
+        return None
+
+    best_step = None
+    best_acc = -1
+    with open(metrics_file) as f:
+        for line in f:
+            try:
+                d = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if 'test/env/all/correct' in d:
+                acc = d['test/env/all/correct']
+                step = d.get('progress/batch', -1)
+                if acc > best_acc:
+                    best_acc = acc
+                    best_step = step
+
+    if best_step is None:
+        return None
+
+    # Find the checkpoint path for this step
+    ckpt_file = config_dir / 'checkpoints.jsonl'
+    if not ckpt_file.exists():
+        return None
+
+    # Find closest checkpoint at or after the best step
+    checkpoints = []
+    with open(ckpt_file) as f:
+        for line in f:
+            try:
+                checkpoints.append(json.loads(line))
+            except json.JSONDecodeError:
+                continue
+
+    # Look for exact match or closest checkpoint
+    best_ckpt = None
+    for ckpt in checkpoints:
+        ckpt_step = ckpt.get('batch', -1)
+        if ckpt_step == best_step and 'sampler_path' in ckpt:
+            best_ckpt = ckpt
+            break
+
+    # If no exact match, find closest checkpoint with sampler_path
+    if best_ckpt is None:
+        valid_ckpts = [c for c in checkpoints if 'sampler_path' in c]
+        if valid_ckpts:
+            best_ckpt = min(valid_ckpts, key=lambda c: abs(c.get('batch', 0) - best_step))
+
+    if best_ckpt is None:
+        return None
+
+    return {
+        'step': best_step,
+        'accuracy': best_acc,
+        'sampler_path': best_ckpt['sampler_path'],
+        'checkpoint_step': best_ckpt.get('batch', -1),
+    }
+
+
 async def main():
     import tinker
-    from tinker_cookbook import renderers, model_info, checkpoint_utils
+    from tinker_cookbook import renderers, model_info
     from tinker_cookbook.tokenizer_utils import get_tokenizer
 
-    log_experiment("# Evaluation Sweep: 5 models x 4 domains")
+    parser = argparse.ArgumentParser(description='Evaluate sweep winner + base')
+    parser.add_argument('--winner', type=str, required=True,
+                        help='Winning config name (e.g., A_moderate)')
+    parser.add_argument('--max_tokens', type=int, required=True,
+                        help='Max tokens for code eval (same as training)')
+    args = parser.parse_args()
+
+    EVAL_DIR.mkdir(parents=True, exist_ok=True)
+
+    winner_dir = RESULTS_DIR / args.winner
+    if not winner_dir.exists():
+        print(f"ERROR: Winner directory {winner_dir} does not exist")
+        sys.exit(1)
+
+    # Find best checkpoint
+    best_ckpt = find_best_checkpoint(winner_dir)
+    if best_ckpt is None:
+        print(f"ERROR: Could not find best checkpoint for {args.winner}")
+        sys.exit(1)
+
+    log_experiment(f"# Final Evaluation: Base vs {args.winner}")
+    log_experiment(f"Best RLVR checkpoint: step {best_ckpt['step']} "
+                   f"(train eval acc: {best_ckpt['accuracy']*100:.1f}%, "
+                   f"checkpoint at step {best_ckpt['checkpoint_step']})")
+    log_experiment(f"Code eval max_tokens: {args.max_tokens}")
+    log_experiment(f"Fuzzy eval max_tokens: {FUZZY_MAX_TOKENS}")
 
     # Load eval datasets
     from datasets import load_dataset
@@ -604,45 +631,24 @@ async def main():
     log_experiment(f"Loaded MATH-500 ({len(math_ds)}) and BigCodeBench ({len(code_ds)})")
 
     # Set up renderer
-    model_name = "meta-llama/Llama-3.1-8B-Instruct"
-    renderer_name = model_info.get_recommended_renderer_name(model_name)
-    tokenizer = get_tokenizer(model_name)
+    renderer_name = model_info.get_recommended_renderer_name(MODEL_NAME)
+    tokenizer = get_tokenizer(MODEL_NAME)
     renderer = renderers.get_renderer(renderer_name, tokenizer)
 
-    # Set up Tinker sampling clients for format-SFT'd models
+    # Create sampling clients
     service_client = tinker.ServiceClient()
-    sampling_clients = {}
-    available_models = []
-    # Load sampling clients for non-seeded models
-    base_model_keys = [k for k in MODEL_KEYS if k not in SEEDED_MODELS]
-    for model_key in base_model_keys:
-        if model_key == 'base':
-            fmt_path = RESULTS_DIR / 'training' / 'format_sft' / 'base'
-        else:
-            fmt_path = RESULTS_DIR / 'training' / 'format_sft' / model_key
 
-        ckpt_file = fmt_path / 'checkpoints.jsonl'
-        if not ckpt_file.exists():
-            log_experiment(f"  {model_key}: SKIPPED (formatting SFT not yet done)")
-            continue
+    # Base model
+    base_client = service_client.create_sampling_client(base_model=MODEL_NAME)
+    log_experiment(f"  base: loaded from {MODEL_NAME}")
 
-        ckpt = checkpoint_utils.get_last_checkpoint(str(fmt_path))
-        sampler_path = ckpt['sampler_path']
-        sampling_clients[model_key] = service_client.create_sampling_client(model_path=sampler_path)
-        available_models.append(model_key)
-        log_experiment(f"  {model_key}: loaded from {sampler_path}")
+    # Best RLVR model
+    rlvr_client = service_client.create_sampling_client(model_path=best_ckpt['sampler_path'])
+    log_experiment(f"  best_rlvr: loaded from {best_ckpt['sampler_path']}")
 
-    # Seeded models reuse the same sampling client as their base
-    for seeded_key, base_key in SEEDED_MODELS.items():
-        if base_key in sampling_clients:
-            sampling_clients[seeded_key] = sampling_clients[base_key]
-            available_models.append(seeded_key)
-            log_experiment(f"  {seeded_key}: using same client as {base_key} (with <think> prefix)")
-        else:
-            log_experiment(f"  {seeded_key}: SKIPPED (base model not available)")
-
-    eval_model_keys = [k for k in MODEL_KEYS if k in available_models]
-    log_experiment(f"Evaluating models: {eval_model_keys}")
+    model_keys = ['base', 'best_rlvr']
+    model_display = {'base': 'Base (Llama-3.1-8B-Instruct)', 'best_rlvr': f'Best RLVR ({args.winner})'}
+    clients = {'base': base_client, 'best_rlvr': rlvr_client}
 
     semaphore = asyncio.Semaphore(10)
     all_results = []
@@ -658,17 +664,13 @@ async def main():
         log_experiment(f"Resuming: {len(all_results)} existing results. Completed: {completed}")
 
     async with aiohttp.ClientSession() as session:
-        for model_key in eval_model_keys:
-            sc = sampling_clients[model_key]
-            is_seeded = model_key in SEEDED_MODELS
+        for model_key in model_keys:
+            sc = clients[model_key]
 
-            # Math — skip for seeded models (think seeding only for fuzzy evals)
-            if is_seeded:
-                log_experiment(f"  {model_key} math: SKIPPED (seeded models only run fuzzy evals)")
-            elif (model_key, 'math') not in completed:
-                results = await eval_math(session, semaphore, model_key, math_ds,
-                                          sampling_client=sc, renderer=renderer,
-                                          tokenizer=tokenizer)
+            # MATH-500
+            if (model_key, 'math') not in completed:
+                results = await eval_math(semaphore, model_key, math_ds, sc, renderer,
+                                          max_tokens=args.max_tokens)
                 all_results.extend(results)
                 pd.DataFrame(all_results).to_parquet(partial_path, index=False)
                 check_memory()
@@ -676,13 +678,10 @@ async def main():
             else:
                 log_experiment(f"  {model_key} math: SKIPPED (done)")
 
-            # Code — skip for seeded models
-            if is_seeded:
-                log_experiment(f"  {model_key} code: SKIPPED (seeded models only run fuzzy evals)")
-            elif (model_key, 'code') not in completed:
-                results = await eval_code(session, semaphore, model_key, code_ds,
-                                          sampling_client=sc, renderer=renderer,
-                                          tokenizer=tokenizer)
+            # BigCodeBench
+            if (model_key, 'code') not in completed:
+                results = await eval_code(semaphore, model_key, code_ds, sc, renderer,
+                                          max_tokens=args.max_tokens)
                 all_results.extend(results)
                 pd.DataFrame(all_results).to_parquet(partial_path, index=False)
                 check_memory()
@@ -690,12 +689,13 @@ async def main():
             else:
                 log_experiment(f"  {model_key} code: SKIPPED (done)")
 
-            # Fuzzy (philosophy + weird_questions + futuristic_tech)
-            fuzzy_done = (model_key, 'philosophy') in completed and (model_key, 'weird_questions') in completed and (model_key, 'futuristic_tech') in completed
+            # Fuzzy tasks
+            fuzzy_done = all(
+                (model_key, ds) in completed
+                for ds in ['philosophy', 'weird_questions', 'futuristic_tech']
+            )
             if not fuzzy_done:
-                results = await eval_fuzzy(session, semaphore, model_key,
-                                           sampling_client=sc, renderer=renderer,
-                                           tokenizer=tokenizer)
+                results = await eval_fuzzy(session, semaphore, model_key, sc, renderer)
                 all_results.extend(results)
                 pd.DataFrame(all_results).to_parquet(partial_path, index=False)
                 check_memory()
@@ -708,31 +708,62 @@ async def main():
     df.to_parquet(EVAL_DIR / 'eval_scores.parquet', index=False)
 
     # Generate plot
-    generate_comparison_plot(df)
+    generate_comparison_plot(df, model_keys, model_display)
 
-    # Summary
-    log_experiment("## Summary")
-    for model_key in MODEL_KEYS:
+    # Print summary
+    log_experiment("\n## Final Summary")
+    log_experiment(f"{'Model':<30} {'Math':>8} {'Code':>8} {'Phil':>8} {'Weird':>8} {'FuturTech':>10}")
+    log_experiment(f"{'-'*30} {'-'*8} {'-'*8} {'-'*8} {'-'*8} {'-'*10}")
+
+    for model_key in model_keys:
         model_df = df[df['model'] == model_key]
-        summary_parts = []
+        parts = []
         for ds in ['math', 'code', 'philosophy', 'weird_questions', 'futuristic_tech']:
             ds_df = model_df[model_df['dataset'] == ds]
             if len(ds_df) == 0:
+                parts.append('   -   ')
                 continue
             if ds == 'math':
                 acc = ds_df['correct'].mean() * 100
-                summary_parts.append(f"math={acc:.1f}%")
+                parts.append(f"{acc:6.1f}%")
             elif ds == 'code':
                 acc = ds_df['passed'].mean() * 100
-                summary_parts.append(f"code={acc:.1f}%")
+                parts.append(f"{acc:6.1f}%")
             else:
                 valid = ds_df[ds_df['score'].notna()]
                 if len(valid) > 0:
                     q_means = valid.groupby('question_id')['score'].mean()
-                    summary_parts.append(f"{ds}={q_means.mean():.1f}±{q_means.std()/np.sqrt(len(q_means)):.1f}")
-        log_experiment(f"  {model_key}: {' | '.join(summary_parts)}")
+                    parts.append(f"{q_means.mean():7.1f}")
+                else:
+                    parts.append('   -   ')
 
-    log_experiment("# Evaluation sweep complete")
+        display = model_display[model_key]
+        log_experiment(f"{display:<30} {'  '.join(parts)}")
+
+    # Print deltas
+    log_experiment("\n## Deltas (RLVR - Base)")
+    for ds in ['math', 'code', 'philosophy', 'weird_questions', 'futuristic_tech']:
+        base_df = df[(df['model'] == 'base') & (df['dataset'] == ds)]
+        rlvr_df = df[(df['model'] == 'best_rlvr') & (df['dataset'] == ds)]
+        if len(base_df) == 0 or len(rlvr_df) == 0:
+            continue
+        if ds in ['math', 'code']:
+            col = 'correct' if ds == 'math' else 'passed'
+            base_val = base_df[col].mean() * 100
+            rlvr_val = rlvr_df[col].mean() * 100
+            delta = rlvr_val - base_val
+            log_experiment(f"  {ds}: {base_val:.1f}% -> {rlvr_val:.1f}% ({delta:+.1f}pp)")
+        else:
+            base_valid = base_df[base_df['score'].notna()]
+            rlvr_valid = rlvr_df[rlvr_df['score'].notna()]
+            if len(base_valid) > 0 and len(rlvr_valid) > 0:
+                base_val = base_valid.groupby('question_id')['score'].mean().mean()
+                rlvr_val = rlvr_valid.groupby('question_id')['score'].mean().mean()
+                delta = rlvr_val - base_val
+                log_experiment(f"  {ds}: {base_val:.2f} -> {rlvr_val:.2f} ({delta:+.2f})")
+
+    log_experiment("\n# Final evaluation complete")
+    log_experiment(f"Results saved to {EVAL_DIR}")
 
 
 if __name__ == '__main__':

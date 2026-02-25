@@ -55,7 +55,7 @@ async def run_formatting_sft_for_model(model_key: str):
         model_name_for_tokenizer=MODEL_NAME,
         renderer_name=renderer_name,
         max_length=4096,
-        batch_size=10,  # 100 examples / 10 = 10 batches = 10 steps
+        batch_size=3,  # 30 examples / 3 = 10 batches = 10 steps
     )
 
     dataset_builder = FromConversationFileBuilder(

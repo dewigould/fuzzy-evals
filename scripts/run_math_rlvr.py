@@ -10,7 +10,7 @@ load_dotenv('/workspace/.env')
 sys.path.insert(0, '/workspace/tinker-cookbook')
 
 from tinker_cookbook.recipes.math_rl.math_env import get_math_dataset_builder
-from tinker_cookbook.rl.train import Config, main as train_main
+from tinker_cookbook.rl.train import Config, KLReferenceConfig, main as train_main
 from tinker_cookbook import model_info
 
 MODEL_NAME = "meta-llama/Llama-3.1-8B-Instruct"
@@ -22,7 +22,7 @@ def main():
 
     dataset_builder = get_math_dataset_builder(
         dataset_name="math",
-        batch_size=24,       # ~12000/24 = 500 batches
+        batch_size=48,       # ~12000/48 = 250 batches
         model_name_for_tokenizer=MODEL_NAME,
         renderer_name=renderer_name,
         group_size=4,
@@ -34,11 +34,13 @@ def main():
         dataset_builder=dataset_builder,
         model_name=MODEL_NAME,
         lora_rank=32,
-        max_tokens=512,
+        max_tokens=2048,
         temperature=1.0,
         log_path=LOG_PATH,
         save_every=50,
         eval_every=50,
+        kl_penalty_coef=0.02,
+        kl_reference_config=KLReferenceConfig(base_model=MODEL_NAME),
     )
 
     asyncio.run(train_main(config))

@@ -1,0 +1,16 @@
+{
+  "math": {
+    "config": "D_long",
+    "best_nll": 0.32682469487190247,
+    "best_step": 1800,
+    "sampler_path": "tinker://20cab21e-fd37-5d46-92b3-3a9e0855bb90:train:0/sampler_weights/001800",
+    "ckpt_step": 1800
+  },
+  "code": {
+    "config": "D_long",
+    "best_nll": 0.544192910194397,
+    "best_step": 1900,
+    "sampler_path": "tinker://f136a2a0-f167-53f9-9e81-db0a13641117:train:0/sampler_weights/001900",
+    "ckpt_step": 1900
+  }
+}
