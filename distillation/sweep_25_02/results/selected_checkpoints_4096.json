@@ -1,0 +1,362 @@
+[
+  {
+    "run_name": "llama8b_base_math_sonnet_4096_r32_lr2e-4",
+    "step": 80,
+    "sampler_path": "tinker://b2af6b77-9f9b-520f-956c-df23e393ef34:train:0/sampler_weights/000080",
+    "math_500": 31.0,
+    "mbppplus": 23.0,
+    "base_short": "llama8b_base",
+    "task": "math",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "llama8b_base_math_qwen_4096_r32_lr2e-4",
+    "step": 40,
+    "sampler_path": "tinker://5c06de2a-d7ed-5362-b032-ee814a03db55:train:0/sampler_weights/000040",
+    "math_500": 25.0,
+    "mbppplus": 34.0,
+    "base_short": "llama8b_base",
+    "task": "math",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "llama8b_base_math_kimi_4096_r32_lr2e-4",
+    "step": 160,
+    "sampler_path": "tinker://2ea4ad1d-3984-52b3-88a0-d762f573c684:train:0/sampler_weights/000160",
+    "math_500": 30.0,
+    "mbppplus": 42.0,
+    "base_short": "llama8b_base",
+    "task": "math",
+    "traces": "kimi"
+  },
+  {
+    "run_name": "llama8b_base_code_sonnet_4096_r32_lr2e-4",
+    "step": 180,
+    "sampler_path": "tinker://cd5298ea-5e32-5588-8bec-c344e28dae84:train:0/sampler_weights/final",
+    "math_500": 16.0,
+    "mbppplus": 53.0,
+    "base_short": "llama8b_base",
+    "task": "code",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "llama8b_base_code_qwen_4096_r32_lr2e-4",
+    "step": 140,
+    "sampler_path": "tinker://cdf4d11f-9a0b-5e67-8af5-78e99007894d:train:0/sampler_weights/000140",
+    "math_500": 2.0,
+    "mbppplus": 42.0,
+    "base_short": "llama8b_base",
+    "task": "code",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "llama8b_base_code_kimi_4096_r32_lr2e-4",
+    "step": 60,
+    "sampler_path": "tinker://820b9260-0790-5101-95af-5f596e89d5d6:train:0/sampler_weights/000060",
+    "math_500": 7.000000000000001,
+    "mbppplus": 55.00000000000001,
+    "base_short": "llama8b_base",
+    "task": "code",
+    "traces": "kimi"
+  },
+  {
+    "run_name": "llama8b_it_math_sonnet_4096_r32_lr2e-4",
+    "step": 80,
+    "sampler_path": "tinker://80484cb9-004d-539a-ad8d-1b3dce88c23f:train:0/sampler_weights/000080",
+    "math_500": 56.99999999999999,
+    "mbppplus": 54.0,
+    "base_short": "llama8b_it",
+    "task": "math",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "llama8b_it_math_qwen_4096_r32_lr2e-4",
+    "step": 100,
+    "sampler_path": "tinker://5528e5b1-dea7-59a8-8e7a-84231cec8a55:train:0/sampler_weights/000100",
+    "math_500": 44.0,
+    "mbppplus": 52.0,
+    "base_short": "llama8b_it",
+    "task": "math",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "llama8b_it_math_kimi_4096_r32_lr2e-4",
+    "step": 100,
+    "sampler_path": "tinker://e8101231-4acd-5f6e-b933-816bdb3cdae3:train:0/sampler_weights/000100",
+    "math_500": 47.0,
+    "mbppplus": 50.0,
+    "base_short": "llama8b_it",
+    "task": "math",
+    "traces": "kimi"
+  },
+  {
+    "run_name": "llama8b_it_code_sonnet_4096_r32_lr2e-4",
+    "step": 80,
+    "sampler_path": "tinker://941eb100-e44a-5a76-ba87-d23aa2ab87ab:train:0/sampler_weights/000080",
+    "math_500": 5.0,
+    "mbppplus": 52.0,
+    "base_short": "llama8b_it",
+    "task": "code",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "llama8b_it_code_qwen_4096_r32_lr2e-4",
+    "step": 20,
+    "sampler_path": "tinker://94300a8d-1fe9-5b9a-8031-03e9299b88ab:train:0/sampler_weights/000020",
+    "math_500": 46.0,
+    "mbppplus": 49.0,
+    "base_short": "llama8b_it",
+    "task": "code",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "llama8b_it_code_kimi_4096_r32_lr2e-4",
+    "step": 80,
+    "sampler_path": "tinker://d2cb01df-9662-5ab2-a106-88d492fefa7f:train:0/sampler_weights/000080",
+    "math_500": 42.0,
+    "mbppplus": 56.99999999999999,
+    "base_short": "llama8b_it",
+    "task": "code",
+    "traces": "kimi"
+  },
+  {
+    "run_name": "llama70b_it_math_sonnet_4096_r32_lr2e-4",
+    "step": 120,
+    "sampler_path": "tinker://318a701e-60b8-521f-a148-13a96484e956:train:0/sampler_weights/000120",
+    "math_500": 79.0,
+    "mbppplus": 69.0,
+    "base_short": "llama70b_it",
+    "task": "math",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "llama70b_it_math_qwen_4096_r32_lr2e-4",
+    "step": 160,
+    "sampler_path": "tinker://ca96c6db-982d-5905-9de8-47e1c15c91b2:train:0/sampler_weights/000160",
+    "math_500": 76.0,
+    "mbppplus": 67.0,
+    "base_short": "llama70b_it",
+    "task": "math",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "llama70b_it_math_kimi_4096_r32_lr2e-4",
+    "step": 40,
+    "sampler_path": "tinker://0242af20-c937-57f6-a7f4-efa987465e91:train:0/sampler_weights/000040",
+    "math_500": 69.0,
+    "mbppplus": 66.0,
+    "base_short": "llama70b_it",
+    "task": "math",
+    "traces": "kimi"
+  },
+  {
+    "run_name": "llama70b_it_code_sonnet_4096_r32_lr2e-4",
+    "step": 20,
+    "sampler_path": "tinker://4cfec022-45e1-59c2-a596-e6e52f4b1613:train:0/sampler_weights/000020",
+    "math_500": 67.0,
+    "mbppplus": 72.0,
+    "base_short": "llama70b_it",
+    "task": "code",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "llama70b_it_code_qwen_4096_r32_lr2e-4",
+    "step": 80,
+    "sampler_path": "tinker://2e6ad2bf-0fb3-5721-b20f-6708d4a4b6cb:train:0/sampler_weights/000080",
+    "math_500": 21.0,
+    "mbppplus": 59.0,
+    "base_short": "llama70b_it",
+    "task": "code",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "llama70b_it_code_kimi_4096_r32_lr2e-4",
+    "step": 40,
+    "sampler_path": "tinker://014d858a-0f7c-5055-b0b2-68b98df3cedb:train:0/sampler_weights/000040",
+    "math_500": 73.0,
+    "mbppplus": 72.0,
+    "base_short": "llama70b_it",
+    "task": "code",
+    "traces": "kimi"
+  },
+  {
+    "run_name": "qwen8b_base_math_sonnet_4096_r32_lr2e-4",
+    "step": 120,
+    "sampler_path": "tinker://58a36584-68c4-5130-8b76-9c0769ddbb21:train:0/sampler_weights/000120",
+    "math_500": 80.0,
+    "mbppplus": 68.0,
+    "base_short": "qwen8b_base",
+    "task": "math",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "qwen8b_base_math_qwen_4096_r32_lr2e-4",
+    "step": 160,
+    "sampler_path": "tinker://4492dfc1-ca9b-586b-8c86-10dd73cf0349:train:0/sampler_weights/000160",
+    "math_500": 67.0,
+    "mbppplus": 61.0,
+    "base_short": "qwen8b_base",
+    "task": "math",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "qwen8b_base_math_kimi_4096_r32_lr2e-4",
+    "step": 180,
+    "sampler_path": "tinker://f7e5c352-6722-5962-8b32-13c18cb56412:train:0/sampler_weights/final",
+    "math_500": 69.0,
+    "mbppplus": 60.0,
+    "base_short": "qwen8b_base",
+    "task": "math",
+    "traces": "kimi"
+  },
+  {
+    "run_name": "qwen8b_base_code_sonnet_4096_r32_lr2e-4",
+    "step": 40,
+    "sampler_path": "tinker://e9c044e3-1b90-552c-9689-4a9ab50e165c:train:0/sampler_weights/000040",
+    "math_500": 77.0,
+    "mbppplus": 73.0,
+    "base_short": "qwen8b_base",
+    "task": "code",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "qwen8b_base_code_qwen_4096_r32_lr2e-4",
+    "step": 80,
+    "sampler_path": "tinker://91e06382-c37d-5f66-b096-170f86b65cb1:train:0/sampler_weights/000080",
+    "math_500": 77.0,
+    "mbppplus": 45.0,
+    "base_short": "qwen8b_base",
+    "task": "code",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "qwen8b_base_code_kimi_4096_r32_lr2e-4",
+    "step": 140,
+    "sampler_path": "tinker://3dad05f9-c6e4-5ca9-b709-cb3e162177f9:train:0/sampler_weights/000140",
+    "math_500": 88.0,
+    "mbppplus": 66.0,
+    "base_short": "qwen8b_base",
+    "task": "code",
+    "traces": "kimi"
+  },
+  {
+    "run_name": "qwen30b_base_math_sonnet_4096_r32_lr2e-4",
+    "step": 100,
+    "sampler_path": "tinker://1ba3e67c-9502-56c6-9d72-4ae2b6ac7fe3:train:0/sampler_weights/000100",
+    "math_500": 89.0,
+    "mbppplus": 71.0,
+    "base_short": "qwen30b_base",
+    "task": "math",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "qwen30b_base_math_qwen_4096_r32_lr2e-4",
+    "step": 120,
+    "sampler_path": "tinker://63a57f93-1c1e-5457-8345-56feb857e83b:train:0/sampler_weights/000120",
+    "math_500": 72.0,
+    "mbppplus": 66.0,
+    "base_short": "qwen30b_base",
+    "task": "math",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "qwen30b_base_math_kimi_4096_r32_lr2e-4",
+    "step": 140,
+    "sampler_path": "tinker://c65134c4-84ed-541b-8b43-f44c9b0dbaad:train:0/sampler_weights/000140",
+    "math_500": 78.0,
+    "mbppplus": 69.0,
+    "base_short": "qwen30b_base",
+    "task": "math",
+    "traces": "kimi"
+  },
+  {
+    "run_name": "qwen30b_base_code_sonnet_4096_r32_lr2e-4",
+    "step": 80,
+    "sampler_path": "tinker://839297ce-c122-54e9-bc82-0160eff02fe9:train:0/sampler_weights/000080",
+    "math_500": 83.0,
+    "mbppplus": 75.0,
+    "base_short": "qwen30b_base",
+    "task": "code",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "qwen30b_base_code_qwen_4096_r32_lr2e-4",
+    "step": 180,
+    "sampler_path": "tinker://f572ad01-c3a5-5cf5-a5ed-a2fb18725033:train:0/sampler_weights/final",
+    "math_500": 87.0,
+    "mbppplus": 56.99999999999999,
+    "base_short": "qwen30b_base",
+    "task": "code",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "qwen30b_base_code_kimi_4096_r32_lr2e-4",
+    "step": 40,
+    "sampler_path": "tinker://03475f00-8f44-50da-849c-2bae2bfe563a:train:0/sampler_weights/000040",
+    "math_500": 87.0,
+    "mbppplus": 72.0,
+    "base_short": "qwen30b_base",
+    "task": "code",
+    "traces": "kimi"
+  },
+  {
+    "run_name": "qwen30b_it_math_sonnet_4096_r32_lr2e-4",
+    "step": 180,
+    "sampler_path": "tinker://c990fd88-6608-50f4-8654-9077edc354ca:train:0/sampler_weights/final",
+    "math_500": 92.0,
+    "mbppplus": 32.0,
+    "base_short": "qwen30b_it",
+    "task": "math",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "qwen30b_it_math_qwen_4096_r32_lr2e-4",
+    "step": 80,
+    "sampler_path": "tinker://3dca39c4-3b42-5b32-9ad3-38d31515e660:train:0/sampler_weights/000080",
+    "math_500": 73.0,
+    "mbppplus": 69.0,
+    "base_short": "qwen30b_it",
+    "task": "math",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "qwen30b_it_math_kimi_4096_r32_lr2e-4",
+    "step": 120,
+    "sampler_path": "tinker://b40a8e95-0a17-5e09-97e8-0cd120c47635:train:0/sampler_weights/000120",
+    "math_500": 81.0,
+    "mbppplus": 70.0,
+    "base_short": "qwen30b_it",
+    "task": "math",
+    "traces": "kimi"
+  },
+  {
+    "run_name": "qwen30b_it_code_sonnet_4096_r32_lr2e-4",
+    "step": 140,
+    "sampler_path": "tinker://a0234af2-b929-55da-8173-651c68967ded:train:0/sampler_weights/000140",
+    "math_500": 92.0,
+    "mbppplus": 78.0,
+    "base_short": "qwen30b_it",
+    "task": "code",
+    "traces": "sonnet"
+  },
+  {
+    "run_name": "qwen30b_it_code_qwen_4096_r32_lr2e-4",
+    "step": 140,
+    "sampler_path": "tinker://420e45ff-b14d-5266-a022-65190efd9ae3:train:0/sampler_weights/000140",
+    "math_500": 82.0,
+    "mbppplus": 56.99999999999999,
+    "base_short": "qwen30b_it",
+    "task": "code",
+    "traces": "qwen"
+  },
+  {
+    "run_name": "qwen30b_it_code_kimi_4096_r32_lr2e-4",
+    "step": 40,
+    "sampler_path": "tinker://408726f7-b7a6-5247-b2c8-47a92bab7a34:train:0/sampler_weights/000040",
+    "math_500": 84.0,
+    "mbppplus": 74.0,
+    "base_short": "qwen30b_it",
+    "task": "code",
+    "traces": "kimi"
+  }
+]

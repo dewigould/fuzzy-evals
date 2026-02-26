@@ -1,0 +1,36 @@
+
+============================================================
+Evaluating model: qwen30b_base_code_qwen_4096_r32_lr2e-4_step40
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://f572ad01-c3a5-5cf5-a5ed-a2fb18725033:train:0/sampler_weights/000040
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen30b_base_code_qwen_4096_r32_lr2e-4_step40 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen30b_base_code_qwen_4096_r32_lr2e-4_step40 on 100 problems
+Sampling is paused for sampler 919f7056-9bbc-5923-9640-daee408d6560:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 45 correct (90.0%), 4 pending judge [222s]
+  [math_500] 100/100 done, 81 correct (81.0%), 17 pending judge [400s]
+  [math_500] Stage 1: 81/100 correct, 17 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [413s]
+[math_500] FINAL: 81/100 (81.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_qwen_4096_r32_lr2e-4_step40/results_math_500.parquet
+  math_500 completed in 414s
+  [mbppplus] 50/100 done, 32 correct (64.0%) [461s]
+Sampling is paused for sampler 919f7056-9bbc-5923-9640-daee408d6560:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 919f7056-9bbc-5923-9640-daee408d6560:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 919f7056-9bbc-5923-9640-daee408d6560:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 919f7056-9bbc-5923-9640-daee408d6560:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 919f7056-9bbc-5923-9640-daee408d6560:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 50 correct (50.0%) [1253s]
+[mbppplus] FINAL: 50/100 (50.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_qwen_4096_r32_lr2e-4_step40/results_mbppplus.parquet
+  mbppplus completed in 1253s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_qwen_4096_r32_lr2e-4_step40/eval_summary.json

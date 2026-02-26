@@ -1,0 +1,31 @@
+
+============================================================
+Evaluating model: llama8b_base_math_kimi_4096_r32_lr2e-4_step120
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://2ea4ad1d-3984-52b3-88a0-d762f573c684:train:0/sampler_weights/000120
+
+  --- math_500 (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating llama8b_base_math_kimi_4096_r32_lr2e-4_step120 on 100 problems
+
+  --- mbppplus (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating llama8b_base_math_kimi_4096_r32_lr2e-4_step120 on 100 problems
+Sampling is paused for sampler 8806e05e-dba3-50b6-b121-02ff7ff6ad2f:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 50/100 done, 25 correct (50.0%) [262s]
+  [math_500] 50/100 done, 8 correct (16.0%), 9 pending judge [317s]
+  [mbppplus] 100/100 done, 44 correct (44.0%) [507s]
+[mbppplus] FINAL: 44/100 (44.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_math_kimi_4096_r32_lr2e-4_step120/results_mbppplus.parquet
+  mbppplus completed in 507s
+  [math_500] 100/100 done, 22 correct (22.0%), 22 pending judge [568s]
+  [math_500] Stage 1: 22/100 correct, 22 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [587s]
+[math_500] FINAL: 22/100 (22.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_math_kimi_4096_r32_lr2e-4_step120/results_math_500.parquet
+  math_500 completed in 587s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_math_kimi_4096_r32_lr2e-4_step120/eval_summary.json

@@ -1,0 +1,35 @@
+
+============================================================
+Evaluating model: llama70b_it_code_sonnet_4096_r32_lr2e-4_step120
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://4cfec022-45e1-59c2-a596-e6e52f4b1613:train:0/sampler_weights/000120
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating llama70b_it_code_sonnet_4096_r32_lr2e-4_step120 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating llama70b_it_code_sonnet_4096_r32_lr2e-4_step120 on 100 problems
+Sampling is paused for sampler 6c19dd95-52bb-54f2-aed6-e7ac88305c7b:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 6c19dd95-52bb-54f2-aed6-e7ac88305c7b:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 35 correct (70.0%), 11 pending judge [271s]
+  [math_500] 100/100 done, 62 correct (62.0%), 24 pending judge [471s]
+  [math_500] Stage 1: 62/100 correct, 24 need LLM judge
+  [mbppplus] 50/100 done, 39 correct (78.0%) [471s]
+  [math_500] LLM judge upgraded 0 answers [483s]
+[math_500] FINAL: 62/100 (62.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama70b_it_code_sonnet_4096_r32_lr2e-4_step120/results_math_500.parquet
+  math_500 completed in 483s
+Sampling is paused for sampler 6c19dd95-52bb-54f2-aed6-e7ac88305c7b:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 6c19dd95-52bb-54f2-aed6-e7ac88305c7b:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 6c19dd95-52bb-54f2-aed6-e7ac88305c7b:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 74 correct (74.0%) [914s]
+[mbppplus] FINAL: 74/100 (74.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama70b_it_code_sonnet_4096_r32_lr2e-4_step120/results_mbppplus.parquet
+  mbppplus completed in 914s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama70b_it_code_sonnet_4096_r32_lr2e-4_step120/eval_summary.json

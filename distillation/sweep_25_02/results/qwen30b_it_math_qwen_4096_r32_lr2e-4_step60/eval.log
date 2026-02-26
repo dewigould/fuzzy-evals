@@ -1,0 +1,30 @@
+
+============================================================
+Evaluating model: qwen30b_it_math_qwen_4096_r32_lr2e-4_step60
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://3dca39c4-3b42-5b32-9ad3-38d31515e660:train:0/sampler_weights/000060
+
+  --- math_500 (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen30b_it_math_qwen_4096_r32_lr2e-4_step60 on 100 problems
+
+  --- mbppplus (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen30b_it_math_qwen_4096_r32_lr2e-4_step60 on 100 problems
+  [mbppplus] 50/100 done, 35 correct (70.0%) [378s]
+  [math_500] 50/100 done, 39 correct (78.0%), 0 pending judge [422s]
+  [math_500] 100/100 done, 73 correct (73.0%), 1 pending judge [768s]
+  [math_500] Stage 1: 73/100 correct, 1 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [783s]
+[math_500] FINAL: 73/100 (73.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_math_qwen_4096_r32_lr2e-4_step60/results_math_500.parquet
+  math_500 completed in 784s
+  [mbppplus] 100/100 done, 63 correct (63.0%) [810s]
+[mbppplus] FINAL: 63/100 (63.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_math_qwen_4096_r32_lr2e-4_step60/results_mbppplus.parquet
+  mbppplus completed in 810s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_math_qwen_4096_r32_lr2e-4_step60/eval_summary.json

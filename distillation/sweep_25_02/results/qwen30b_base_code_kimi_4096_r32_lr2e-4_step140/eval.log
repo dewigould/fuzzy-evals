@@ -1,0 +1,34 @@
+
+============================================================
+Evaluating model: qwen30b_base_code_kimi_4096_r32_lr2e-4_step140
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://03475f00-8f44-50da-849c-2bae2bfe563a:train:0/sampler_weights/000140
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen30b_base_code_kimi_4096_r32_lr2e-4_step140 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen30b_base_code_kimi_4096_r32_lr2e-4_step140 on 100 problems
+Sampling is paused for sampler d859dc89-4d38-531c-8ff9-caf34ac4bfb0:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler d859dc89-4d38-531c-8ff9-caf34ac4bfb0:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 47 correct (94.0%), 1 pending judge [385s]
+  [mbppplus] 50/100 done, 37 correct (74.0%) [584s]
+  [math_500] 100/100 done, 87 correct (87.0%), 4 pending judge [691s]
+  [math_500] Stage 1: 87/100 correct, 4 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [697s]
+[math_500] FINAL: 87/100 (87.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step140/results_math_500.parquet
+  math_500 completed in 697s
+Sampling is paused for sampler d859dc89-4d38-531c-8ff9-caf34ac4bfb0:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler d859dc89-4d38-531c-8ff9-caf34ac4bfb0:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 69 correct (69.0%) [1183s]
+[mbppplus] FINAL: 69/100 (69.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step140/results_mbppplus.parquet
+  mbppplus completed in 1183s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step140/eval_summary.json

@@ -1,0 +1,31 @@
+
+============================================================
+Evaluating model: llama70b_it_math_qwen_4096_r32_lr2e-4_step20
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://ca96c6db-982d-5905-9de8-47e1c15c91b2:train:0/sampler_weights/000020
+
+  --- math_500 (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating llama70b_it_math_qwen_4096_r32_lr2e-4_step20 on 100 problems
+
+  --- mbppplus (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating llama70b_it_math_qwen_4096_r32_lr2e-4_step20 on 100 problems
+  [math_500] 50/100 done, 31 correct (62.0%), 1 pending judge [615s]
+  [mbppplus] 50/100 done, 34 correct (68.0%) [690s]
+  [math_500] 100/100 done, 60 correct (60.0%), 2 pending judge [1156s]
+  [math_500] Stage 1: 60/100 correct, 2 need LLM judge
+Retrying due to status code 504. text=
+  [math_500] LLM judge upgraded 0 answers [1160s]
+[math_500] FINAL: 60/100 (60.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama70b_it_math_qwen_4096_r32_lr2e-4_step20/results_math_500.parquet
+  math_500 completed in 1160s
+  [mbppplus] 100/100 done, 63 correct (63.0%) [1280s]
+[mbppplus] FINAL: 63/100 (63.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama70b_it_math_qwen_4096_r32_lr2e-4_step20/results_mbppplus.parquet
+  mbppplus completed in 1280s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama70b_it_math_qwen_4096_r32_lr2e-4_step20/eval_summary.json

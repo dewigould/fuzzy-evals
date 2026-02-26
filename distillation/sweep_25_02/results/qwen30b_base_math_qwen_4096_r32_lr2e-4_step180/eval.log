@@ -1,0 +1,31 @@
+
+============================================================
+Evaluating model: qwen30b_base_math_qwen_4096_r32_lr2e-4_step180
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://63a57f93-1c1e-5457-8345-56feb857e83b:train:0/sampler_weights/final
+
+  --- math_500 (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen30b_base_math_qwen_4096_r32_lr2e-4_step180 on 100 problems
+
+  --- mbppplus (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen30b_base_math_qwen_4096_r32_lr2e-4_step180 on 100 problems
+  [math_500] 50/100 done, 40 correct (80.0%), 1 pending judge [492s]
+  [mbppplus] 50/100 done, 28 correct (56.0%) [595s]
+  [math_500] 100/100 done, 74 correct (74.0%), 1 pending judge [886s]
+  [math_500] Stage 1: 74/100 correct, 1 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [887s]
+[math_500] FINAL: 74/100 (74.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_math_qwen_4096_r32_lr2e-4_step180/results_math_500.parquet
+  math_500 completed in 887s
+Sampling is paused for sampler 3c81c20c-9e2f-5b9d-8187-3b5b72799c41:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 54 correct (54.0%) [1251s]
+[mbppplus] FINAL: 54/100 (54.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_math_qwen_4096_r32_lr2e-4_step180/results_mbppplus.parquet
+  mbppplus completed in 1251s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_math_qwen_4096_r32_lr2e-4_step180/eval_summary.json

@@ -1,0 +1,33 @@
+
+============================================================
+Evaluating model: qwen30b_base_code_kimi_4096_r32_lr2e-4_step100
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://03475f00-8f44-50da-849c-2bae2bfe563a:train:0/sampler_weights/000100
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen30b_base_code_kimi_4096_r32_lr2e-4_step100 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen30b_base_code_kimi_4096_r32_lr2e-4_step100 on 100 problems
+Sampling is paused for sampler 7fd18684-46f3-5d3d-ae34-eacadbe0c699:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 49 correct (98.0%), 0 pending judge [265s]
+  [mbppplus] 50/100 done, 41 correct (82.0%) [477s]
+  [math_500] 100/100 done, 89 correct (89.0%), 3 pending judge [506s]
+  [math_500] Stage 1: 89/100 correct, 3 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [518s]
+[math_500] FINAL: 89/100 (89.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step100/results_math_500.parquet
+  math_500 completed in 518s
+Sampling is paused for sampler 7fd18684-46f3-5d3d-ae34-eacadbe0c699:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 7fd18684-46f3-5d3d-ae34-eacadbe0c699:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 70 correct (70.0%) [1086s]
+[mbppplus] FINAL: 70/100 (70.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step100/results_mbppplus.parquet
+  mbppplus completed in 1086s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step100/eval_summary.json

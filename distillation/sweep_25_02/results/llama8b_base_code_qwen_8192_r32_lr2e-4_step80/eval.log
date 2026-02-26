@@ -1,0 +1,28 @@
+
+============================================================
+Evaluating model: llama8b_base_code_qwen_8192_r32_lr2e-4_step80
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://c9960550-0b45-5ad3-b0a1-88a84a0fd89a:train:0/sampler_weights/000080
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating llama8b_base_code_qwen_8192_r32_lr2e-4_step80 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating llama8b_base_code_qwen_8192_r32_lr2e-4_step80 on 100 problems
+Sampling is paused for sampler 4fab3599-4e65-58ae-81d4-7d1994951c1d:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 4fab3599-4e65-58ae-81d4-7d1994951c1d:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 4 correct (8.0%), 1 pending judge [415s]
+  [mbppplus] 50/100 done, 18 correct (36.0%) [486s]
+  [math_500] 100/100 done, 8 correct (8.0%), 3 pending judge [657s]
+  [math_500] Stage 1: 8/100 correct, 3 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [661s]
+[math_500] FINAL: 8/100 (8.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_code_qwen_8192_r32_lr2e-4_step80/results_math_500.parquet
+  math_500 completed in 663s
+Sampling is paused for sampler 4fab3599-4e65-58ae-81d4-7d1994951c1d:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 4fab3599-4e65-58ae-81d4-7d1994951c1d:sample:0. Reason: concurrent sampler weights limit hit

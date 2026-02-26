@@ -1,0 +1,41 @@
+{
+  "math_500": {
+    "dataset": "math_500",
+    "accuracy": 0.858,
+    "n_correct": 429,
+    "total": 500,
+    "judge_upgraded": 2
+  },
+  "omni_math": {
+    "dataset": "omni_math",
+    "accuracy": 0.29,
+    "n_correct": 145,
+    "total": 500,
+    "judge_upgraded": 8
+  },
+  "aime": {
+    "dataset": "aime",
+    "accuracy": 0.3,
+    "n_correct": 27,
+    "total": 90,
+    "judge_upgraded": 0
+  },
+  "mbppplus": {
+    "dataset": "mbppplus",
+    "accuracy": 0.791005291005291,
+    "n_correct": 299,
+    "total": 378
+  },
+  "humanevalplus": {
+    "dataset": "humanevalplus",
+    "accuracy": 0.9085365853658537,
+    "n_correct": 149,
+    "total": 164
+  },
+  "livecodebench_v5": {
+    "dataset": "livecodebench_v5",
+    "accuracy": 0.20359281437125748,
+    "n_correct": 34,
+    "total": 167
+  }
+}

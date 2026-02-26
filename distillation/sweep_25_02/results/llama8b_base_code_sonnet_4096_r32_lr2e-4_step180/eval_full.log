@@ -1,0 +1,124 @@
+
+============================================================
+Evaluating model: llama8b_base_code_sonnet_4096_r32_lr2e-4_step180
+Datasets: math_500, omni_math, aime, mbppplus, humanevalplus, livecodebench_v5
+============================================================
+  Loading checkpoint: tinker://cd5298ea-5e32-5588-8bec-c344e28dae84:train:0/sampler_weights/final
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating llama8b_base_code_sonnet_4096_r32_lr2e-4_step180 on 500 problems
+
+  --- omni_math (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: omni_math_seed42.json.gz
+  Loaded 4428 items from cache
+[omni_math] Evaluating llama8b_base_code_sonnet_4096_r32_lr2e-4_step180 on 500 problems
+
+  --- aime (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: aime_seed42.json.gz
+  Loaded 90 items from cache
+[aime] Evaluating llama8b_base_code_sonnet_4096_r32_lr2e-4_step180 on 90 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating llama8b_base_code_sonnet_4096_r32_lr2e-4_step180 on 378 problems
+
+  --- humanevalplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: humanevalplus_seed42.json.gz
+  Loaded 164 items from cache
+[humanevalplus] Evaluating llama8b_base_code_sonnet_4096_r32_lr2e-4_step180 on 164 problems
+
+  --- livecodebench_v5 (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: livecodebench_v5_seed42.json.gz
+  Loaded 167 items from cache
+Selected 167 LiveCodeBench v5 problems
+[livecodebench] Evaluating llama8b_base_code_sonnet_4096_r32_lr2e-4_step180 on 167 problems
+  [aime] 10/90 done, 0 correct (0.0%), 6 pending judge [91s]
+  [omni_math] 20/500 done, 2 correct (10.0%), 4 pending judge [143s]
+  [aime] 20/90 done, 0 correct (0.0%), 7 pending judge [150s]
+  [mbppplus] 50/378 done, 27 correct (54.0%) [161s]
+Timeout during comparison
+  [math_500] 50/500 done, 7 correct (14.0%), 22 pending judge [179s]
+  [omni_math] 40/500 done, 2 correct (5.0%), 15 pending judge [211s]
+  [aime] 30/90 done, 0 correct (0.0%), 7 pending judge [221s]
+  [humanevalplus] 50/164 done, 20 correct (40.0%) [239s]
+  [aime] 40/90 done, 0 correct (0.0%), 10 pending judge [269s]
+  [livecodebench] 50/167 done, 1 correct (2.0%) [303s]
+  [aime] 50/90 done, 0 correct (0.0%), 12 pending judge [331s]
+  [omni_math] 60/500 done, 3 correct (5.0%), 18 pending judge [342s]
+  [math_500] 100/500 done, 15 correct (15.0%), 42 pending judge [351s]
+  [aime] 60/90 done, 0 correct (0.0%), 14 pending judge [399s]
+  [mbppplus] 100/378 done, 49 correct (49.0%) [416s]
+  [omni_math] 80/500 done, 4 correct (5.0%), 25 pending judge [448s]
+  [aime] 70/90 done, 0 correct (0.0%), 17 pending judge [458s]
+  [humanevalplus] 100/164 done, 43 correct (43.0%) [490s]
+  [aime] 80/90 done, 0 correct (0.0%), 21 pending judge [505s]
+  [math_500] 150/500 done, 30 correct (20.0%), 55 pending judge [518s]
+  [omni_math] 100/500 done, 4 correct (4.0%), 32 pending judge [538s]
+  [aime] 90/90 done, 0 correct (0.0%), 21 pending judge [591s]
+  [aime] Stage 1: 0/90 correct, 21 need LLM judge
+  [aime] LLM judge upgraded 0 answers [600s]
+[aime] FINAL: 0/90 (0.0%)
+Saved 90 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_code_sonnet_4096_r32_lr2e-4_step180/results_aime.parquet
+  aime completed in 600s
+  [mbppplus] 150/378 done, 74 correct (49.3%) [616s]
+  [livecodebench] 100/167 done, 2 correct (2.0%) [616s]
+  [omni_math] 120/500 done, 4 correct (3.3%), 39 pending judge [640s]
+  [math_500] 200/500 done, 37 correct (18.5%), 77 pending judge [653s]
+  [humanevalplus] 150/164 done, 67 correct (44.7%) [655s]
+  [humanevalplus] 164/164 done, 71 correct (43.3%) [726s]
+[humanevalplus] FINAL: 71/164 (43.3%)
+Saved 164 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_code_sonnet_4096_r32_lr2e-4_step180/results_humanevalplus.parquet
+  humanevalplus completed in 726s
+  [omni_math] 140/500 done, 4 correct (2.9%), 44 pending judge [732s]
+  [mbppplus] 200/378 done, 98 correct (49.0%) [808s]
+  [omni_math] 160/500 done, 4 correct (2.5%), 52 pending judge [821s]
+  [math_500] 250/500 done, 40 correct (16.0%), 98 pending judge [826s]
+  [omni_math] 180/500 done, 5 correct (2.8%), 55 pending judge [909s]
+  [livecodebench] 150/167 done, 4 correct (2.7%) [903s]
+  [mbppplus] 250/378 done, 126 correct (50.4%) [949s]
+  [math_500] 300/500 done, 47 correct (15.7%), 116 pending judge [982s]
+  [omni_math] 200/500 done, 5 correct (2.5%), 57 pending judge [1034s]
+  [livecodebench] 167/167 done, 5 correct (3.0%) [1027s]
+[livecodebench] FINAL: 5/167 (3.0%)
+Saved 167 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_code_sonnet_4096_r32_lr2e-4_step180/results_livecodebench_v5.parquet
+  livecodebench_v5 completed in 1036s
+  [omni_math] 220/500 done, 6 correct (2.7%), 63 pending judge [1103s]
+  [mbppplus] 300/378 done, 153 correct (51.0%) [1129s]
+  [math_500] 350/500 done, 58 correct (16.6%), 128 pending judge [1139s]
+  [omni_math] 240/500 done, 6 correct (2.5%), 70 pending judge [1176s]
+  [mbppplus] 350/378 done, 183 correct (52.3%) [1291s]
+  [omni_math] 260/500 done, 6 correct (2.3%), 74 pending judge [1296s]
+  [math_500] 400/500 done, 63 correct (15.8%), 138 pending judge [1333s]
+  [omni_math] 280/500 done, 7 correct (2.5%), 80 pending judge [1377s]
+  [mbppplus] 378/378 done, 199 correct (52.6%) [1424s]
+[mbppplus] FINAL: 199/378 (52.6%)
+Saved 378 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_code_sonnet_4096_r32_lr2e-4_step180/results_mbppplus.parquet
+  mbppplus completed in 1424s
+  [omni_math] 300/500 done, 8 correct (2.7%), 88 pending judge [1450s]
+  [math_500] 450/500 done, 73 correct (16.2%), 153 pending judge [1487s]
+  [omni_math] 320/500 done, 8 correct (2.5%), 91 pending judge [1540s]
+  [omni_math] 340/500 done, 8 correct (2.4%), 96 pending judge [1636s]
+  [math_500] 500/500 done, 77 correct (15.4%), 165 pending judge [1673s]
+  [math_500] Stage 1: 77/500 correct, 165 need LLM judge
+  [omni_math] 360/500 done, 8 correct (2.2%), 102 pending judge [1704s]
+  [math_500] LLM judge upgraded 10 answers [1731s]
+[math_500] FINAL: 87/500 (17.4%)
+Saved 500 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_code_sonnet_4096_r32_lr2e-4_step180/results_math_500.parquet
+  math_500 completed in 1732s
+  [omni_math] 380/500 done, 10 correct (2.6%), 107 pending judge [1784s]
+  [omni_math] 400/500 done, 10 correct (2.5%), 112 pending judge [1903s]
+  [omni_math] 420/500 done, 11 correct (2.6%), 119 pending judge [1980s]
+  [omni_math] 440/500 done, 14 correct (3.2%), 125 pending judge [2042s]
+  [omni_math] 460/500 done, 15 correct (3.3%), 133 pending judge [2124s]
+  [omni_math] 480/500 done, 15 correct (3.1%), 140 pending judge [2204s]
+  [omni_math] 500/500 done, 16 correct (3.2%), 146 pending judge [2284s]
+  [omni_math] Stage 1: 16/500 correct, 146 need LLM judge
+  [omni_math] LLM judge upgraded 11 answers [2337s]
+[omni_math] FINAL: 27/500 (5.4%)
+Saved 500 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_code_sonnet_4096_r32_lr2e-4_step180/results_omni_math.parquet
+  omni_math completed in 2337s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_code_sonnet_4096_r32_lr2e-4_step180/eval_summary.json

@@ -1,0 +1,36 @@
+
+============================================================
+Evaluating model: qwen8b_base_code_sonnet_4096_r32_lr2e-4_step160
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://e9c044e3-1b90-552c-9689-4a9ab50e165c:train:0/sampler_weights/000160
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen8b_base_code_sonnet_4096_r32_lr2e-4_step160 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen8b_base_code_sonnet_4096_r32_lr2e-4_step160 on 100 problems
+Sampling is paused for sampler 855c2047-386f-50cd-9838-8d93b1a0d9f7:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 855c2047-386f-50cd-9838-8d93b1a0d9f7:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 43 correct (86.0%), 6 pending judge [254s]
+  [mbppplus] 50/100 done, 37 correct (74.0%) [320s]
+  [math_500] 100/100 done, 80 correct (80.0%), 10 pending judge [450s]
+  [math_500] Stage 1: 80/100 correct, 10 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [469s]
+[math_500] FINAL: 80/100 (80.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_code_sonnet_4096_r32_lr2e-4_step160/results_math_500.parquet
+  math_500 completed in 469s
+Sampling is paused for sampler 855c2047-386f-50cd-9838-8d93b1a0d9f7:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 855c2047-386f-50cd-9838-8d93b1a0d9f7:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 855c2047-386f-50cd-9838-8d93b1a0d9f7:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 855c2047-386f-50cd-9838-8d93b1a0d9f7:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 70 correct (70.0%) [854s]
+[mbppplus] FINAL: 70/100 (70.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_code_sonnet_4096_r32_lr2e-4_step160/results_mbppplus.parquet
+  mbppplus completed in 854s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_code_sonnet_4096_r32_lr2e-4_step160/eval_summary.json

@@ -1,0 +1,122 @@
+
+============================================================
+Evaluating model: qwen30b_it_code_qwen_4096_r32_lr2e-4_step140
+Datasets: math_500, omni_math, aime, mbppplus, humanevalplus, livecodebench_v5
+============================================================
+  Loading checkpoint: tinker://420e45ff-b14d-5266-a022-65190efd9ae3:train:0/sampler_weights/000140
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen30b_it_code_qwen_4096_r32_lr2e-4_step140 on 500 problems
+
+  --- omni_math (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: omni_math_seed42.json.gz
+  Loaded 4428 items from cache
+[omni_math] Evaluating qwen30b_it_code_qwen_4096_r32_lr2e-4_step140 on 500 problems
+
+  --- aime (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: aime_seed42.json.gz
+  Loaded 90 items from cache
+[aime] Evaluating qwen30b_it_code_qwen_4096_r32_lr2e-4_step140 on 90 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen30b_it_code_qwen_4096_r32_lr2e-4_step140 on 378 problems
+
+  --- humanevalplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: humanevalplus_seed42.json.gz
+  Loaded 164 items from cache
+[humanevalplus] Evaluating qwen30b_it_code_qwen_4096_r32_lr2e-4_step140 on 164 problems
+
+  --- livecodebench_v5 (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: livecodebench_v5_seed42.json.gz
+  Loaded 167 items from cache
+Selected 167 LiveCodeBench v5 problems
+[livecodebench] Evaluating qwen30b_it_code_qwen_4096_r32_lr2e-4_step140 on 167 problems
+  [aime] 10/90 done, 5 correct (50.0%), 0 pending judge [150s]
+  [aime] 20/90 done, 5 correct (25.0%), 0 pending judge [285s]
+  [omni_math] 20/500 done, 3 correct (15.0%), 1 pending judge [287s]
+  [aime] 30/90 done, 7 correct (23.3%), 0 pending judge [426s]
+  [math_500] 50/500 done, 41 correct (82.0%), 0 pending judge [473s]
+  [mbppplus] 50/378 done, 35 correct (70.0%) [492s]
+  [aime] 40/90 done, 8 correct (20.0%), 0 pending judge [567s]
+  [omni_math] 40/500 done, 10 correct (25.0%), 2 pending judge [571s]
+  [humanevalplus] 50/164 done, 35 correct (70.0%) [647s]
+  [aime] 50/90 done, 9 correct (18.0%), 0 pending judge [711s]
+  [livecodebench] 50/167 done, 4 correct (8.0%) [738s]
+  [omni_math] 60/500 done, 13 correct (21.7%), 3 pending judge [804s]
+  [math_500] 100/500 done, 82 correct (82.0%), 1 pending judge [843s]
+  [aime] 60/90 done, 10 correct (16.7%), 0 pending judge [856s]
+  [aime] 70/90 done, 12 correct (17.1%), 0 pending judge [991s]
+  [omni_math] 80/500 done, 16 correct (20.0%), 3 pending judge [1056s]
+  [aime] 80/90 done, 15 correct (18.8%), 0 pending judge [1123s]
+  [math_500] 150/500 done, 122 correct (81.3%), 2 pending judge [1153s]
+  [mbppplus] 100/378 done, 58 correct (58.0%) [1165s]
+  [aime] 90/90 done, 15 correct (16.7%), 0 pending judge [1259s]
+  [aime] Stage 1: 15/90 correct, 0 need LLM judge
+[aime] FINAL: 15/90 (16.7%)
+Saved 90 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_code_qwen_4096_r32_lr2e-4_step140/results_aime.parquet
+  aime completed in 1260s
+  [humanevalplus] 100/164 done, 64 correct (64.0%) [1269s]
+  [omni_math] 100/500 done, 20 correct (20.0%), 4 pending judge [1278s]
+  [livecodebench] 100/167 done, 8 correct (8.0%) [1432s]
+  [math_500] 200/500 done, 166 correct (83.0%), 2 pending judge [1494s]
+  [omni_math] 120/500 done, 24 correct (20.0%), 6 pending judge [1555s]
+  [mbppplus] 150/378 done, 95 correct (63.3%) [1728s]
+  [omni_math] 140/500 done, 31 correct (22.1%), 6 pending judge [1766s]
+  [humanevalplus] 150/164 done, 103 correct (68.7%) [1829s]
+  [math_500] 250/500 done, 204 correct (81.6%), 2 pending judge [1896s]
+  [omni_math] 160/500 done, 36 correct (22.5%), 7 pending judge [2001s]
+  [humanevalplus] 164/164 done, 113 correct (68.9%) [2067s]
+[humanevalplus] FINAL: 113/164 (68.9%)
+Saved 164 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_code_qwen_4096_r32_lr2e-4_step140/results_humanevalplus.parquet
+  humanevalplus completed in 2067s
+  [livecodebench] 150/167 done, 13 correct (8.7%) [2104s]
+  [mbppplus] 200/378 done, 130 correct (65.0%) [2194s]
+  [omni_math] 180/500 done, 42 correct (23.3%), 7 pending judge [2252s]
+  [math_500] 300/500 done, 243 correct (81.0%), 2 pending judge [2271s]
+  [livecodebench] 167/167 done, 17 correct (10.2%) [2354s]
+[livecodebench] FINAL: 17/167 (10.2%)
+Saved 167 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_code_qwen_4096_r32_lr2e-4_step140/results_livecodebench_v5.parquet
+  livecodebench_v5 completed in 2363s
+  [omni_math] 200/500 done, 45 correct (22.5%), 8 pending judge [2491s]
+  [math_500] 350/500 done, 283 correct (80.9%), 2 pending judge [2577s]
+  [omni_math] 220/500 done, 49 correct (22.3%), 9 pending judge [2678s]
+  [mbppplus] 250/378 done, 169 correct (67.6%) [2686s]
+  [math_500] 400/500 done, 325 correct (81.2%), 3 pending judge [2899s]
+  [omni_math] 240/500 done, 54 correct (22.5%), 9 pending judge [2915s]
+  [omni_math] 260/500 done, 56 correct (21.5%), 10 pending judge [3150s]
+  [mbppplus] 300/378 done, 203 correct (67.7%) [3168s]
+  [math_500] 450/500 done, 367 correct (81.6%), 3 pending judge [3223s]
+  [omni_math] 280/500 done, 62 correct (22.1%), 11 pending judge [3371s]
+  [omni_math] 300/500 done, 67 correct (22.3%), 11 pending judge [3790s]
+  [math_500] 500/500 done, 407 correct (81.4%), 3 pending judge [3818s]
+  [math_500] Stage 1: 407/500 correct, 3 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [3821s]
+[math_500] FINAL: 407/500 (81.4%)
+Saved 500 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_code_qwen_4096_r32_lr2e-4_step140/results_math_500.parquet
+  math_500 completed in 3821s
+  [mbppplus] 350/378 done, 240 correct (68.6%) [3914s]
+  [omni_math] 320/500 done, 70 correct (21.9%), 13 pending judge [4045s]
+  [mbppplus] 378/378 done, 257 correct (68.0%) [4156s]
+[mbppplus] FINAL: 257/378 (68.0%)
+Saved 378 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_code_qwen_4096_r32_lr2e-4_step140/results_mbppplus.parquet
+  mbppplus completed in 4156s
+  [omni_math] 340/500 done, 72 correct (21.2%), 13 pending judge [4249s]
+  [omni_math] 360/500 done, 77 correct (21.4%), 13 pending judge [4446s]
+  [omni_math] 380/500 done, 84 correct (22.1%), 13 pending judge [4627s]
+  [omni_math] 400/500 done, 88 correct (22.0%), 13 pending judge [4827s]
+  [omni_math] 420/500 done, 94 correct (22.4%), 13 pending judge [5011s]
+  [omni_math] 440/500 done, 102 correct (23.2%), 13 pending judge [5195s]
+  [omni_math] 460/500 done, 105 correct (22.8%), 14 pending judge [5366s]
+  [omni_math] 480/500 done, 109 correct (22.7%), 14 pending judge [5567s]
+  [omni_math] 500/500 done, 113 correct (22.6%), 14 pending judge [5760s]
+  [omni_math] Stage 1: 113/500 correct, 14 need LLM judge
+  [omni_math] LLM judge upgraded 3 answers [5771s]
+[omni_math] FINAL: 116/500 (23.2%)
+Saved 500 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_code_qwen_4096_r32_lr2e-4_step140/results_omni_math.parquet
+  omni_math completed in 5771s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_code_qwen_4096_r32_lr2e-4_step140/eval_summary.json

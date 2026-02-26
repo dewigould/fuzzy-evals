@@ -1,0 +1,37 @@
+
+============================================================
+Evaluating model: llama8b_base_math_qwen_8192_r32_lr2e-4_step20
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://e17996e9-5317-5dc1-9b8f-d42c5723cefb:train:0/sampler_weights/000020
+
+  --- math_500 (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating llama8b_base_math_qwen_8192_r32_lr2e-4_step20 on 100 problems
+
+  --- mbppplus (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating llama8b_base_math_qwen_8192_r32_lr2e-4_step20 on 100 problems
+Sampling is paused for sampler 8f1ea9d1-ebd8-5259-ae39-0bf7bf82044a:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 8f1ea9d1-ebd8-5259-ae39-0bf7bf82044a:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 8f1ea9d1-ebd8-5259-ae39-0bf7bf82044a:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 8f1ea9d1-ebd8-5259-ae39-0bf7bf82044a:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 8f1ea9d1-ebd8-5259-ae39-0bf7bf82044a:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 8f1ea9d1-ebd8-5259-ae39-0bf7bf82044a:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 8f1ea9d1-ebd8-5259-ae39-0bf7bf82044a:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 2 correct (4.0%), 6 pending judge [741s]
+  [mbppplus] 50/100 done, 8 correct (16.0%) [758s]
+  [math_500] 100/100 done, 8 correct (8.0%), 7 pending judge [1088s]
+  [math_500] Stage 1: 8/100 correct, 7 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [1093s]
+[math_500] FINAL: 8/100 (8.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_math_qwen_8192_r32_lr2e-4_step20/results_math_500.parquet
+  math_500 completed in 1095s
+  [mbppplus] 100/100 done, 22 correct (22.0%) [1130s]
+[mbppplus] FINAL: 22/100 (22.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_math_qwen_8192_r32_lr2e-4_step20/results_mbppplus.parquet
+  mbppplus completed in 1131s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_math_qwen_8192_r32_lr2e-4_step20/eval_summary.json

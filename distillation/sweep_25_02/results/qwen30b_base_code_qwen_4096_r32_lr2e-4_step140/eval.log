@@ -1,0 +1,33 @@
+
+============================================================
+Evaluating model: qwen30b_base_code_qwen_4096_r32_lr2e-4_step140
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://f572ad01-c3a5-5cf5-a5ed-a2fb18725033:train:0/sampler_weights/000140
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen30b_base_code_qwen_4096_r32_lr2e-4_step140 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen30b_base_code_qwen_4096_r32_lr2e-4_step140 on 100 problems
+Sampling is paused for sampler 1b39a99e-5c5f-5dce-b6f5-53ffa53e6aca:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 45 correct (90.0%), 2 pending judge [275s]
+  [math_500] 100/100 done, 84 correct (84.0%), 11 pending judge [534s]
+  [math_500] Stage 1: 84/100 correct, 11 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [545s]
+[math_500] FINAL: 84/100 (84.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_qwen_4096_r32_lr2e-4_step140/results_math_500.parquet
+  math_500 completed in 545s
+  [mbppplus] 50/100 done, 33 correct (66.0%) [579s]
+Sampling is paused for sampler 1b39a99e-5c5f-5dce-b6f5-53ffa53e6aca:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 1b39a99e-5c5f-5dce-b6f5-53ffa53e6aca:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 51 correct (51.0%) [1307s]
+[mbppplus] FINAL: 51/100 (51.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_qwen_4096_r32_lr2e-4_step140/results_mbppplus.parquet
+  mbppplus completed in 1307s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_qwen_4096_r32_lr2e-4_step140/eval_summary.json

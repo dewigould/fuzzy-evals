@@ -1,0 +1,33 @@
+
+============================================================
+Evaluating model: qwen30b_it_code_sonnet_4096_r32_lr2e-4_step180
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://a0234af2-b929-55da-8173-651c68967ded:train:0/sampler_weights/final
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen30b_it_code_sonnet_4096_r32_lr2e-4_step180 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen30b_it_code_sonnet_4096_r32_lr2e-4_step180 on 100 problems
+Sampling is paused for sampler b8f9c3d1-06b2-5d17-829d-26a036b08364:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler b8f9c3d1-06b2-5d17-829d-26a036b08364:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 48 correct (96.0%), 2 pending judge [225s]
+  [mbppplus] 50/100 done, 39 correct (78.0%) [238s]
+  [math_500] 100/100 done, 94 correct (94.0%), 3 pending judge [413s]
+  [math_500] Stage 1: 94/100 correct, 3 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [419s]
+[math_500] FINAL: 94/100 (94.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_code_sonnet_4096_r32_lr2e-4_step180/results_math_500.parquet
+  math_500 completed in 420s
+Sampling is paused for sampler b8f9c3d1-06b2-5d17-829d-26a036b08364:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 77 correct (77.0%) [535s]
+[mbppplus] FINAL: 77/100 (77.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_code_sonnet_4096_r32_lr2e-4_step180/results_mbppplus.parquet
+  mbppplus completed in 535s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_it_code_sonnet_4096_r32_lr2e-4_step180/eval_summary.json

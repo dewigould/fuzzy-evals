@@ -1,0 +1,35 @@
+
+============================================================
+Evaluating model: qwen30b_base_code_kimi_4096_r32_lr2e-4_step160
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://03475f00-8f44-50da-849c-2bae2bfe563a:train:0/sampler_weights/000160
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen30b_base_code_kimi_4096_r32_lr2e-4_step160 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen30b_base_code_kimi_4096_r32_lr2e-4_step160 on 100 problems
+Sampling is paused for sampler ca953c8b-ced5-54a4-b13e-48adf7b8f73d:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler ca953c8b-ced5-54a4-b13e-48adf7b8f73d:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler ca953c8b-ced5-54a4-b13e-48adf7b8f73d:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler ca953c8b-ced5-54a4-b13e-48adf7b8f73d:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 44 correct (88.0%), 3 pending judge [466s]
+  [mbppplus] 50/100 done, 40 correct (80.0%) [668s]
+  [math_500] 100/100 done, 83 correct (83.0%), 7 pending judge [758s]
+  [math_500] Stage 1: 83/100 correct, 7 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [766s]
+[math_500] FINAL: 83/100 (83.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step160/results_math_500.parquet
+  math_500 completed in 766s
+Sampling is paused for sampler ca953c8b-ced5-54a4-b13e-48adf7b8f73d:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 72 correct (72.0%) [1204s]
+[mbppplus] FINAL: 72/100 (72.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step160/results_mbppplus.parquet
+  mbppplus completed in 1204s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step160/eval_summary.json

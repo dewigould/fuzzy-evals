@@ -1,0 +1,31 @@
+
+============================================================
+Evaluating model: qwen8b_base_code_kimi_4096_r32_lr2e-4_step120
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://3dad05f9-c6e4-5ca9-b709-cb3e162177f9:train:0/sampler_weights/000120
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen8b_base_code_kimi_4096_r32_lr2e-4_step120 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen8b_base_code_kimi_4096_r32_lr2e-4_step120 on 100 problems
+Sampling is paused for sampler efda38e1-8267-543f-88ee-9ababd72a268:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 46 correct (92.0%), 1 pending judge [305s]
+  [mbppplus] 50/100 done, 35 correct (70.0%) [427s]
+  [math_500] 100/100 done, 82 correct (82.0%), 5 pending judge [551s]
+  [math_500] Stage 1: 82/100 correct, 5 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [560s]
+[math_500] FINAL: 82/100 (82.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_code_kimi_4096_r32_lr2e-4_step120/results_math_500.parquet
+  math_500 completed in 560s
+  [mbppplus] 100/100 done, 59 correct (59.0%) [853s]
+[mbppplus] FINAL: 59/100 (59.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_code_kimi_4096_r32_lr2e-4_step120/results_mbppplus.parquet
+  mbppplus completed in 853s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_code_kimi_4096_r32_lr2e-4_step120/eval_summary.json

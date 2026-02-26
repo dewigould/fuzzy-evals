@@ -1,0 +1,32 @@
+
+============================================================
+Evaluating model: llama70b_it_code_kimi_4096_r32_lr2e-4_step40
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://014d858a-0f7c-5055-b0b2-68b98df3cedb:train:0/sampler_weights/000040
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating llama70b_it_code_kimi_4096_r32_lr2e-4_step40 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating llama70b_it_code_kimi_4096_r32_lr2e-4_step40 on 100 problems
+  [math_500] 50/100 done, 38 correct (76.0%), 7 pending judge [241s]
+  [mbppplus] 50/100 done, 37 correct (74.0%) [379s]
+  [math_500] 100/100 done, 73 correct (73.0%), 14 pending judge [508s]
+  [math_500] Stage 1: 73/100 correct, 14 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [518s]
+[math_500] FINAL: 73/100 (73.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama70b_it_code_kimi_4096_r32_lr2e-4_step40/results_math_500.parquet
+  math_500 completed in 518s
+Sampling is paused for sampler 0daf0ef8-7f36-5c9c-9cd5-e29777c9de02:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 0daf0ef8-7f36-5c9c-9cd5-e29777c9de02:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 72 correct (72.0%) [856s]
+[mbppplus] FINAL: 72/100 (72.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama70b_it_code_kimi_4096_r32_lr2e-4_step40/results_mbppplus.parquet
+  mbppplus completed in 856s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama70b_it_code_kimi_4096_r32_lr2e-4_step40/eval_summary.json

@@ -1,0 +1,33 @@
+
+============================================================
+Evaluating model: qwen30b_base_code_kimi_4096_r32_lr2e-4_step40
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://03475f00-8f44-50da-849c-2bae2bfe563a:train:0/sampler_weights/000040
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen30b_base_code_kimi_4096_r32_lr2e-4_step40 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen30b_base_code_kimi_4096_r32_lr2e-4_step40 on 100 problems
+Sampling is paused for sampler 52a1b4fc-3c99-58ba-955d-814f1bba05e5:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 48 correct (96.0%), 2 pending judge [234s]
+  [mbppplus] 50/100 done, 38 correct (76.0%) [469s]
+  [math_500] 100/100 done, 87 correct (87.0%), 6 pending judge [537s]
+  [math_500] Stage 1: 87/100 correct, 6 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [550s]
+[math_500] FINAL: 87/100 (87.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step40/results_math_500.parquet
+  math_500 completed in 550s
+Sampling is paused for sampler 52a1b4fc-3c99-58ba-955d-814f1bba05e5:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 52a1b4fc-3c99-58ba-955d-814f1bba05e5:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 72 correct (72.0%) [1065s]
+[mbppplus] FINAL: 72/100 (72.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step40/results_mbppplus.parquet
+  mbppplus completed in 1065s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen30b_base_code_kimi_4096_r32_lr2e-4_step40/eval_summary.json

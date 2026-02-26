@@ -1,0 +1,34 @@
+
+============================================================
+Evaluating model: qwen8b_base_math_qwen_4096_r32_lr2e-4_step60
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://4492dfc1-ca9b-586b-8c86-10dd73cf0349:train:0/sampler_weights/000060
+
+  --- math_500 (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen8b_base_math_qwen_4096_r32_lr2e-4_step60 on 100 problems
+
+  --- mbppplus (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen8b_base_math_qwen_4096_r32_lr2e-4_step60 on 100 problems
+  [math_500] 50/100 done, 37 correct (74.0%), 1 pending judge [338s]
+  [mbppplus] 50/100 done, 31 correct (62.0%) [400s]
+  [math_500] 100/100 done, 69 correct (69.0%), 2 pending judge [617s]
+  [math_500] Stage 1: 69/100 correct, 2 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [622s]
+[math_500] FINAL: 69/100 (69.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_math_qwen_4096_r32_lr2e-4_step60/results_math_500.parquet
+  math_500 completed in 622s
+Sampling is paused for sampler 7570ecd2-b63e-5e67-93e4-d1a1075f6138:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 7570ecd2-b63e-5e67-93e4-d1a1075f6138:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 7570ecd2-b63e-5e67-93e4-d1a1075f6138:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 7570ecd2-b63e-5e67-93e4-d1a1075f6138:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 57 correct (57.0%) [1093s]
+[mbppplus] FINAL: 57/100 (57.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_math_qwen_4096_r32_lr2e-4_step60/results_mbppplus.parquet
+  mbppplus completed in 1093s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_math_qwen_4096_r32_lr2e-4_step60/eval_summary.json

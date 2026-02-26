@@ -1,0 +1,33 @@
+
+============================================================
+Evaluating model: qwen8b_base_math_kimi_4096_r32_lr2e-4_step160
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://f7e5c352-6722-5962-8b32-13c18cb56412:train:0/sampler_weights/000160
+
+  --- math_500 (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen8b_base_math_kimi_4096_r32_lr2e-4_step160 on 100 problems
+
+  --- mbppplus (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen8b_base_math_kimi_4096_r32_lr2e-4_step160 on 100 problems
+Sampling is paused for sampler 24507a06-e9bd-5a31-b2ae-acd4e0f7feb0:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 24507a06-e9bd-5a31-b2ae-acd4e0f7feb0:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 24507a06-e9bd-5a31-b2ae-acd4e0f7feb0:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 35 correct (70.0%), 0 pending judge [542s]
+  [mbppplus] 50/100 done, 31 correct (62.0%) [668s]
+  [math_500] 100/100 done, 68 correct (68.0%), 1 pending judge [878s]
+  [math_500] Stage 1: 68/100 correct, 1 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [884s]
+[math_500] FINAL: 68/100 (68.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_math_kimi_4096_r32_lr2e-4_step160/results_math_500.parquet
+  math_500 completed in 885s
+  [mbppplus] 100/100 done, 59 correct (59.0%) [1182s]
+[mbppplus] FINAL: 59/100 (59.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_math_kimi_4096_r32_lr2e-4_step160/results_mbppplus.parquet
+  mbppplus completed in 1182s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_math_kimi_4096_r32_lr2e-4_step160/eval_summary.json

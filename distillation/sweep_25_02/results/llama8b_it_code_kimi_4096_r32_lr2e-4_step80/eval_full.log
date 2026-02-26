@@ -1,0 +1,123 @@
+
+============================================================
+Evaluating model: llama8b_it_code_kimi_4096_r32_lr2e-4_step80
+Datasets: math_500, omni_math, aime, mbppplus, humanevalplus, livecodebench_v5
+============================================================
+  Loading checkpoint: tinker://d2cb01df-9662-5ab2-a106-88d492fefa7f:train:0/sampler_weights/000080
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating llama8b_it_code_kimi_4096_r32_lr2e-4_step80 on 500 problems
+
+  --- omni_math (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: omni_math_seed42.json.gz
+  Loaded 4428 items from cache
+[omni_math] Evaluating llama8b_it_code_kimi_4096_r32_lr2e-4_step80 on 500 problems
+
+  --- aime (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: aime_seed42.json.gz
+  Loaded 90 items from cache
+[aime] Evaluating llama8b_it_code_kimi_4096_r32_lr2e-4_step80 on 90 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating llama8b_it_code_kimi_4096_r32_lr2e-4_step80 on 378 problems
+
+  --- humanevalplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: humanevalplus_seed42.json.gz
+  Loaded 164 items from cache
+[humanevalplus] Evaluating llama8b_it_code_kimi_4096_r32_lr2e-4_step80 on 164 problems
+
+  --- livecodebench_v5 (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: livecodebench_v5_seed42.json.gz
+  Loaded 167 items from cache
+Selected 167 LiveCodeBench v5 problems
+[livecodebench] Evaluating llama8b_it_code_kimi_4096_r32_lr2e-4_step80 on 167 problems
+  [aime] 10/90 done, 2 correct (20.0%), 3 pending judge [93s]
+  [omni_math] 20/500 done, 3 correct (15.0%), 7 pending judge [174s]
+  [aime] 20/90 done, 2 correct (10.0%), 6 pending judge [175s]
+  [aime] 30/90 done, 3 correct (10.0%), 10 pending judge [238s]
+  [math_500] 50/500 done, 24 correct (48.0%), 10 pending judge [267s]
+  [omni_math] 40/500 done, 6 correct (15.0%), 12 pending judge [297s]
+  [mbppplus] 50/378 done, 33 correct (66.0%) [305s]
+  [aime] 40/90 done, 3 correct (7.5%), 12 pending judge [314s]
+  [humanevalplus] 50/164 done, 29 correct (58.0%) [331s]
+  [aime] 50/90 done, 3 correct (6.0%), 16 pending judge [389s]
+  [math_500] 100/500 done, 45 correct (45.0%), 24 pending judge [437s]
+  [livecodebench] 50/167 done, 2 correct (4.0%) [429s]
+  [omni_math] 60/500 done, 7 correct (11.7%), 16 pending judge [460s]
+  [aime] 60/90 done, 4 correct (6.7%), 17 pending judge [460s]
+  [aime] 70/90 done, 4 correct (5.7%), 20 pending judge [525s]
+  [math_500] 150/500 done, 80 correct (53.3%), 33 pending judge [579s]
+  [aime] 80/90 done, 5 correct (6.2%), 23 pending judge [587s]
+  [mbppplus] 100/378 done, 61 correct (61.0%) [599s]
+  [humanevalplus] 100/164 done, 56 correct (56.0%) [599s]
+  [omni_math] 80/500 done, 8 correct (10.0%), 19 pending judge [618s]
+  [aime] 90/90 done, 5 correct (5.6%), 24 pending judge [669s]
+  [aime] Stage 1: 5/90 correct, 24 need LLM judge
+  [aime] LLM judge upgraded 0 answers [679s]
+[aime] FINAL: 5/90 (5.6%)
+Saved 90 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_it_code_kimi_4096_r32_lr2e-4_step80/results_aime.parquet
+  aime completed in 679s
+  [omni_math] 100/500 done, 9 correct (9.0%), 26 pending judge [737s]
+  [math_500] 200/500 done, 105 correct (52.5%), 47 pending judge [745s]
+  [livecodebench] 100/167 done, 6 correct (6.0%) [840s]
+  [humanevalplus] 150/164 done, 85 correct (56.7%) [860s]
+  [omni_math] 120/500 done, 12 correct (10.0%), 30 pending judge [865s]
+  [mbppplus] 150/378 done, 88 correct (58.7%) [879s]
+  [math_500] 250/500 done, 128 correct (51.2%), 61 pending judge [916s]
+  [humanevalplus] 164/164 done, 90 correct (54.9%) [975s]
+[humanevalplus] FINAL: 90/164 (54.9%)
+Saved 164 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_it_code_kimi_4096_r32_lr2e-4_step80/results_humanevalplus.parquet
+  humanevalplus completed in 975s
+  [omni_math] 140/500 done, 12 correct (8.6%), 39 pending judge [979s]
+  [math_500] 300/500 done, 151 correct (50.3%), 71 pending judge [1088s]
+  [omni_math] 160/500 done, 18 correct (11.2%), 42 pending judge [1094s]
+  [mbppplus] 200/378 done, 118 correct (59.0%) [1140s]
+  [omni_math] 180/500 done, 20 correct (11.1%), 47 pending judge [1221s]
+  [livecodebench] 150/167 done, 12 correct (8.0%) [1224s]
+  [math_500] 350/500 done, 174 correct (49.7%), 83 pending judge [1250s]
+  [omni_math] 200/500 done, 21 correct (10.5%), 54 pending judge [1334s]
+  [livecodebench] 167/167 done, 12 correct (7.2%) [1367s]
+[livecodebench] FINAL: 12/167 (7.2%)
+Saved 167 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_it_code_kimi_4096_r32_lr2e-4_step80/results_livecodebench_v5.parquet
+  livecodebench_v5 completed in 1376s
+  [math_500] 400/500 done, 200 correct (50.0%), 92 pending judge [1414s]
+  [mbppplus] 250/378 done, 145 correct (58.0%) [1424s]
+  [omni_math] 220/500 done, 23 correct (10.5%), 62 pending judge [1440s]
+  [math_500] 450/500 done, 228 correct (50.7%), 103 pending judge [1568s]
+  [omni_math] 240/500 done, 23 correct (9.6%), 65 pending judge [1570s]
+  [mbppplus] 300/378 done, 177 correct (59.0%) [1687s]
+  [omni_math] 260/500 done, 24 correct (9.2%), 71 pending judge [1696s]
+  [math_500] 500/500 done, 250 correct (50.0%), 113 pending judge [1762s]
+  [math_500] Stage 1: 250/500 correct, 113 need LLM judge
+  [omni_math] 280/500 done, 25 correct (8.9%), 73 pending judge [1788s]
+  [math_500] LLM judge upgraded 0 answers [1814s]
+[math_500] FINAL: 250/500 (50.0%)
+Saved 500 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_it_code_kimi_4096_r32_lr2e-4_step80/results_math_500.parquet
+  math_500 completed in 1814s
+  [omni_math] 300/500 done, 27 correct (9.0%), 82 pending judge [1899s]
+  [mbppplus] 350/378 done, 207 correct (59.1%) [1917s]
+  [omni_math] 320/500 done, 28 correct (8.8%), 87 pending judge [1999s]
+  [mbppplus] 378/378 done, 224 correct (59.3%) [2067s]
+[mbppplus] FINAL: 224/378 (59.3%)
+Saved 378 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_it_code_kimi_4096_r32_lr2e-4_step80/results_mbppplus.parquet
+  mbppplus completed in 2067s
+  [omni_math] 340/500 done, 29 correct (8.5%), 91 pending judge [2127s]
+  [omni_math] 360/500 done, 35 correct (9.7%), 96 pending judge [2213s]
+  [omni_math] 380/500 done, 38 correct (10.0%), 101 pending judge [2311s]
+  [omni_math] 400/500 done, 42 correct (10.5%), 103 pending judge [2422s]
+  [omni_math] 420/500 done, 43 correct (10.2%), 107 pending judge [2523s]
+  [omni_math] 440/500 done, 47 correct (10.7%), 114 pending judge [2625s]
+  [omni_math] 460/500 done, 48 correct (10.4%), 119 pending judge [2732s]
+  [omni_math] 480/500 done, 49 correct (10.2%), 123 pending judge [2840s]
+  [omni_math] 500/500 done, 50 correct (10.0%), 127 pending judge [2959s]
+  [omni_math] Stage 1: 50/500 correct, 127 need LLM judge
+  [omni_math] LLM judge upgraded 5 answers [3013s]
+[omni_math] FINAL: 55/500 (11.0%)
+Saved 500 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_it_code_kimi_4096_r32_lr2e-4_step80/results_omni_math.parquet
+  omni_math completed in 3013s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_it_code_kimi_4096_r32_lr2e-4_step80/eval_summary.json

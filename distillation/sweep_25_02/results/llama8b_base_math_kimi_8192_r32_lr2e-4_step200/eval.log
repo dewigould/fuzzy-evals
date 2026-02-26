@@ -1,0 +1,30 @@
+
+============================================================
+Evaluating model: llama8b_base_math_kimi_8192_r32_lr2e-4_step200
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://ef2d9e3e-6e31-502c-a3d4-227f44d1b669:train:0/sampler_weights/000200
+
+  --- math_500 (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating llama8b_base_math_kimi_8192_r32_lr2e-4_step200 on 100 problems
+
+  --- mbppplus (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating llama8b_base_math_kimi_8192_r32_lr2e-4_step200 on 100 problems
+  [mbppplus] 50/100 done, 19 correct (38.0%) [271s]
+  [math_500] 50/100 done, 9 correct (18.0%), 10 pending judge [298s]
+  [mbppplus] 100/100 done, 38 correct (38.0%) [541s]
+[mbppplus] FINAL: 38/100 (38.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_math_kimi_8192_r32_lr2e-4_step200/results_mbppplus.parquet
+  mbppplus completed in 541s
+  [math_500] 100/100 done, 19 correct (19.0%), 19 pending judge [561s]
+  [math_500] Stage 1: 19/100 correct, 19 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [572s]
+[math_500] FINAL: 19/100 (19.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_math_kimi_8192_r32_lr2e-4_step200/results_math_500.parquet
+  math_500 completed in 574s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_math_kimi_8192_r32_lr2e-4_step200/eval_summary.json

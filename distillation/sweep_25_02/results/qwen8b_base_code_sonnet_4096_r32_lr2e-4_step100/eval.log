@@ -1,0 +1,33 @@
+
+============================================================
+Evaluating model: qwen8b_base_code_sonnet_4096_r32_lr2e-4_step100
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://e9c044e3-1b90-552c-9689-4a9ab50e165c:train:0/sampler_weights/000100
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating qwen8b_base_code_sonnet_4096_r32_lr2e-4_step100 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating qwen8b_base_code_sonnet_4096_r32_lr2e-4_step100 on 100 problems
+Sampling is paused for sampler 57d201ad-73ae-58ee-99b1-ce5e4b98239d:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 57d201ad-73ae-58ee-99b1-ce5e4b98239d:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 42 correct (84.0%), 6 pending judge [216s]
+  [mbppplus] 50/100 done, 38 correct (76.0%) [219s]
+  [math_500] 100/100 done, 78 correct (78.0%), 16 pending judge [363s]
+  [math_500] Stage 1: 78/100 correct, 16 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [380s]
+[math_500] FINAL: 78/100 (78.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_code_sonnet_4096_r32_lr2e-4_step100/results_math_500.parquet
+  math_500 completed in 380s
+Sampling is paused for sampler 57d201ad-73ae-58ee-99b1-ce5e4b98239d:sample:0. Reason: concurrent sampler weights limit hit
+  [mbppplus] 100/100 done, 68 correct (68.0%) [480s]
+[mbppplus] FINAL: 68/100 (68.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_code_sonnet_4096_r32_lr2e-4_step100/results_mbppplus.parquet
+  mbppplus completed in 480s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/qwen8b_base_code_sonnet_4096_r32_lr2e-4_step100/eval_summary.json

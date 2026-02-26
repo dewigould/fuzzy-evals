@@ -1,0 +1,34 @@
+
+============================================================
+Evaluating model: llama8b_base_code_kimi_4096_r32_lr2e-4_step160
+Datasets: math_500, mbppplus
+============================================================
+  Loading checkpoint: tinker://820b9260-0790-5101-95af-5f596e89d5d6:train:0/sampler_weights/000160
+
+  --- math_500 (think_prefix=True, max_tokens=4096) ---
+  Loading from cache: math_500_seed42.json.gz
+  Loaded 500 items from cache
+[math_500] Evaluating llama8b_base_code_kimi_4096_r32_lr2e-4_step160 on 100 problems
+
+  --- mbppplus (think_prefix=False, max_tokens=4096) ---
+  Loading from cache: mbppplus_seed42.json.gz
+  Loaded 378 items from cache
+[mbppplus] Evaluating llama8b_base_code_kimi_4096_r32_lr2e-4_step160 on 100 problems
+Sampling is paused for sampler 9ab5918a-7dc7-5bc4-a82e-f152d9ade395:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 9ab5918a-7dc7-5bc4-a82e-f152d9ade395:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 9ab5918a-7dc7-5bc4-a82e-f152d9ade395:sample:0. Reason: concurrent sampler weights limit hit
+Sampling is paused for sampler 9ab5918a-7dc7-5bc4-a82e-f152d9ade395:sample:0. Reason: concurrent sampler weights limit hit
+  [math_500] 50/100 done, 1 correct (2.0%), 6 pending judge [486s]
+  [mbppplus] 50/100 done, 28 correct (56.0%) [495s]
+  [math_500] 100/100 done, 4 correct (4.0%), 11 pending judge [690s]
+  [math_500] Stage 1: 4/100 correct, 11 need LLM judge
+  [math_500] LLM judge upgraded 0 answers [697s]
+[math_500] FINAL: 4/100 (4.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_code_kimi_4096_r32_lr2e-4_step160/results_math_500.parquet
+  math_500 completed in 697s
+  [mbppplus] 100/100 done, 54 correct (54.0%) [748s]
+[mbppplus] FINAL: 54/100 (54.0%)
+Saved 100 rows to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_code_kimi_4096_r32_lr2e-4_step160/results_mbppplus.parquet
+  mbppplus completed in 748s
+
+Saved eval summary to /workspace/fuzzy-evals/distillation/sweep_25_02/results/llama8b_base_code_kimi_4096_r32_lr2e-4_step160/eval_summary.json
