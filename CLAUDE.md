@@ -1,152 +1,318 @@
 # Fuzzy Evals — Agent Guide
 
-This repo contains evaluation and training infrastructure for studying reasoning distillation and LLM-as-judge evaluation on "fuzzy" (open-ended) and "hard" (math/code) benchmarks.
 
-## Quick Orientation
+### Headlines
+This is a repo designed to study distillation. The goal is to distill reasoning traces into base models, and study intra- and cross-domain performance. We distill math and reasoning traces into base models, and look for cases where math improves math performance, and code improves code performance.
+
+We are using the tinker API and cookbook to run distillation, and evaluate across a suite of evals (in eval_tools).
+
+This is an exploratory project, we experiment with parameters, datasets, reasoning traces, base models to try to find combinations which lead to strong intra-domain performance, and good cross-domain performance.
+
+
+## Quick Start
+
+```bash
+cd /workspace/fuzzy-evals
+
+# Run a single training experiment
+python run.py single --name math_sonnet --base-model "Qwen/Qwen3-30B-A3B-Instruct-2507" \
+    --task math --traces sonnet --max-length 4096
+
+# Evaluate a base model (no training)
+python run.py base-eval --name qwen30b_base \
+    --base-model "Qwen/Qwen3-30B-A3B-Instruct-2507"
+
+# Run a batch of experiments from a Python file
+python run.py batch my_overnight.py --max-parallel 4
+
+# Evaluate an existing checkpoint (skip training)
+python run.py eval --sampler-path "tinker://..." \
+    --base-model "Qwen/Qwen3-30B-A3B-Instruct-2507" --task math
+
+# Compare results across experiments
+python run.py compare logs/2026-02-26_*
+```
+
+## Architecture
 
 ```
 fuzzy-evals/
-├── dataset_jsons/          # 56 fuzzy eval questions (philosophy, weird, futuristic tech)
-├── rubrics/                # LLM judge rubrics (6 criteria, 0-8 each, max 48)
-├── graders/                # Rubric loaders + grading prompt builders
-├── scripts/                # Standalone experiment scripts (effort sweep, model sweep, training)
-├── results/                # Legacy experiment outputs (Opus sweep)
-├── distillation/           # ** Main active experiment ** (training, eval, analysis)
-│   ├── config.py           # Shared constants, paths, system prompts
-│   ├── infer.py            # Central inference (renderer, tokenizer, think prefix seeding)
-│   ├── evaluate.py         # Main eval pipeline (reads eval_config.yaml)
-│   ├── eval_config.yaml    # Which models × which datasets to evaluate
-│   ├── eval_tools/         # Per-dataset evaluation modules (8 datasets)
-│   ├── train_math.py       # Math SFT training entry point
-│   ├── train_code.py       # Code SFT training entry point
-│   ├── sweep.py            # Training sweep orchestrator
-│   ├── analysis/           # Plotting and analysis scripts
-│   └── training_runs/      # Saved configs, metrics, checkpoints
-└── schema.py               # FuzzyQuestion dataclass
+├── config.py           # Constants, paths, frozen dataclass configs
+├── infer.py            # Inference (renderer, tokenizer, think prefix seeding)
+├── utils.py            # Shared utilities (cache, parsing, OpenRouter calls)
+├── train.py            # LoRA SFT training (data filtering + tinker SDK)
+├── evaluate.py         # Eval orchestrator (runs eval_tools/ modules)
+├── analyze.py          # Plots (checkpoint curve, training loss, comparison)
+├── runner.py           # Pipeline orchestrator (train → eval → select → full eval)
+├── run.py              # CLI entry point (single, base-eval, batch, eval, compare)
+├── experiments/        # Experiment launch scripts (.sh)
+├── eval_tools/         # Per-dataset evaluation modules (11 datasets)
+├── fuzzy_data/         # Fuzzy eval data (questions, rubrics, graders)
+│   ├── questions/      # Question JSONs (philosophy, weird, futuristic tech)
+│   ├── rubrics/        # LLM judge rubrics (6 criteria, 0-8 each, max 48)
+│   └── graders/        # Grading prompt builders per fuzzy dataset
+├── traces/             # Symlinks to reasoning trace data
+├── filtered_data/      # [gitignored] Token-filtered trace cache
+├── eval_cache/         # [gitignored] Cached eval datasets
+└── logs/               # [gitignored] Experiment output directories
 ```
 
-## Key Concepts
+### Pipeline Flow
 
-### Model
-Base model is **Qwen/Qwen3-30B-A3B-Instruct-2507** (MoE, 3B active params). Distilled variants are LoRA rank-32 fine-tunes trained via the [tinker](file:///workspace/tinker-cookbook/CLAUDE.md) framework.
+**Training experiment** (`run_experiment`):
+1. **Filter data** — tokenize traces, keep examples ≤ max_length, cache in `filtered_data/`
+2. **Train** — LoRA SFT via tinker SDK
+3. **Checkpoint eval** — fast eval on small subset (default: math_500 + mbppplus, 100 problems each)
+4. **Select best** — pick checkpoint with highest primary metric accuracy
+5. **Full eval** — comprehensive benchmark suite (all 11 datasets)
+6. **Generate plots + summary** — checkpoint curve, training loss, summary.json
 
-### Think Prefix Seeding
-Distilled models learned `<think>...</think>` reasoning from teacher traces. At inference:
-- **In-domain** (e.g., math_distill on math): `think_prefix=False` — model generates `<think>` natively
-- **Cross-domain** (e.g., math_distill on code): `think_prefix=True` — seed `<think>\n` via renderer's `prefill` parameter
+**Base model eval** (`run_base_eval`):
+1. Full eval on specified datasets
+2. Generate summary.json
+
+**Comparison** (`compare`):
+1. Load summary.json from multiple log dirs
+2. Generate grouped bar chart + CSV table
+
+## Config Reference
+
+### `TrainingConfig`
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `base_model` | str | required | HuggingFace model ID |
+| `task` | str | required | `"math"` or `"code"` |
+| `trace_source` | str | required | `"sonnet"`, `"qwen"`, or `"kimi"` |
+| `data_path` | str\|None | None | Override trace JSONL path |
+| `max_length` | int | 4096 | Max sequence length in tokens |
+| `lora_rank` | int | 32 | LoRA rank |
+| `learning_rate` | float | 2e-4 | Learning rate |
+| `lr_schedule` | str | "cosine" | LR schedule |
+| `batch_size` | int | 50 | Batch size |
+| `max_samples` | int | 25000 | Max training samples |
+| `save_every` | int | 100 | Save checkpoint every N steps |
+| `eval_every` | int | 100 | Evaluate every N steps |
+
+### `CheckpointEvalConfig`
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `datasets` | tuple | ("math_500", "mbppplus") | Datasets for checkpoint eval |
+| `max_problems` | int | 100 | Problems per dataset |
+| `max_tokens` | int\|None | None | None = inherit from training.max_length |
+
+### `FullEvalConfig`
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `datasets` | tuple | (all 6 hard benchmarks) | Datasets for full eval |
+| `max_problems` | int\|None | None | Limit problems (None = full) |
+| `max_tokens` | int\|None | None | None = inherit from training.max_length (8192 for base evals) |
+
+### `Experiment`
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `name` | str | required | Experiment name |
+| `training` | TrainingConfig | required | Training configuration |
+| `checkpoint_eval` | CheckpointEvalConfig | default | Checkpoint eval config |
+| `full_eval` | FullEvalConfig | default | Full eval config |
+| `skip_training` | bool | False | Skip training, use sampler_path |
+| `sampler_path` | str\|None | None | Pre-trained checkpoint URI |
+
+### `BaseModelEval`
+
+| Field | Type | Default | Description |
+|-------|------|---------|-------------|
+| `name` | str | required | Eval name |
+| `base_model` | str | required | HuggingFace model ID |
+| `eval` | FullEvalConfig | default | Eval configuration |
+
+## Batch Files
+
+Define `EXPERIMENTS: list[Experiment | BaseModelEval]` in a Python file:
+
+```python
+from config import Experiment, BaseModelEval, TrainingConfig, FullEvalConfig
+
+BASE = "Qwen/Qwen3-30B-A3B-Instruct-2507"
+
+EXPERIMENTS = [
+    BaseModelEval(name="qwen30b_base", base_model=BASE),
+    Experiment(
+        name="math_sonnet_4k",
+        training=TrainingConfig(
+            base_model=BASE, task="math", trace_source="sonnet", max_length=4096
+        ),
+    ),
+    Experiment(
+        name="code_sonnet_4k",
+        training=TrainingConfig(
+            base_model=BASE, task="code", trace_source="sonnet", max_length=4096
+        ),
+    ),
+]
+```
+
+Run with: `python run.py batch my_overnight.py --max-parallel 4`
+
+## Evaluation Datasets (11 total)
+
+| Dataset | Type | Metric | Grading |
+|---------|------|--------|---------|
+| math_500 | Math | accuracy | `extract_boxed` + `grade_answer` (sympy) |
+| aime | Math | accuracy | same |
+| omni_math | Math | accuracy | Two-stage: math grading → GPT-5.2 judge fallback |
+| kodcode_500 | Code | accuracy | Subprocess pytest-style tests |
+| codeforces_500 | Code | accuracy | stdin/stdout test execution |
+| livecodebench_v5 | Code | accuracy | Subprocess execution |
+| humanevalplus | Code | accuracy | Subprocess execution |
+| mbppplus | Code | accuracy | Subprocess execution |
+| fuzzy_philosophy | Fuzzy | mean_score | GPT-5.2 judge with rubric (max 48) |
+| fuzzy_weird_qs | Fuzzy | mean_score | GPT-5.2 judge with rubric |
+| fuzzy_futuristic_tech | Fuzzy | mean_score | GPT-5.2 judge with rubric |
+
+### Result Parquet Columns
+
+**Math datasets**: `problem`, `expected_answer`, `model_answer`, `full_response`, `correct` (bool)
+**Code datasets**: `problem`, `full_response`, `extracted_code`, `passed` (bool) — note: KodCode uses `passed`, not `correct`
+**Fuzzy datasets**: `question`, `full_response`, `score` (0-48), `judge_response`
+
+## Logs Structure
+
+```
+logs/
+└── 2026-02-26_2130_math_sonnet_4k/
+    ├── config.json                          # Experiment config (frozen)
+    ├── training/
+    │   ├── metrics.jsonl                    # Per-step training metrics
+    │   └── checkpoints.jsonl                # {batch, sampler_path} per checkpoint
+    ├── checkpoint_eval/
+    │   └── step100/                         # Per-checkpoint eval results
+    │       └── results_*.parquet
+    ├── selected_checkpoint.json             # {step, sampler_path, reason}
+    ├── full_eval/
+    │   ├── results_*.parquet                # Per-dataset result files
+    │   └── eval_summary.json                # {dataset: {accuracy: ...}}
+    ├── plots/
+    │   ├── checkpoint_curve.png
+    │   └── training_loss.png
+    └── summary.json                         # Final summary with all results
+```
+
+## Data
+
+### Trace Sources
+
+| Source | Description | Available Tasks |
+|--------|-------------|----------------|
+| sonnet | Claude Sonnet 4.5 reasoning traces | math, code |
+| qwen | Qwen3-235B thinking traces | math, code |
+| kimi | Kimi-K2.5 reasoning traces | math, code |
+
+Traces are symlinked from `traces/` to `distillation/generate_reasoning_traces/data*/correct_only.jsonl`.
+
+### Filtered Data Cache
+
+Token-filtered traces are cached in `filtered_data/` with key: `{model_short}_{task}_{traces}_{max_length}.jsonl`. Computed once and shared across experiments. Delete a cache file to recompute.
+
+## Base Models
+
+| Short Name | HuggingFace ID |
+|-----------|----------------|
+| llama8b_base | meta-llama/Llama-3.1-8B |
+| llama8b_it | meta-llama/Llama-3.1-8B-Instruct |
+| llama70b_it | meta-llama/Llama-3.3-70B-Instruct |
+| qwen8b_base | Qwen/Qwen3-8B-Base |
+| qwen30b_base | Qwen/Qwen3-30B-A3B-Base |
+| qwen30b_it | Qwen/Qwen3-30B-A3B-Instruct-2507 |
+
+## Think Prefix Logic
+
+Distilled models learned `<think>...</think>` reasoning from teacher traces. At eval time:
+
+- **In-domain** (e.g., math-distilled on math datasets): `think_prefix=False` — model generates `<think>` natively
+- **Cross-domain** (e.g., math-distilled on code datasets): `think_prefix=True` — seed `<think>\n` via renderer's `prefill` parameter
 - **Base model**: `think_prefix=False` always
 
-**Critical**: Think prefix is a generation biasing technique, not a post-processor. The model's output must never be modified after sampling. See `infer.py` for the correct implementation.
+**Critical**: Think prefix is a generation biasing technique, not a post-processor. Never modify model output after sampling. See `infer.py:generate()`.
 
-### ContentPart TypedDicts
+## ContentPart TypedDicts
+
 The Qwen3 renderer's `parse_response()` returns content as either:
-- `str` — when no `<think>` tags in output
+- `str` — when no `<think>` tags
 - `list[ContentPart]` — TypedDicts (plain dicts), NOT objects with attributes
 
-ContentPart types: `{"type": "thinking", "thinking": str}` and `{"type": "text", "text": str}`. Use `part.get("type")` for discrimination, never `hasattr()`.
+ContentPart types: `{"type": "thinking", "thinking": str}` and `{"type": "text", "text": str}`.
+Use `part.get("type")` for discrimination, **never** `hasattr()`.
 
-### Evaluation Datasets (8 total)
-| Dataset | Type | Size | Metric | Grading |
-|---------|------|------|--------|---------|
-| math_500 | Math | 500 | accuracy | `extract_boxed` + `grade_answer` (sympy) |
-| aime | Math | 90 | accuracy | same |
-| omni_math | Math | 4,428 | accuracy | Two-stage: math grading → GPT-5.2 judge fallback |
-| kodcode_500 | Code | 5,764 | accuracy | Subprocess execution of pytest-style tests |
-| codeforces_500 | Code | ~408 | accuracy | stdin/stdout test execution |
-| fuzzy_philosophy | Fuzzy | 10 | mean_score | GPT-5.2 judge with rubric (max 48) |
-| fuzzy_weird_qs | Fuzzy | 46 | mean_score | GPT-5.2 judge with rubric |
-| fuzzy_futuristic_tech | Fuzzy | 10 | mean_score | GPT-5.2 judge with rubric |
+## Common Pitfalls
 
-### Training Configs
-Four sweep configs per task (A_fast → D_long), varying `max_prompts`, `learning_rate`, `lr_schedule`, `num_epochs`. All use batch_size=50, LoRA rank=32, max_length=8192. Checkpoints saved every 100 steps (= 5,000 examples). Winner selected by lowest test NLL.
-
-## Running Evaluations
-
-```bash
-cd /workspace/fuzzy-evals/distillation
-
-# Full eval (all models × all datasets from config)
-PYTHONUNBUFFERED=1 python3.13 evaluate.py
-
-# Single model
-PYTHONUNBUFFERED=1 python3.13 evaluate.py --model math_distill
-
-# Quick sanity check
-PYTHONUNBUFFERED=1 python3.13 evaluate.py --model base --max-problems 10 --fuzzy-samples 1
-
-# Specific datasets
-PYTHONUNBUFFERED=1 python3.13 evaluate.py --model base --datasets math_500,aime
-```
-
-Results go to `distillation/results/{model_name}/results_{dataset}.parquet`.
-
-All datasets within a model run **concurrently** via `asyncio.gather`. Use `PYTHONUNBUFFERED=1` to see output in real time.
-
-## Running Training
-
-```bash
-cd /workspace/fuzzy-evals/distillation
-
-# Single config
-python3.13 train_math.py D_long
-
-# Full sweep (runs A/B/C/D sequentially, picks winner)
-python3.13 sweep.py --task math
-python3.13 sweep.py --task code
-```
-
-## Running Analysis
-
-```bash
-cd /workspace/fuzzy-evals/distillation
-
-# Generate all plots
-python3.13 analysis/generate_all.py
-
-# Checkpoint sweep (evaluates multiple training checkpoints)
-PYTHONUNBUFFERED=1 python3.13 analysis/checkpoint_sweep.py
-```
-
-Plots saved to `distillation/analysis/plots/`.
+1. **`hasattr()` on ContentParts**: TypedDicts are plain dicts — `hasattr(part, "thinking")` is always False. Use `part.get("type") == "thinking"`.
+2. **Post-hoc `<think>` prepend**: Never prepend `<think>\n` to model output. Use `renderer.build_generation_prompt(messages, prefill="<think>\n")`.
+3. **max_tokens vs context window**: Model context is 32,768 tokens. Leave headroom for prompts (28,672 default).
+4. **Truncation kills accuracy**: Distilled models generate very long CoT. If output is truncated before `\boxed{}` or code block, the answer is lost.
+5. **Code eval OOM**: Code datasets run subprocess tests that can exhaust memory. `serialize_code_eval=True` (default) limits concurrency via `MAX_CONCURRENT_CODE_EVALS` (default 2) across all threads.
+6. **KodCode column name**: KodCode uses `passed` (not `correct`) as the boolean column in parquet results.
+7. **Python output buffering**: Use `PYTHONUNBUFFERED=1` when running evals in the background.
 
 ## Adding a New Eval Dataset
 
-1. Create `eval_tools/my_dataset.py` with an `async def run(sampling_client, renderer, tokenizer, results_dir, model_name, think_prefix, max_tokens, max_problems=None, **kwargs) -> dict` function
-2. Register in `evaluate.py` DATASET_MODULES: `"my_dataset": "eval_tools.my_dataset"`
-3. Add to `eval_config.yaml` datasets list
-4. If distilled models should use native thinking (no prefill), add to the model's `no_think_prefix_datasets`
+1. Create `eval_tools/my_dataset.py` with:
+   ```python
+   async def run(sampling_client, renderer, tokenizer, results_dir, model_name,
+                 think_prefix, max_tokens, max_problems=None, **kwargs) -> dict:
+       # Return {"accuracy": float, "n_correct": int, "total": int}
+       # Or: {"mean_score": float}
+   ```
+2. Register in `evaluate.py` `DATASET_MODULES`: `"my_dataset": "eval_tools.my_dataset"`
+3. Add to appropriate dataset set in `config.py` (`MATH_DATASETS`, `CODE_DATASETS`, or `FUZZY_DATASETS`)
+4. Add to default `FullEvalConfig.datasets` tuple if it should run by default
 
-Follow the pattern in `math_500.py` (accuracy-based) or `fuzzy_philosophy.py` (judge-based).
+Follow `eval_tools/math_500.py` (accuracy-based) or `eval_tools/fuzzy_philosophy.py` (judge-based).
 
 ## Environment
 
 - **Python**: 3.13 (venv at `fuzzy-evals-env/`)
-- **API keys**: `.env` file (OPENROUTER_API_KEY, TINKERY_API_KEY, HF_TOKEN)
+- **API keys**: `/workspace/.env` (OPENROUTER_API_KEY, TINKERY_API_KEY, HF_TOKEN)
 - **Judge model**: GPT-5.2 via OpenRouter
 - **Training infra**: tinker SDK + tinker_cookbook (see `/workspace/tinker-cookbook/CLAUDE.md`)
-- **Key dependencies**: tinker, tinker_cookbook, datasets, pandas, aiohttp, sympy, pylatexenc
-
-## Common Pitfalls
-
-1. **`hasattr()` on ContentParts**: TypedDicts are plain dicts — `hasattr(part, "thinking")` is always False. Use `part.get("type") == "thinking"` instead.
-2. **Post-hoc `<think>` prepend**: Never prepend `<think>\n` to model output. Use the renderer's `prefill` parameter in `build_generation_prompt()`.
-3. **max_tokens vs context window**: Model context is 32,768 tokens. Leave headroom for prompts (28,672 works).
-4. **Python output buffering**: Always use `PYTHONUNBUFFERED=1` when running evals in the background.
-5. **Base model think_prefix**: The base Qwen3 model should use `think_prefix=False` on all datasets.
-6. **Truncation kills accuracy**: Distilled models generate very long CoT. If output is truncated before `\boxed{}` or the code block, the answer is lost. This is the primary failure mode.
-7. **KodCode column name**: KodCode uses `passed` (not `correct`) as the boolean column in parquet results.
+- **Key dependencies**: tinker, tinker_cookbook, datasets, pandas, aiohttp, sympy, pylatexenc, matplotlib
 
 ## File Quick Reference
 
 | What | Where |
 |------|-------|
-| Model name, system prompts | `distillation/config.py` |
-| Inference logic, think prefix | `distillation/infer.py` |
-| Eval pipeline entry point | `distillation/evaluate.py` |
-| Model/dataset selection | `distillation/eval_config.yaml` |
+| Constants, configs, dataclasses | `config.py` |
+| Inference logic, think prefix | `infer.py` |
+| Shared utilities, OpenRouter | `utils.py` |
+| Training (filter + LoRA SFT) | `train.py` |
+| Eval orchestrator | `evaluate.py` |
+| Plots, comparison, summaries | `analyze.py` |
+| Pipeline orchestrator | `runner.py` |
+| CLI entry point | `run.py` |
+| Per-dataset eval modules | `eval_tools/` |
+| Experiment launch scripts | `experiments/` |
+| Fuzzy questions, rubrics, graders | `fuzzy_data/` |
 | Math grading (boxed, sympy) | `/workspace/tinker-cookbook/.../math_grading.py` |
-| Training checkpoints | `distillation/training_runs/{math,code}/D_long/checkpoints.jsonl` |
-| Eval results (parquet) | `distillation/results/{model_name}/` |
-| Fuzzy questions JSON | `dataset_jsons/` |
-| Grading rubrics | `rubrics/` |
-| Analysis plots | `distillation/analysis/plots/` |
+
+## Running Experiments
+
+Always write a launch script in `experiments/` so every run is recorded. Two patterns:
+
+**Single experiment** — `.sh` with inline Python:
+```bash
+bash experiments/smoke_llama8b_math_kimi.sh
+```
+
+**Sweep / batch** — `.sh` wrapping a `.py` batch file:
+```bash
+# experiments/my_sweep.py defines EXPERIMENTS list with loops
+# experiments/my_sweep.sh runs it:
+bash experiments/my_sweep.sh
+```
+
+Run in background: `nohup bash experiments/my_sweep.sh > experiments/my_sweep.log 2>&1 &`
+
+Each experiment writes a `run.log` in its log dir with orchestration output. Per-experiment results are always in `logs/{timestamp}_{name}/summary.json`.

@@ -1,13 +1,19 @@
+# Environment
 .env
-**/filtered_data*/
-*/__pycache__/**
+
+# Python
+__pycache__/
 *.pyc
+
+# Large data / caches (never commit)
+filtered_data/
+logs/
+eval_cache/
+traces/
+GRAVE/
+
+# Legacy (kept for reference but paths may not exist)
 distillation/training_runs
-distillation/generate_reasoning_traces/data
-distillation/generate_reasoning_traces/data_code
-distillation/generate_reasoning_traces/data_code_thinking
-distillation/generate_reasoning_traces/data_code_thinking_kimi
-distillation/generate_reasoning_traces/data_thinking
-distillation/generate_reasoning_traces/data_thinking_kimi
+distillation/generate_reasoning_traces/data*
 distillation/sft_formatting_examples/results
 distillation/analysis/plots

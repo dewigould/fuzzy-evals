@@ -1,8 +1,0 @@
-{
-  "humanevalplus": {
-    "dataset": "humanevalplus",
-    "accuracy": 0.82,
-    "n_correct": 82,
-    "total": 100
-  }
-}
