@@ -211,7 +211,11 @@ logs/
 | qwen | Qwen3-235B thinking traces | math, code |
 | kimi | Kimi-K2.5 reasoning traces | math, code |
 
-Traces are symlinked from `traces/` to `distillation/generate_reasoning_traces/data*/correct_only.jsonl`.
+Trace data is stored on HuggingFace: [`dewigould/fuzzy-evals-traces`](https://huggingface.co/datasets/dewigould/fuzzy-evals-traces) (private). Download into `traces/`:
+
+```bash
+huggingface-cli download dewigould/fuzzy-evals-traces --repo-type dataset --local-dir traces/
+```
 
 ### Filtered Data Cache
 

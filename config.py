@@ -31,8 +31,8 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
 OPENROUTER_URL = "https://openrouter.ai/api/v1/chat/completions"
 EVAL_CONCURRENCY = 10
 MAX_TOKENS = 8192
-MAX_CONCURRENT_MATH_EVALS = 10  # How many math/fuzzy evals can run simultaneously
-MAX_CONCURRENT_CODE_EVALS = 4   # How many code evals can run simultaneously (OOM risk)
+MAX_CONCURRENT_MATH_EVALS = 20  # How many math/fuzzy evals can run simultaneously
+MAX_CONCURRENT_CODE_EVALS = 6   # How many code evals can run simultaneously (OOM risk)
 FUZZY_N_SAMPLES = 10
 EVAL_TEMPERATURE = 0.0
 

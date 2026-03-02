@@ -10,6 +10,7 @@ Two-stage verification (same as omni_math):
 import asyncio
 import random
 import time
+from collections import Counter
 from pathlib import Path
 
 import aiohttp
@@ -120,6 +121,10 @@ async def run(sampling_client, renderer, tokenizer, results_dir: Path, model_nam
     counter = {"done": 0, "correct": 0, "need_judge": 0}
     t0 = time.time()
 
+    num_samples = kwargs.get("num_samples", 1)
+    if num_samples > 1:
+        print(f"[math_500] Using majority vote with {num_samples} samples per problem")
+
     # Phase 1: Generate + stage 1 grading
     async def eval_one(i):
         messages = [
@@ -132,6 +137,7 @@ async def run(sampling_client, renderer, tokenizer, results_dir: Path, model_nam
                     messages=messages, max_tokens=max_tokens,
                     temperature=kwargs.get("temperature", 0.0),
                     think_prefix=think_prefix,
+                    num_samples=num_samples,
                 )
                 if kwargs.get("top_p") is not None:
                     gen_kwargs["top_p"] = kwargs["top_p"]
@@ -139,17 +145,56 @@ async def run(sampling_client, renderer, tokenizer, results_dir: Path, model_nam
                     sampling_client, renderer, tokenizer,
                     **gen_kwargs,
                 )
-                completion = completions[0]
             except Exception as e:
-                completion = f"ERROR: {e}"
+                completions = [f"ERROR: {e}"]
+
+        ground_truth = problems[i]["answer"]
+
+        if num_samples > 1 and len(completions) > 1:
+            # Majority vote: extract answer from each sample, pick most common
+            all_answers = []
+            for comp in completions:
+                if comp.startswith("ERROR:"):
+                    all_answers.append("error")
+                else:
+                    try:
+                        all_answers.append(extract_boxed(comp))
+                    except Exception:
+                        all_answers.append("no_boxed")
+
+            valid_answers = [a for a in all_answers if a not in ("no_boxed", "error")]
+            if valid_answers:
+                majority_answer = Counter(valid_answers).most_common(1)[0][0]
+                num_agreeing = sum(1 for a in all_answers if a == majority_answer)
+                # Use the first completion that produced the majority answer
+                best_idx = next(j for j, a in enumerate(all_answers) if a == majority_answer)
+                completion = completions[best_idx]
+                predicted = majority_answer
+            else:
+                completion = completions[0]
+                predicted = "no_boxed"
+                num_agreeing = 0
+
+            # Grade the majority answer
+            if predicted in ("no_boxed", "error"):
+                correct = False
+                method = "majority_no_boxed"
+            else:
+                correct, _ = grade_math_answer_stage1(completion, ground_truth)
+                method = f"majority_{num_samples}" if correct else f"majority_{num_samples}_fail"
+        else:
+            # Single sample (original behavior)
+            completion = completions[0]
+            num_agreeing = 1
+            all_answers = None
+
+            if completion.startswith("ERROR:"):
+                correct, predicted, method = False, "error", "error"
+            else:
+                correct, predicted = grade_math_answer_stage1(completion, ground_truth)
+                method = "stage1" if correct else "stage1_fail"
 
         cot, user_output = parse_think_tags(completion)
-
-        if completion.startswith("ERROR:"):
-            correct, predicted, method = False, "error", "error"
-        else:
-            correct, predicted = grade_math_answer_stage1(completion, problems[i]["answer"])
-            method = "stage1" if correct else "stage1_fail"
 
         counter["done"] += 1
         if correct:
@@ -163,7 +208,7 @@ async def run(sampling_client, renderer, tokenizer, results_dir: Path, model_nam
                   f"{counter['correct']} correct ({pct:.1f}%), "
                   f"{counter['need_judge']} pending judge [{elapsed:.0f}s]")
 
-        return {
+        result = {
             "model": model_name,
             "dataset": "math_500",
             "question": problems[i]["problem"],
@@ -172,9 +217,15 @@ async def run(sampling_client, renderer, tokenizer, results_dir: Path, model_nam
             "user_output": user_output,
             "correct": correct,
             "predicted_answer": predicted,
-            "ground_truth": problems[i]["answer"],
+            "ground_truth": ground_truth,
             "grading_method": method,
         }
+        if num_samples > 1:
+            import json as _json
+            result["num_samples"] = num_samples
+            result["num_agreeing"] = num_agreeing
+            result["all_predicted_answers"] = _json.dumps(all_answers)
+        return result
 
     tasks = [eval_one(i) for i in range(total)]
     results = list(await asyncio.gather(*tasks))

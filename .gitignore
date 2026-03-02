@@ -17,3 +17,6 @@ distillation/training_runs
 distillation/generate_reasoning_traces/data*
 distillation/sft_formatting_examples/results
 distillation/analysis/plots
+
+# unimportant
+experiments/

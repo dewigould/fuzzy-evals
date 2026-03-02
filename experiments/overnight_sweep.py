@@ -1,12 +1,13 @@
-"""Overnight sweep: 4 base evals + 48 training experiments.
+"""Overnight sweep: 8 base evals + 96 training experiments.
 
-Base models: llama-8b-it, llama-70b-it (evaluated at both 4K and 16K max_tokens)
-Training: 2 models x 2 tasks x 2 traces x 2 lengths x 3 ranks = 48 runs
+Base models: llama-8b-it, llama-70b-it, qwen-8b-base, qwen-30b-it
+  (each evaluated at both 4K and 16K max_tokens)
+Training: 4 models x 2 tasks x 2 traces x 2 lengths x 3 ranks = 96 runs
 Save/eval every 2K examples (40 steps). Up to 20K examples (less at 4K if data limited).
 Full eval capped at 500 problems per dataset for speed.
 
 Usage:
-    python run.py batch experiments/overnight_sweep.py --max-parallel 8
+    python run.py batch experiments/overnight_sweep.py --max-parallel 12
 """
 
 import sys
@@ -24,12 +25,11 @@ from config import (
 
 # ── Models ──────────────────────────────────────────────────────────────────
 
-LLAMA_8B = "meta-llama/Llama-3.1-8B-Instruct"
-LLAMA_70B = "meta-llama/Llama-3.3-70B-Instruct"
-
 MODELS = {
-    "llama8b": LLAMA_8B,
-    "llama70b": LLAMA_70B,
+    "llama8b":  "meta-llama/Llama-3.1-8B-Instruct",
+    "llama70b": "meta-llama/Llama-3.3-70B-Instruct",
+    "qwen8b":   "Qwen/Qwen3-8B-Base",
+    "qwen30b":  "Qwen/Qwen3-30B-A3B-Instruct-2507",
 }
 
 # ── Sweep axes ──────────────────────────────────────────────────────────────
@@ -40,29 +40,43 @@ MAX_LENGTHS = [4096, 16384]
 RANKS = [32, 64, 128]
 
 # ── Data availability ───────────────────────────────────────────────────────
-# At 4K tokens, some trace/task combos have <20K examples after filtering.
+# At 4K tokens, filtered example counts depend on the model's tokenizer.
 # Values below are conservative (rounded down, leaving room for 200 test set).
-# Both llama8b and llama70b use identical filtered data.
+# Llama 8B and 70B share a tokenizer; Qwen 8B and 30B share a tokenizer.
 
 _MAX_SAMPLES_4K = {
-    ("math", "kimi"): 14_000,   # 14,240 available
-    ("math", "qwen"): 9_500,    # 9,858 available
-    ("code", "kimi"): 20_000,   # 21,816 available
-    ("code", "qwen"): 14_000,   # 14,146 available
+    # Llama tokenizer (llama8b, llama70b)
+    ("llama", "math", "kimi"): 14_000,   # 14,240 available
+    ("llama", "math", "qwen"): 9_500,    # 9,858 available
+    ("llama", "code", "kimi"): 20_000,   # 21,816 available
+    ("llama", "code", "qwen"): 14_000,   # 14,146 available
+    # Qwen tokenizer (qwen8b, qwen30b)
+    ("qwen", "math", "kimi"):  13_000,   # 13,516 available
+    ("qwen", "math", "qwen"):  9_000,    # 9,420 available
+    ("qwen", "code", "kimi"):  20_000,   # 21,529 available
+    ("qwen", "code", "qwen"):  13_500,   # 13,934 available
 }
-_MAX_SAMPLES_16K = 20_000       # All combos have >27K at 16384 tokens
+_MAX_SAMPLES_16K = 20_000  # All combos have >27K at 16384 tokens
 
 BATCH_SIZE = 50
-SAVE_EVERY_EXAMPLES = 2_000     # 2K examples = 40 steps
+SAVE_EVERY_EXAMPLES = 2_000  # 2K examples = 40 steps
 
 
 def _steps(examples):
     return examples // BATCH_SIZE
 
 
-def _max_samples(task, traces, max_length):
+def _tokenizer_family(model_name):
+    """Map model short name to tokenizer family for data availability lookup."""
+    if model_name.startswith("llama"):
+        return "llama"
+    return "qwen"
+
+
+def _max_samples(model_name, task, traces, max_length):
     if max_length == 4096:
-        return _MAX_SAMPLES_4K[(task, traces)]
+        family = _tokenizer_family(model_name)
+        return _MAX_SAMPLES_4K[(family, task, traces)]
     return _MAX_SAMPLES_16K
 
 
@@ -88,7 +102,7 @@ for model_name, model_id in MODELS.items():
     for task in TASKS:
         for traces in TRACES:
             for max_length in MAX_LENGTHS:
-                max_samples = _max_samples(task, traces, max_length)
+                max_samples = _max_samples(model_name, task, traces, max_length)
                 length_short = f"{max_length // 1024}k"
 
                 for rank in RANKS:
